@@ -5,13 +5,19 @@
  *******************************************************************************/
 package com.job.lr.entity;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.NotBlank;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 //JPA标识
 @Entity
@@ -26,14 +32,14 @@ public class Task extends IdEntity {
 	
 	private User user;
 	
-	//性别：1 男性 2女性 3不限
-	private Integer gender;
+	//性别
+	private String gender;
 	
 	//时间要求
 	private String timeRquirement;
 	
 	//任务所在区 通过区域对照码表定义
-	private Integer district;
+	private String district;
 	
 	//工资计算方式
 	private String paymentCalcWay;
@@ -47,10 +53,17 @@ public class Task extends IdEntity {
 	//联系电话
 	private String phoneCall;
 	
-	//任务状态 
-	private String jobSts;
+	//任务状态：开放、关闭
+	private String jobSts="开放"; 
 	
+	//任务类型：全职 兼职
+	private String jobType;
 	
+	//所属城市
+	private String cityId="022";
+	
+	//创建时间
+	private Date createTime;
 
 	// JSR303 BeanValidator的校验规则
 	@NotBlank
@@ -62,6 +75,7 @@ public class Task extends IdEntity {
 		this.title = title;
 	}
 
+
 	public String getDescription() {
 		return description;
 	}
@@ -70,11 +84,12 @@ public class Task extends IdEntity {
 		this.description = description;
 	}
 
-	public Integer getGender() {
+
+	public String getGender() {
 		return gender;
 	}
 
-	public void setGender(Integer gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 
@@ -86,13 +101,15 @@ public class Task extends IdEntity {
 		this.timeRquirement = timeRquirement;
 	}
 
-	public Integer getDistrict() {
+
+	public String getDistrict() {
 		return district;
 	}
 
-	public void setDistrict(Integer district) {
+	public void setDistrict(String district) {
 		this.district = district;
 	}
+
 
 	public String getPaymentCalcWay() {
 		return paymentCalcWay;
@@ -101,6 +118,7 @@ public class Task extends IdEntity {
 	public void setPaymentCalcWay(String paymentCalcWay) {
 		this.paymentCalcWay = paymentCalcWay;
 	}
+
 
 	public Integer getPayment() {
 		return payment;
@@ -118,6 +136,7 @@ public class Task extends IdEntity {
 		this.jobRequirements = jobRequirements;
 	}
 
+
 	public String getPhoneCall() {
 		return phoneCall;
 	}
@@ -126,12 +145,40 @@ public class Task extends IdEntity {
 		this.phoneCall = phoneCall;
 	}
 
+
 	public String getJobSts() {
 		return jobSts;
 	}
 
 	public void setJobSts(String jobSts) {
 		this.jobSts = jobSts;
+	}
+
+
+	public String getJobType() {
+		return jobType;
+	}
+
+	public void setJobType(String jobType) {
+		this.jobType = jobType;
+	}
+
+	public String getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(String cityId) {
+		this.cityId = cityId;
+	}
+	
+	@Temporal(TemporalType.TIMESTAMP) 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 	// JPA 基于USER_ID列的多对一关系定义

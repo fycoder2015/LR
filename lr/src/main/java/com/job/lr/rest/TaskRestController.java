@@ -13,6 +13,7 @@ import javax.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Task;
 import com.job.lr.service.task.TaskService;
 import org.springside.modules.beanvalidator.BeanValidators;
@@ -45,9 +48,50 @@ public class TaskRestController {
 	@Autowired
 	private Validator validator;
 
+	/**
+	 * 所有任务列表
+	 * @return
+	 */
 	@RequestMapping(method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public List<Task> list() {
 		return taskService.getAllTask();
+	}
+	
+	/**
+	 * 查询获取所有“开放”状态任务列表
+	 * @return
+	 */
+	@RequestMapping(value = "/getAllOpenTask", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public List<Task> listOpenTask() {
+		return taskService.getAllOpenTask();
+	}
+	
+	/**
+	 * 分页查询获取“开放”状态的任务列表
+	 * @param pageNum
+	 * @param cityId
+	 * @return
+	 */
+	@RequestMapping(value = "/getPageOpenTask/{cityId}_{pageNum}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public Page<Task> listPageOpenTask(@PathVariable("pageNum") int pageNum,
+			@PathVariable("cityId") String cityId) {
+		return taskService.getPagedOpenTask(pageNum,cityId);
+	}
+	
+	@RequestMapping(value = "/getPageUserTask/{userId}_{pageNum}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public Page<Task> listUserTask(@PathVariable("userId") Long userId,
+			@PathVariable("pageNum") int pageNum) {
+		return taskService.getUserTask(userId, pageNum);
+	}
+	
+	/**
+	 * 根据任务ID关闭任务
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/close/{id}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public GeneralResponse closeTask(@PathVariable("id") Long id) {
+		return taskService.closeTask(id);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)

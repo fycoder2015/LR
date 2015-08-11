@@ -27,12 +27,21 @@
 				<label for="gender" class="control-label">性别:</label>
 				<div class="controls">
 					<select id="gender" name="gender" class="input-large" value="${task.gender}">
-						<option value ="1">男性</option>
-						<option value ="2">女性</option>
-						<option value ="3">不限</option>
+						<option value ="男性">男性</option>
+						<option value ="女性">女性</option>
+						<option value ="不限">不限</option>
 					</select>
 				</div>
 			</div>
+			<div class="control-group">
+				<label for="jobType" class="control-label">性别:</label>
+				<div class="controls">
+					<select id="jobType" name="jobType" class="input-large" value="${task.jobType}">
+						<option value ="全职">全职</option>
+						<option value ="兼职">兼职</option>
+					</select>
+				</div>
+			</div>			
 			<div class="control-group">
 				<label for="timeRquirement" class="control-label">时间要求:</label>
 				<div class="controls">
@@ -43,24 +52,24 @@
 				<label for="district" class="control-label">区域:</label>
 				<div class="controls">
 					<select id="district" name="district" class="input-large" value="${task.district}">
-						<option value ="1">和平</option>
-						<option value ="2">南开</option>
-						<option value ="3">河西</option>
-						<option value ="4">河北</option>
-						<option value ="5">河东</option>
-						<option value ="6">红桥</option>
-						<option value ="7">西青</option>
-						<option value ="8">东丽</option>
-						<option value ="9">北辰</option>
-						<option value ="10">津南</option>
-						<option value ="11">塘沽</option>
-						<option value ="12">汉沽</option>
-						<option value ="13">大港</option>
-						<option value ="14">宁河</option>
-						<option value ="15">蓟县</option>
-						<option value ="16">静海</option>
-						<option value ="17">宝坻</option>
-						<option value ="18">武清</option>
+						<option value ="和平">和平</option>
+						<option value ="南开">南开</option>
+						<option value ="河西">河西</option>
+						<option value ="河北">河北</option>
+						<option value ="河东">河东</option>
+						<option value ="红桥">红桥</option>
+						<option value ="西青">西青</option>
+						<option value ="东丽">东丽</option>
+						<option value ="北辰">北辰</option>
+						<option value ="津南">津南</option>
+						<option value ="塘沽">塘沽</option>
+						<option value ="汉沽">汉沽</option>
+						<option value ="大港">大港</option>
+						<option value ="宁河">宁河</option>
+						<option value ="蓟县">蓟县</option>
+						<option value ="静海">静海</option>
+						<option value ="宝坻">宝坻</option>
+						<option value ="武清">武清</option>
 					</select>
 				</div>
 			</div>
@@ -68,10 +77,10 @@
 				<label for="paymentCalcWay" class="control-label">工资计算方式:</label>
 				<div class="controls">
 					<select id="paymentCalcWay" name="paymentCalcWay" class="input-large" value="${task.paymentCalcWay}">
-						<option value ="1">按小时</option>
-						<option value ="2">按天</option>
-						<option value ="3">按周</option>
-						<option value ="4">按月</option>
+						<option value ="小时">小时</option>
+						<option value ="天">天</option>
+						<option value ="周">周</option>
+						<option value ="月">月</option>
 					</select>
 				</div>
 			</div>
