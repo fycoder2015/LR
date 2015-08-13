@@ -12,15 +12,24 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name = "lr_task_aplly_record")
-public class TaskApplyRecord extends IdEntity { 
+@Table(name = "lr_task_collection")
+public class TaskCollection extends IdEntity {
 	
 	private User user;
 	
-	private Long taskId;
+	private Date collectDate;
 	
-	private Date applyDate;
+	private Task task;
+		
+	@ManyToOne
+	@JoinColumn(name = "task_id")
+	public Task getTask() {
+		return task;
+	}
 
+	public void setTask(Task task) {
+		this.task = task;
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -32,26 +41,18 @@ public class TaskApplyRecord extends IdEntity {
 		this.user = user;
 	}
 
-	public Long getTaskId() {
-		return taskId;
-	}
-
-	public void setTaskId(Long taskId) {
-		this.taskId = taskId;
-	}
-
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
-	public Date getApplyDate() {
-		return applyDate;
+	public Date getCollectDate() {
+		return collectDate;
 	}
 
-	public void setApplyDate(Date applyDate) {
-		this.applyDate = applyDate;
+	public void setCollectDate(Date collectDate) {
+		this.collectDate = collectDate;
 	}
 	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
-	}
+	}	
 
 }
