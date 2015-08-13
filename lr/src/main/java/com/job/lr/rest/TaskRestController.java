@@ -24,12 +24,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springside.modules.beanvalidator.BeanValidators;
+import org.springside.modules.web.MediaTypes;
 
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Task;
 import com.job.lr.service.task.TaskService;
-import org.springside.modules.beanvalidator.BeanValidators;
-import org.springside.modules.web.MediaTypes;
 
 /**
  * Task的Restful API的Controller.
@@ -93,6 +93,7 @@ public class TaskRestController {
 	public GeneralResponse closeTask(@PathVariable("id") Long id) {
 		return taskService.closeTask(id);
 	}
+	
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public Task get(@PathVariable("id") Long id) {
@@ -105,14 +106,15 @@ public class TaskRestController {
 		return task;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaTypes.JSON)
 	public ResponseEntity<?> create(@RequestBody Task task, UriComponentsBuilder uriBuilder) {
 		// 调用JSR303 Bean Validator进行校验, 异常将由RestExceptionHandler统一处理.
 		BeanValidators.validateWithException(validator, task);
 
 		// 保存任务
-		taskService.saveTask(task);
-
+		taskService.createTask(task);
+		
 		// 按照Restful风格约定，创建指向新任务的url, 也可以直接返回id或对象.
 		Long id = task.getId();
 		URI uri = uriBuilder.path("/api/v1/task/" + id).build().toUri();

@@ -24,6 +24,7 @@ import com.job.lr.repository.TaskDao;
 import org.springside.modules.persistence.DynamicSpecifications;
 import org.springside.modules.persistence.SearchFilter;
 import org.springside.modules.persistence.SearchFilter.Operator;
+import org.springside.modules.utils.Clock;
 
 // Spring Bean的标识.
 @Component
@@ -38,6 +39,11 @@ public class TaskService {
 	}
 
 	public void saveTask(Task entity) {
+		taskDao.save(entity);
+	}
+	
+	public void createTask(Task entity) {
+		entity.setCreateTime(Clock.DEFAULT.getCurrentDate());
 		taskDao.save(entity);
 	}
 

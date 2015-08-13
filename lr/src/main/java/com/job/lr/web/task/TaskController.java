@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springside.modules.web.Servlets;
+
+import com.google.common.collect.Maps;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.User;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 import com.job.lr.service.task.TaskService;
-import org.springside.modules.web.Servlets;
-
-import com.google.common.collect.Maps;
 
 /**
  * Task管理的Controller, 使用Restful风格的Urls:
@@ -87,7 +87,7 @@ public class TaskController {
 		User user = new User(getCurrentUserId());
 		newTask.setUser(user);
 
-		taskService.saveTask(newTask);
+		taskService.createTask(newTask);
 		redirectAttributes.addFlashAttribute("message", "创建任务成功");
 		return "redirect:/task/";
 	}
