@@ -14,11 +14,11 @@ import com.job.lr.repository.TaskCollectionDao;
 @Transactional
 public class TaskCollectionService extends BaseService {
 
-	private TaskCollectionDao<TaskCollection> TaskCollectionDao;
+	private TaskCollectionDao<TaskCollection> taskCollectionDao;
 
 
 	public TaskCollection getCollection(Long id) {
-		return TaskCollectionDao.findOne(id);
+		return taskCollectionDao.findOne(id);
 	}
 	
 	/**
@@ -26,7 +26,7 @@ public class TaskCollectionService extends BaseService {
 	 * @param entity
 	 */
 	public void saveCollection(TaskCollection entity) {
-		TaskCollectionDao.save(entity);
+		taskCollectionDao.save(entity);
 	}
 	
 	/**
@@ -37,7 +37,7 @@ public class TaskCollectionService extends BaseService {
 	public void createCollection(TaskCollection entity) {
 		
 		entity.setCollectDate(Clock.DEFAULT.getCurrentDate());
-		TaskCollectionDao.save(entity);
+		taskCollectionDao.save(entity);
 
 	}
 	
@@ -51,7 +51,7 @@ public class TaskCollectionService extends BaseService {
 		
 		PageRequest pageRequest = buildPageRequest(pageNum, 20, "auto");
 		
-		return TaskCollectionDao.findByTaskId(taskId, pageRequest);
+		return taskCollectionDao.findByTaskId(taskId, pageRequest);
 				
 	}
 	
@@ -64,13 +64,14 @@ public class TaskCollectionService extends BaseService {
 	public Page<TaskCollection> findPageByUserId(Long userId, int pageNum) {
 		PageRequest pageRequest = buildPageRequest(pageNum, 20, "auto");
 		
-		return TaskCollectionDao.findByUserId(userId, pageRequest);
+		return taskCollectionDao.findByUserId(userId, pageRequest);
 	}
+	
 	
 
 	@Autowired
-	public void setTaskCollectionDao(TaskCollectionDao<TaskCollection> TaskCollectionDao) {
-		this.TaskCollectionDao = TaskCollectionDao;
+	public void setTaskCollectionDao(TaskCollectionDao<TaskCollection> taskCollectionDao) {
+		this.taskCollectionDao = taskCollectionDao;
 	}
 
 	

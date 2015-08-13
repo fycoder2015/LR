@@ -10,9 +10,12 @@ import com.job.lr.entity.TaskCollection;
 
 public interface TaskCollectionDao<T> extends JpaSpecificationExecutor<TaskCollection>, PagingAndSortingRepository<TaskCollection,Long> {
 
-	@Query("from TaskCollection t where t.task.id=?1")
+	@Query("from TaskCollection t where t.sts='A' and t.task.id=?1")
 	Page<TaskCollection> findByTaskId(Long id, Pageable pageRequest);
 	
-	@Query("from TaskCollection c where c.user.id=?1")
+	@Query("from TaskCollection c where c.sts='A' and c.user.id=?1")
 	Page<TaskCollection> findByUserId(Long id, Pageable pageRequest);
+	
+	@Query("update TaskCollection c set c.sts='S' where c.id=?1")
+	void disableCollection (Long id);
 }

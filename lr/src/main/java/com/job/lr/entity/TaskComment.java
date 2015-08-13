@@ -12,18 +12,28 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name = "lr_task_collection")
-public class TaskCollection extends IdEntity {
+@Table(name = "lr_task_comment")
+public class TaskComment extends IdEntity {
+	
+	private String comment;
 	
 	private User user;
 	
-	private Date collectDate;
-	
 	private Task task;
 	
-	private String sts ="A";
+	private Date commentDate;
 	
-	@ManyToOne
+	private String sts = "A";
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	@ManyToOne 
 	@JoinColumn(name = "task_id")
 	public Task getTask() {
 		return task;
@@ -44,25 +54,27 @@ public class TaskCollection extends IdEntity {
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
-	public Date getCollectDate() {
-		return collectDate;
+	public Date getCommentDate() {
+		return commentDate;
 	}
 
-	public void setCollectDate(Date collectDate) {
-		this.collectDate = collectDate;
+	public void setCommentDate(Date commentDate) {
+		this.commentDate = commentDate;
 	}
 	
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
-
+	
+	
 	public String getSts() {
 		return sts;
 	}
 
 	public void setSts(String sts) {
 		this.sts = sts;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}	
 
 }
