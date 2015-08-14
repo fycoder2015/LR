@@ -64,6 +64,10 @@ public class Task extends IdEntity {
 	
 	//创建时间
 	private Date createTime;
+	
+	private Long pv ;
+	
+	private Long uv ;
 
 	// JSR303 BeanValidator的校验规则
 	@NotBlank
@@ -179,6 +183,22 @@ public class Task extends IdEntity {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public Long getPv() {
+		return pv;
+	}
+
+	public void setPv(Long pv) {
+		this.pv = pv;
+	}
+
+	public Long getUv() {
+		return uv;
+	}
+
+	public void setUv(Long uv) {
+		this.uv = uv;
 	}
 
 	// JPA 基于USER_ID列的多对一关系定义

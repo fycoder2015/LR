@@ -30,6 +30,7 @@ import org.springside.modules.web.MediaTypes;
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Task;
 import com.job.lr.service.task.TaskService;
+import com.job.lr.service.task.TaskViewRecService;
 
 /**
  * Task的Restful API的Controller.
@@ -44,6 +45,9 @@ public class TaskRestController {
 
 	@Autowired
 	private TaskService taskService;
+	
+//	@Autowired
+//	private TaskViewRecService viewRecService;
 
 	@Autowired
 	private Validator validator;
@@ -94,7 +98,23 @@ public class TaskRestController {
 		return taskService.closeTask(id);
 	}
 	
+	@RequestMapping(value = "/pvUvRec/{taskId}_{userId}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public GeneralResponse pvUvRec(@PathVariable("taskId") Long taskId,
+			@PathVariable("userId") Long userId) {
+		try {
+			taskService.pvUvRec(taskId, userId); 
+		}
+		catch (Exception e) {
+			return new GeneralResponse(-1,e.getMessage());
+		}
+		return new GeneralResponse();
+	}
 
+	/**
+	 * 根据任务Id获取任务对象
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public Task get(@PathVariable("id") Long id) {
 		Task task = taskService.getTask(id);
@@ -106,6 +126,12 @@ public class TaskRestController {
 		return task;
 	}
 
+	/**
+	 * JSON方式提交任务内容，创建任务
+	 * @param task
+	 * @param uriBuilder
+	 * @return
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaTypes.JSON)
 	public ResponseEntity<?> create(@RequestBody Task task, UriComponentsBuilder uriBuilder) {

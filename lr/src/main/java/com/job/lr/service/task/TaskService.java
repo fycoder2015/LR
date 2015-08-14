@@ -20,7 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Task;
+import com.job.lr.entity.TaskViewRec;
 import com.job.lr.repository.TaskDao;
+import com.job.lr.repository.TaskViewRecDao;
+
 import org.springside.modules.persistence.DynamicSpecifications;
 import org.springside.modules.persistence.SearchFilter;
 import org.springside.modules.persistence.SearchFilter.Operator;
@@ -33,6 +36,8 @@ import org.springside.modules.utils.Clock;
 public class TaskService {
 
 	private TaskDao taskDao;
+	
+	private TaskViewRecDao viewRecDao;
 
 	public Task getTask(Long id) {
 		return taskDao.findOne(id);
@@ -126,6 +131,28 @@ public class TaskService {
 		
 		return new GeneralResponse();
 	}
+	
+	/**
+	 * 更新任务的pv、uv值
+	 * @param taskId
+	 * @param userId
+	 */
+	public void pvUvRec(Long taskId, Long userId) {
+		
+		Task task = taskDao.findOne(taskId);
+		task.setPv(task.getPv()==null?(1):(task.getPv()+1));
+		
+		List<TaskViewRec> viewRecList = viewRecDao.findByTaskUserId(taskId, userId);
+		
+		if (viewRecList == null || viewRecList.size()<1) {
+			TaskViewRec viewRec = new TaskViewRec(userId,taskId);
+			viewRecDao.save(viewRec);
+			
+			task.setUv(task.getUv()==null?(1):(task.getUv()+1));
+		}
+		
+		taskDao.save(task);
+	}
 
 	/**
 	 * 创建分页请求.
@@ -165,5 +192,10 @@ public class TaskService {
 	@Autowired
 	public void setTaskDao(TaskDao taskDao) {
 		this.taskDao = taskDao;
+	}
+
+	@Autowired
+	public void setViewRecDao(TaskViewRecDao viewRecDao) {
+		this.viewRecDao = viewRecDao;
 	}
 }
