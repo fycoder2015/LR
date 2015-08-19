@@ -43,7 +43,7 @@ public class TaskCommentRestController {
 	private Validator validator;
 	
 	/**
-	 * 根据Id查询申请收藏记录
+	 * 根据Id查询评论记录
 	 * @param id
 	 * @return
 	 */
@@ -52,7 +52,7 @@ public class TaskCommentRestController {
 		
 		TaskComment comment = commentService.getComment(id);
 		if (comment == null) {
-			String message = "申请不存在(id:" + id + ")";
+			String message = "评论不存在(id:" + id + ")";
 			logger.warn(message);
 			throw new RestException(HttpStatus.NOT_FOUND, message);
 		}
@@ -72,7 +72,7 @@ public class TaskCommentRestController {
 	}
 	
 	/**
-	 * 根据用户Id分页查询收藏列表
+	 * 根据用户Id分页查询评论列表
 	 * @param userId
 	 * @param pageNum
 	 * @return
@@ -85,8 +85,8 @@ public class TaskCommentRestController {
 	
 	
 	/**
-	 * 取消收藏
-	 * @param id:收藏记录的id
+	 * 删除评论
+	 * @param id:评论记录的id
 	 * @return:操作结果
 	 */
 	@RequestMapping(value = "/disable/{id}",method = RequestMethod.GET) 
@@ -107,6 +107,7 @@ public class TaskCommentRestController {
 		
 		return new GeneralResponse();
 	}
+	
 	
 	@RequestMapping(value = "create", method = RequestMethod.POST, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse create(@Valid TaskComment comment) {
@@ -165,7 +166,7 @@ public class TaskCommentRestController {
 	 * @return
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@RequestMapping(value = "/create", method = RequestMethod.POST, consumes = MediaTypes.JSON)
+	@RequestMapping(value = "/createRest", method = RequestMethod.POST, consumes = MediaTypes.JSON)
 	public ResponseEntity<?> create(@RequestBody TaskComment comment, UriComponentsBuilder uriBuilder) {
 		// 调用JSR303 Bean Validator进行校验, 异常将由RestExceptionHandler统一处理.
 		BeanValidators.validateWithException(validator, comment);

@@ -1,8 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2005, 2014 springside.github.io
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *******************************************************************************/
+
 package com.job.lr.rest;
 
 import java.net.URI;
@@ -30,7 +26,6 @@ import org.springside.modules.web.MediaTypes;
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Task;
 import com.job.lr.service.task.TaskService;
-import com.job.lr.service.task.TaskViewRecService;
 
 /**
  * Task的Restful API的Controller.
