@@ -2,11 +2,11 @@
 #header {margin-bottom:15px;}
 
 #header h1 a {
-	color: #658A16;
+	color: #0000ff;
 	text-decoration: none
 }
 
-#header h1 small {color: #BACE87;}
+#header h1 small {color: #8080ff;}
 
 /* footer */
 #footer {
@@ -14,7 +14,7 @@
 	padding: 15px 0px 0px 0px;
 	font-size: 95%;
 	text-align: center;
-	border-top: 2px solid #658A16;
+	border-top: 2px solid #0080c0;
 }
 
 #footer a {color: #999;}
