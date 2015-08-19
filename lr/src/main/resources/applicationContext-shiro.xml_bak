@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" 
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:aop="http://www.springframework.org/schema/aop"
-
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-						http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-						http://www.springframework.org/schema/aop  
-						http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd"
 	default-lazy-init="true">
-	<!--  -->
-
 	<description>Shiro安全配置</description>
-
 	<!-- Shiro's main business-tier object for web-enabled applications -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-		<!--  
 		<property name="realm" ref="shiroDbRealm" />
-		-->
-		<property name="realm" ref="statelessRealm" />
 		<property name="cacheManager" ref="shiroEhcacheManager" />
 	</bean>
 
@@ -26,48 +14,23 @@
 		<property name="accountService" ref="accountService"/>
 	</bean>
 	
-	<!-- 項目自定义的Realm, 所有accountService依赖的dao都需要用depends-on声明 -->
-	<bean id="statelessRealm" class="com.job.lr.realm.StatelessRealm">
-		<property name="accountService" ref="accountService"/>
-	</bean>
-	
 	<!-- Shiro Filter -->
 	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager" />
-		
-		<!-- Shiro new 1 add start -->
-		<property name="filters">      	   
-        	<map>  
-            <entry key="statelessAuthc" value-ref="statelessAuthcFilter"/>     
-        	</map>    
-    	</property>
-    	<!-- Shiro new 1 add end  -->    	
-    	
-    	<!-- Shiro的Web过滤器 -->
 		<property name="loginUrl" value="/login" />
-		<property name="successUrl" value="/task" />
+		<property name="successUrl" value="/" />
 		<property name="filterChainDefinitions">
 			<value>
-				<!-- /login = authc
-							,rest authcBasic 
-							anon,rest[user]-->
-				/login = statelessAuthc
+				/login = authc
 				/logout = logout
 				/static/** = anon
 				/api/** = anon
 				/register/** = anon
 				/admin/** = roles[admin]
-				/** = statelessAuthc
-				<!--/** = user -->
+				/** = user
 			</value>
 		</property>
 	</bean>
-	
-	<bean id="statelessAuthcFilter" class="com.job.lr.filter.StatelessAuthcFilter">
-		<property name="accountService" ref="accountService"/>
-		<property name="usertokenService" ref="usertokenService"/>
-	</bean>
-	
 	
 	<!-- 用户授权信息Cache, 采用EhCache -->
 	<bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
