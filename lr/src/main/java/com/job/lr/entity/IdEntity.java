@@ -1,4 +1,3 @@
-
 package com.job.lr.entity;
 
 import javax.persistence.GeneratedValue;
