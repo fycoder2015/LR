@@ -11,7 +11,8 @@ import com.job.lr.entity.User;
 import com.job.lr.entity.Usertoken;
 
 public interface UsertokenDao extends PagingAndSortingRepository<Usertoken, Long> {
-	Usertoken findByUserId(Long  userId);
 	
+	Usertoken findByUserId(Long  userId);
+	Usertoken findByUsertoken(String  usertoken);
 	
 }
