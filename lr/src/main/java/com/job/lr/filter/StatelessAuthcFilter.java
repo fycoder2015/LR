@@ -64,6 +64,18 @@ public class StatelessAuthcFilter extends AccessControlFilter {
      * 
      * username =  loginName
      * digest   =  password
+     * 
+     *  reset 负责重置usertoken 
+     *  
+     *  链接示例：
+     *  http://127.0.0.1:8080/lr/api/v1/usertoken/gogetUsertoken?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb
+     *  http://127.0.0.1:8080/lr/api/v1/usertoken/gogetUsertoken?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb&reset=yes
+     *  可以发起重置请求 挂上参数 ：reset=yes 
+     *  
+     *  
+	 *  http://127.0.0.1:8080/lr/task?usertoken=ed89a34c93904ce2b50fb65030fc980cd31756a6da5a4c8db59596038b734d60 
+	 *  使用token发起验证
+	 *  
      * */
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
