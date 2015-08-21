@@ -50,6 +50,16 @@ public class testUrl {
 //	        Assert.assertEquals(HttpStatus.UNAUTHORIZED, e.getStatusCode());  
 //	        Assert.assertEquals("login error", e.getResponseBodyAsString());  
 //	    }  
+	    
+	    /**
+	     * url
+	     * 
+	     * http://127.0.0.1:8080/lr/api/v1/task/getPageUserTask/1_1
+	     * http://127.0.0.1:8080/lr/api/v1/usertoken/gogetUsertoken?111=
+	     * 
+	     * http://127.0.0.1:8080/lr/api/v1/usertoken/gogetUsertoken?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb&reset=yes
+	     * reset
+	     * */
 
 	}
 

@@ -49,4 +49,8 @@ public class UsertokenService {
 	public Usertoken findUsertoken(Long  userId) {
 		return usertokenDao.findByUserId(userId);
 	}
+	
+	public Usertoken findUsertokenByToken(String  usertoken) {
+		return usertokenDao.findByUsertoken(usertoken);
+	}
 }

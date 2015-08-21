@@ -51,7 +51,7 @@ public class AccountServiceTest {
 		User user = UserData.randomNewUser();
 		Date currentTime = new Date();
 		accountService.setClock(new MockClock(currentTime));
-
+		System.out.println("user.getId():"+user.getId());
 		accountService.registerUser(user);
 
 		// 验证user的角色，注册日期和加密后的密码都被自动更新了。

@@ -16,6 +16,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,6 +62,8 @@ public class StatelessAuthcFilter extends AccessControlFilter {
      * 
      * step 2 :  be use
      * 
+     * username =  loginName
+     * digest   =  password
      * */
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
@@ -69,7 +72,43 @@ public class StatelessAuthcFilter extends AccessControlFilter {
         String clientDigest = request.getParameter("digest"); 
         //System.out.println("clientDigest:"+clientDigest);
         //2、客户端传入的用户身份
-        String username = request.getParameter("username");
+        String username = request.getParameter("username");																																			
+        
+        String requsertoken = request.getParameter("usertoken");
+        if(requsertoken==null || "".equals(requsertoken)){        	
+        }else{        	
+        	Usertoken ut = usertokenService.findUsertokenByToken(requsertoken);
+        	if(ut!= null){
+	        	String usertoken1 =ut.getUsertoken() ; //较新的token
+	        	String usertoken2 =ut.getUsertokenold() ;//较旧的token
+	        	//比对时间是否超时 +date.getTime()
+	        	Long starttime = ut.getStartDate().getTime(); //起始时间 
+	        	Long totaltime = starttime+Constants.PARAM_TIMEGAP+Constants.PARAM_TIMEGAP;
+	        	Long nowtime = new Date().getTime();
+	        	//System.out.println("nowtime:" +nowtime);
+	        	//System.out.println("starttime:" +starttime);
+	        	//比对上传的token和数据库中的token是否一致
+	        	if( usertoken1.equals(requsertoken) || usertoken2.equals(requsertoken) ){        		
+		        	if (username == null|| "".equals(username)||clientDigest==null || "".equals(clientDigest)){
+		        		User u = accountService.getUser(ut.getUserId()) ;
+		        		if (u != null){		        			
+			            	if(nowtime < totaltime) {
+			            		//在允许时间内 赋予 username 和 clientDigest 的值 后面继续走
+			            		username=u.getLoginName();
+			            		clientDigest=u.getPassword(); 
+			            	}else{
+			            		//时间超限 不允登陆
+			            		username ="";
+			            		clientDigest="";
+			             		onLoginFail(response); //6、登录失败
+			    	            return false;
+			            	}
+		        		}
+		        	}
+	        	}
+        	}
+        }
+        
         //String seceretstr = request.getParameter(Constants.PARAM_SECRETSTR); //MD5加密后的str值        
         //3、客户端请求的参数列表
         Map<String, String[]> params = new HashMap<String, String[]>(request.getParameterMap());
