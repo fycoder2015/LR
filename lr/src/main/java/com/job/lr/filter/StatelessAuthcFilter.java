@@ -83,37 +83,28 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 	        	String usertoken2 =ut.getUsertokenold() ;//较旧的token
 	        	//比对时间是否超时 +date.getTime()
 	        	Long starttime = ut.getStartDate().getTime(); //起始时间 
+	        	Long totaltime = starttime+Constants.PARAM_TIMEGAP+Constants.PARAM_TIMEGAP;
 	        	Long nowtime = new Date().getTime();
-	        	System.out.println("nowtime:" +nowtime);
-	        	System.out.println("starttime:" +starttime);
+	        	//System.out.println("nowtime:" +nowtime);
+	        	//System.out.println("starttime:" +starttime);
 	        	//比对上传的token和数据库中的token是否一致
 	        	if( usertoken1.equals(requsertoken) || usertoken2.equals(requsertoken) ){        		
 		        	if (username == null|| "".equals(username)||clientDigest==null || "".equals(clientDigest)){
 		        		User u = accountService.getUser(ut.getUserId()) ;
-		        		if (u != null){
-		        			username=u.getLoginName();
-		        			clientDigest=u.getPassword(); 
+		        		if (u != null){		        			
+			            	if(nowtime < totaltime) {
+			            		//在允许时间内 赋予 username 和 clientDigest 的值 后面继续走
+			            		username=u.getLoginName();
+			            		clientDigest=u.getPassword(); 
+			            	}else{
+			            		//时间超限 不允登陆
+			            		username ="";
+			            		clientDigest="";
+			             		onLoginFail(response); //6、登录失败
+			    	            return false;
+			            	}
 		        		}
-		        		
-		            	//在允许时间内
-		            	if(nowtime > starttime) {
-		            		//do nothing
-		            	}else{ 
-		            	//时间超限 替换token 
-		            		String newtoken = ut.getNewtoken(); //调用生成token的函数
-		            		ut.setStartDate(new Date()); 
-		            		ut.setUsertoken(newtoken); 
-		            		ut.setUsertokenold(usertoken1);
-		            		usertokenService.saveUsertoken(ut);	            		
-		            	}
 		        	}
-	        	}else{
-	        	//超时token  生成新的token 更新token starttime
-	        		String newtoken = ut.getNewtoken(); //调用生成token的函数
-	        		ut.setStartDate(new Date());
-	        		ut.setUsertoken(newtoken);
-	        		ut.setUsertokenold(newtoken);
-	        		usertokenService.saveUsertoken(ut);
 	        	}
         	}
         }

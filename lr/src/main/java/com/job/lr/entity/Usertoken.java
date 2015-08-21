@@ -9,6 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -37,7 +38,7 @@ public class Usertoken extends IdEntity {
 		this.id = id;
 	}
 	
-	@NotBlank
+	@NotNull
 	public Long getUserId() {
 		return userId;
 	}
