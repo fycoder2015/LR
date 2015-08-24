@@ -54,6 +54,9 @@ public class testUrl {
 	    /**
 	     * url
 	     * 
+	     * 使用token获取加密的用户页面
+	     * http://127.0.0.1:8080/lr/task?usertoken=1829da327028494aa36f7d165db15166ab74141ab0414a698eef1f04c373741a
+	     * 
 	     * http://127.0.0.1:8080/lr/api/v1/task/getPageUserTask/1_1
 	     * http://127.0.0.1:8080/lr/api/v1/usertoken/gogetUsertoken?111=
 	     * 
