@@ -107,13 +107,23 @@ public class TaskCollectRestController {
 	}
 	
 	/**
+	 * 取出Shiro中的当前用户Id.
+	 */
+	private Long getCurrentUserId() {
+		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		System.out.println("create user.id +user.id： "+user.id);
+		return user.id;
+	}
+	
+	/**
 	 * 通过向URL发起GET请求建立收藏记录
 	 * @param taskId
 	 * @return
 	 */
 	@RequestMapping(value = "/create/{taskId}",method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse createApply(@PathVariable("taskId") Long taskId) {
-		
+		System.out.println("taskId:"+taskId);
+		System.out.println("----ControllerUtil.getCurrentUserId():"+ControllerUtil.getCurrentUserId());
 		TaskCollection entity = new TaskCollection();
 		
 		Task task = new Task();
@@ -121,6 +131,7 @@ public class TaskCollectRestController {
 		entity.setTask(task);
 		
 		User user = new User();
+		
 		user.setId(ControllerUtil.getCurrentUserId());
 		entity.setUser(user);
 		

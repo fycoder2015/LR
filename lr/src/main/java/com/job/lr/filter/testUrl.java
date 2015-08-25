@@ -61,7 +61,11 @@ public class testUrl {
 	     * http://127.0.0.1:8080/lr/api/v1/usertoken/gogetUsertoken?111=
 	     * 
 	     * http://127.0.0.1:8080/lr/api/v1/usertoken/gogetUsertoken?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb&reset=yes
+	     * 
+	     * http://localhost:8080/lr/api/v1/taskCollect/create/2?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb
 	     * reset 负责重置usertoken 
+	     * 
+	     * http://localhost:8080/lr/api/v1/taskCollect/create/2/?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb
 	     * */
 
 	}
