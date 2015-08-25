@@ -22,6 +22,7 @@ import org.springside.modules.web.Servlets;
 import com.google.common.collect.Maps;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.User;
+import com.job.lr.rest.ControllerUtil;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 import com.job.lr.service.task.TaskService;
 
@@ -57,6 +58,8 @@ public class TaskController {
 			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize,
 			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
 			ServletRequest request) {
+		
+		
 		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
 		Long userId = getCurrentUserId();
 
@@ -125,6 +128,7 @@ public class TaskController {
 	 */
 	private Long getCurrentUserId() {
 		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		System.out.println("user.id +user.id： "+user.id);
 		return user.id;
 	}
 }

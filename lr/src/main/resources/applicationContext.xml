@@ -22,8 +22,10 @@
 	
 	<!-- ***liuy add start *** -->
 	<!-- 使用注解配置切面 add -->
-    <!-- <aop:aspectj-autoproxy /> -->
-    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <!-- <aop:aspectj-autoproxy  AOP /> -->
+    <!-- AOP 可以用下面这个 in use  true --><!-- 
+    <aop:aspectj-autoproxy proxy-target-class="true"/>  --> 
+    <aop:aspectj-autoproxy proxy-target-class="false"/>  
 	<!-- ***liuy add end *** -->
 	
 	<!-- Jpa Entity Manager 配置 -->

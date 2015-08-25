@@ -54,6 +54,13 @@
 				/login = statelessAuthc
 				/logout = logout
 				/static/** = anon
+				<!--  
+				  API中需要验证的，需要注掉下面的内容，才能获取到用户ID
+				    使用SecurityUtils.getSubject().getPrincipal().id 这个方法才可以。
+				    当为anon时，SecurityUtils.getSubject()为null
+				
+				/api/** = anon
+				-->
 				/api/** = anon
 				/register/** = anon
 				/admin/** = roles[admin]
