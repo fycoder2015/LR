@@ -51,6 +51,10 @@ public class UsertokenService {
 	}
 	
 	public Usertoken findUsertokenByToken(String  usertoken) {
-		return usertokenDao.findByUsertoken(usertoken);
+		Usertoken ut = usertokenDao.findByUsertoken(usertoken) ;
+		if(ut==null){
+			ut = usertokenDao.findByUsertokenold(usertoken) ;
+		}
+		return ut;
 	}
 }

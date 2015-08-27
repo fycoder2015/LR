@@ -39,9 +39,17 @@ public class testUrl {
 		 * 
 		 * no
 		 * http://localhost:8080/lr/task?username=admin&param1=param11&param1=param12&param2=param21&digest=883e10ba0fea469d565851bab665fa8aa6ceb419672ef0982e842cc43995b9ee
+		 * writesess=23  写入     其他值不写入
 		 * 
 		 * ok
-		 * http://localhost:8080/lr/task?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb
+		 * http://localhost:8080/lr/task?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb&writesess=23
+		 * 可以写入session 。   writesess=23 
+		 * 没有写入session
+		 * 
+		 * http://localhost:8080/lr/task?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb&ng=0
+		 * http://localhost:8080/lr/api/v1/taskApply/create/1
+		 * 
+		 * http://localhost:8080/lr/task?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb&writesess=23
 		 * 
 	     **/
 //	    try {  
