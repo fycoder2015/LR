@@ -9,5 +9,6 @@ public interface UsertokenDao extends PagingAndSortingRepository<Usertoken, Long
 	
 	Usertoken findByUserId(Long  userId);
 	Usertoken findByUsertoken(String  usertoken);
+	Usertoken findByUsertokenold(String  usertoken);
 	
 }

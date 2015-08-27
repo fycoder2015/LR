@@ -21,8 +21,8 @@ import org.springframework.stereotype.Component;
  * @author liuy
  *
  */
-@Aspect
-@Component
+//@Aspect    //--- be used 1
+@Component //--- be used 2
 //@EnableAspectJAutoProxy
 public class LogAspect {
  
@@ -31,7 +31,7 @@ public class LogAspect {
      * 
      * 	匹配com.fycoder.ll.web包及其子包中所有类中的所有方法，返回类型任意，方法参数任意
      */
-    @Pointcut("execution(* com.job.lr.web..*(..))")
+    @Pointcut("execution(* com.job.lr.web..*(..))")  //be used
     //@Pointcut("execution(public * * (..))")
     public void pointcutExpression() {
          
