@@ -106,6 +106,18 @@ public class AccountService {
 		byte[] hashPassword = Digests.sha1(user.getPlainPassword().getBytes(), salt, HASH_INTERATIONS);
 		user.setPassword(Encodes.encodeHex(hashPassword));
 	}
+	
+
+	public String entryptPasswordByString(String  userplainpasswd) {
+		//byte[] salt = Digests.generateSalt(SALT_SIZE);
+		byte[] salt = Constants.PARAM_SALT.getBytes() ;
+		byte[] hashPassword = Digests.sha1(userplainpasswd.getBytes(), salt, HASH_INTERATIONS);
+		String enPasswd= Encodes.encodeHex(hashPassword) ;
+		return  enPasswd ;
+	}
+	
+	
+	
 
 	@Autowired
 	public void setUserDao(UserDao userDao) {
