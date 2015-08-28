@@ -198,7 +198,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
         				
         			}else if (writesess.equals("23") ){
         			 //写session
-        			 System.out.println( "---- 写入 session");
+        			 //System.out.println( "---- 写入 session");
         			 httpreq.getSession().setAttribute("username", username);	
         			 httpreq.getSession().setAttribute("digest", userpassword);
         			 urlparam_writesess_flag = "writesess=23" ;        			 
@@ -231,15 +231,15 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 		            	String urlgetparm = httpreq.getQueryString(); //类似username=xxx&passwd= 
 	            		String urlpath = httpreq.getContextPath()+"/task?"+urlgetparm;
 	            		
-	            		if(toactionnanme!=login_to_action){ //来自 token  login_to_action 登录后跳转到的页面
-	            			System.out.println("--1111---");
-	            			urlpath=urlpath+"&nj=0"; //加上不去跳转的标志            		    
-	            		    //RequestDispatcher dispatcher = httpreq.getRequestDispatcher(urlpath);
-	            		    //dispatcher .forward(httpreq, httpresponse);
-	            		    System.out.println("做跳转");
-	            			System.out.println("--1111---toactionnanme---------"+toactionnanme+"-----urlpath:"+urlpath);
-	            			httpresponse.sendRedirect(urlpath);	        		   
-	            		}	            	
+//	            		if(toactionnanme!=login_to_action){ //来自 token  login_to_action 登录后跳转到的页面
+//	            			System.out.println("--1111---");
+//	            			urlpath=urlpath+"&nj=0"; //加上不去跳转的标志            		    
+//	            		    //RequestDispatcher dispatcher = httpreq.getRequestDispatcher(urlpath);
+//	            		    //dispatcher .forward(httpreq, httpresponse);
+//	            		    System.out.println("做跳转");
+//	            			System.out.println("--1111---toactionnanme---------"+toactionnanme+"-----urlpath:"+urlpath);
+//	            			//httpresponse.sendRedirect(urlpath);	        		   
+//	            		}	            	
 	            	}
 	            } catch (Exception e) {
 	                e.printStackTrace();

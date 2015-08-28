@@ -51,7 +51,8 @@
 				<!-- /login = authc
 							,rest authcBasic 
 							anon,rest[user]-->
-				/login = statelessAuthc
+				/login = anon
+				/login/fromForm = anon
 				/logout = logout
 				/static/** = anon
 				<!--  

@@ -11,7 +11,8 @@
 </head>
 
 <body>
-	<form id="loginForm" action="${ctx}/login" method="post" class="form-horizontal">
+	<!--  form id="loginForm" action="${ctx}/login/" method="post" class="form-horizontal" -->
+	<form id="loginForm" action="${ctx}/login/fromForm" method="post" class="form-horizontal" >
 	<%
 	String error = (String) request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
 	if(error != null){
