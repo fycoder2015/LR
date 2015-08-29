@@ -21,9 +21,11 @@ import org.springside.modules.web.Servlets;
 
 import com.google.common.collect.Maps;
 import com.job.lr.entity.Task;
+import com.job.lr.entity.TaskComment;
 import com.job.lr.entity.User;
 import com.job.lr.rest.ControllerUtil;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
+import com.job.lr.service.task.TaskCommentService;
 import com.job.lr.service.task.TaskService;
 
 /**
@@ -52,6 +54,9 @@ public class TaskController {
 
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private TaskCommentService commentService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
@@ -73,6 +78,20 @@ public class TaskController {
 
 		return "task/taskList";
 	}
+	
+	@RequestMapping(value = "viewComment/{taskId}", method = RequestMethod.GET)
+	public String viewComment(@PathVariable("taskId") Long taskId, 
+			@RequestParam(value = "page", defaultValue = "1") int pageNum, 
+			Model model,
+			ServletRequest request) {
+		
+		Page<TaskComment> comments = this.commentService.findPageByTaskId(taskId, pageNum);
+		
+		model.addAttribute("comments", comments);
+		model.addAttribute("pageNum",pageNum);
+		return "task/listComment";
+	}
+	
 
 	@RequestMapping(value = "create", method = RequestMethod.GET)
 	public String createForm(Model model) {
@@ -131,4 +150,6 @@ public class TaskController {
 		System.out.println("user.id +user.id： "+user.id);
 		return user.id;
 	}
+	
+	
 }
