@@ -34,7 +34,7 @@
 				</div>
 			</div>
 			<div class="control-group">
-				<label for="jobType" class="control-label">性别:</label>
+				<label for="jobType" class="control-label">工作性质:</label>
 				<div class="controls">
 					<select id="jobType" name="jobType" class="input-large" value="${task.jobType}">
 						<option value ="全职">全职</option>
