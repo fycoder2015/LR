@@ -42,16 +42,21 @@ public class LoginController {
 			return "redirect:/login";
 		}else{
 			User u = accountService.findUserByLoginName(username);
-			String password_en = accountService.entryptPasswordByString(password);
-			String password_db = u.getPassword();
-			System.out.println(password_db);
-			System.out.println(password_en);
-			if(password_en.equals(password_db)){
-				//可以登录用户 设置session  为了后续的过滤
-				request.getSession().setAttribute("username", username);
-				request.getSession().setAttribute("digest", password_db);				
-				return "redirect:/task/";
+			if(u!=null){
+				String password_en = accountService.entryptPasswordByString(password);
+				String password_db = u.getPassword();
+				System.out.println(password_db);
+				System.out.println(password_en);
+				if(password_en.equals(password_db)){
+					//可以登录用户 设置session  为了后续的过滤
+					request.getSession().setAttribute("username", username);
+					request.getSession().setAttribute("digest", password_db);				
+					return "redirect:/task/";
+				}else{
+					return "redirect:/login";
+				}
 			}else{
+				//未查出用户
 				return "redirect:/login";
 			}
 		}
