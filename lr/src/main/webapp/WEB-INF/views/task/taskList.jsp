@@ -23,11 +23,13 @@
 	</div>
 	
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<thead><tr><th>任务</th><th>管理</th></tr></thead>
+		<thead><tr><th>编号</th><th>任务</th><th>评论</th><th>管理</th></tr></thead>
 		<tbody>
 		<c:forEach items="${tasks.content}" var="task">
 			<tr>
+				<td><a href="${ctx}/task/update/${task.id}">${task.id}</a></td>
 				<td><a href="${ctx}/task/update/${task.id}">${task.title}</a></td>
+				<td><a href="${ctx}/task/viewComment/${task.id}">查看评论</a></td>
 				<td><a href="${ctx}/task/delete/${task.id}">删除</a></td>
 			</tr>
 		</c:forEach>
