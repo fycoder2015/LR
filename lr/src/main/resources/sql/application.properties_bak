@@ -9,9 +9,6 @@ jdbc.driver=org.postgresql.Driver
 jdbc.url=jdbc:postgresql://localhost:5432/lr
 jdbc.username=postgres
 jdbc.password=123321
-#jdbc.url=jdbc:postgresql://61.181.22.88:8181/lr
-#jdbc.username=postgres
-#jdbc.password=cmbjx123
 
 
 #jdbc.url=jdbc:postgresql://61.181.22.88:8181/lr
