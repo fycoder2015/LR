@@ -1,9 +1,11 @@
 
 package com.job.lr.web.task;
 
+import java.io.File;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.shiro.SecurityUtils;
@@ -11,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.web.Servlets;
 
@@ -37,7 +41,7 @@ import com.job.lr.service.task.TaskService;
  * Update page : GET /task/update/{id}
  * Update action : POST /task/update
  * Delete action : GET /task/delete/{id}
- * 
+ * Upload File page : GET /task/uploadfile/{id}
  * @author calvin
  */
 @Controller
@@ -117,7 +121,8 @@ public class TaskController {
 		model.addAttribute("action", "update");
 		return "task/taskForm";
 	}
-
+	
+	
 	@RequestMapping(value = "update", method = RequestMethod.POST)
 	public String update(@Valid @ModelAttribute("task") Task task, RedirectAttributes redirectAttributes) {
 		taskService.saveTask(task);
@@ -125,6 +130,49 @@ public class TaskController {
 		return "redirect:/task/";
 	}
 
+	//转向到接收上传的文件页面 get   liuy
+	@RequestMapping(value = "uploadfile/{id}", method = RequestMethod.GET)
+	public String touploadfileForm(@PathVariable("id") Long id, Model model) {
+		System.out.println("TaskController------------touploadfileForm()");
+		model.addAttribute("task", taskService.getTask(id));
+		model.addAttribute("action", "uploadfilehere");
+		return "task/taskuploadfileForm";
+	}
+
+	
+	//------------------------------
+	//转向到接收上传的文件页面 post
+	//独立的action ，不区分post和get 
+	//------------------------------
+	//@RequestMapping(value = "uploadfile/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/uploadfilehere")  //独立的action ，不区分post和get 
+	//public String uploadfileForm(@PathVariable("id") Long id, Model model) {
+	public	String uploadfileForm(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, ModelMap model) {  
+	
+		System.out.println("TaskController ----------here is uploadfileForm get  id=");
+        String path = request.getSession().getServletContext().getRealPath("upload");
+        System.out.println("path="+path);
+        String fileName = file.getOriginalFilename();  
+        //String fileName = new Date().getTime()+".jpg";  
+        System.out.println(path);  
+        File targetFile = new File(path, fileName);  
+        if(!targetFile.exists()){  
+            targetFile.mkdirs();  
+        }  
+        //保存  
+        try {  
+            file.transferTo(targetFile);  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  		
+		
+		//model.addAttribute("task", taskService.getTask(id));
+		model.addAttribute("action", "uploadfile");
+		return "redirect:/task/";
+	}
+	
+	
+	
 	@RequestMapping(value = "delete/{id}")
 	public String delete(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
 		taskService.deleteTask(id);
