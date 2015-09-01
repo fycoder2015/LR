@@ -17,6 +17,9 @@ import org.apache.http.util.EntityUtils;
  * 通过 HttpClient 模拟 Post 提交
  * 测试http post请求
  * 
+ * 参考 https://hc.apache.org/httpcomponents-client-ga/quickstart.html
+ * @author ly
+ * 
  *   Pom.xml
  <dependencies>
 	<dependency>
