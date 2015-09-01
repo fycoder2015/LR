@@ -102,6 +102,7 @@ public class TaskController {
 
 	@RequestMapping(value = "create", method = RequestMethod.POST)
 	public String create(@Valid Task newTask, RedirectAttributes redirectAttributes) {
+		System.out.println(" i am in here Task()create()");
 		User user = new User(getCurrentUserId());
 		newTask.setUser(user);
 
@@ -145,11 +146,17 @@ public class TaskController {
 	/**
 	 * 取出Shiro中的当前用户Id.
 	 */
-	private Long getCurrentUserId() {
+	private Long getCurrentUserId() {		
 		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
-		System.out.println("user.id +user.id： "+user.id);
-		return user.id;
+		if (user== null){
+			return 0L;
+		}else{
+			//System.out.println("user.id +user.id： "+user.id);
+			return user.id;
+		}	
 	}
+	
+
 	
 	
 }
