@@ -42,7 +42,8 @@ public class StatelessRealm extends AuthorizingRealm {
         String username = statelessToken.getUsername();
         if (username == null || ("").equals(username)){
         	return null ;
-        }else {        	
+        }else {     
+        	//System.out.println("username ="+username);
         	User user = accountService.findUserByLoginName(username);
         	//String key = getKey(username);//根据用户名获取密钥（和客户端的一样）
         	String key = user.getPassword(); //数据库存储的key 加密后的
@@ -61,7 +62,8 @@ public class StatelessRealm extends AuthorizingRealm {
 //        		return new SimpleAuthenticationInfo(
 //                username,
 //                serverDigest,
-//                getName());        	
+//                getName());   
+        		System.out.println("密钥比对成功"); 
         		return new SimpleAuthenticationInfo(
         			new ShiroUser(user.getId(), user.getLoginName(), user.getName()),
         			upkey,//statelessToken.getClientDigest()

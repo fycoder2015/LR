@@ -62,7 +62,7 @@
 				
 				/api/** = anon
 				-->
-				/api/** = anon
+				/api/** = statelessAuthc
 				/register/** = anon
 				/admin/** = roles[admin]
 				/** = statelessAuthc
