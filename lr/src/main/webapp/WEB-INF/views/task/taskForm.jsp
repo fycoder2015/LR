@@ -102,6 +102,8 @@
 					<textarea id="phoneCall" name="phoneCall" class="input-large">${task.phoneCall}</textarea>
 				</div>
 			</div>
+			<div><a class="btn" href="${ctx}/task/uploadfile/${task.id}">任务上传文件</a></div>
+			
 			<div class="form-actions">
 				<input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;	
 				<input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
