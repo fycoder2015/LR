@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.web.Servlets;
-
 import com.google.common.collect.Maps;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.TaskComment;
@@ -106,12 +105,28 @@ public class TaskController {
 		model.addAttribute("action", "create");
 		return "task/taskForm";
 	}
-
+	
+	/**
+	 * 增加图片上传  jpg后缀
+	 * 
+	 * @author  suiys
+	 * 需要创建 环境变量， 定义 IMAGE_DIR
+	 * 
+	 * 服务端改动：
+	 * 		服务端创建环境变量
+	 * 			默认  IMAGE_DIR=/home/ubuntu/lr/images/
+	 * 
+	 * 		服务端 添加 
+	 * 			在tomcat把这个目录做了个虚拟地址映射server.xml里面增加
+	 * 
+	 * 			<Context docBase="/home/ubuntu/lr/images" path="/upload" reloadable="true"/>
+	 * 
+	 * */
 	@RequestMapping(value = "create", method = RequestMethod.POST)
 	public String create(@Valid Task newTask, RedirectAttributes redirectAttributes,
 			@RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
 		
-		System.out.println(" i am in here Task()create()");
+		System.out.println("-------------========== i am in here Task()create()");
 		User user = new User(getCurrentUserId());
 		newTask.setUser(user);
 		
@@ -125,8 +140,11 @@ public class TaskController {
     		
     		String newFileName = user.getId()+"_"+format.format(curDate)+suffix;
     		System.out.println(newFileName);
-    		
+    	   
+
     		String destDir = System.getenv("IMAGE_DIR");
+    		//destDir="c:/loko";
+    		//System.out.println("destDir:"+destDir);
     		if (destDir == null|| destDir.equals("")) {
     			redirectAttributes.addFlashAttribute("message", "未能获取文件保存位置，请联系系统管理员。");
     			return "redirect:/task/";
