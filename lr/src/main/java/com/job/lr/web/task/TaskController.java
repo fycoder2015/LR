@@ -3,6 +3,9 @@ package com.job.lr.web.task;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -28,7 +31,6 @@ import com.google.common.collect.Maps;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.TaskComment;
 import com.job.lr.entity.User;
-import com.job.lr.rest.ControllerUtil;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 import com.job.lr.service.task.TaskCommentService;
 import com.job.lr.service.task.TaskService;
@@ -43,7 +45,7 @@ import com.job.lr.service.task.TaskService;
  * Update action : POST /task/update
  * Delete action : GET /task/delete/{id}
  * Upload File page : GET /task/uploadfile/{id}
- * @author calvin
+ * @author calvin  suiys
  */
 @Controller
 @RequestMapping(value = "/task")
@@ -106,10 +108,42 @@ public class TaskController {
 	}
 
 	@RequestMapping(value = "create", method = RequestMethod.POST)
-	public String create(@Valid Task newTask, RedirectAttributes redirectAttributes) {
+	public String create(@Valid Task newTask, RedirectAttributes redirectAttributes,
+			@RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+		
 		System.out.println(" i am in here Task()create()");
 		User user = new User(getCurrentUserId());
 		newTask.setUser(user);
+		
+		if (imageFile!=null && imageFile.getContentType().contains("image")) {
+
+            String fileName = imageFile.getOriginalFilename();
+
+            String suffix = fileName.substring(fileName.indexOf("."));
+            Date curDate = new Date();
+    		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+    		
+    		String newFileName = user.getId()+"_"+format.format(curDate)+suffix;
+    		System.out.println(newFileName);
+    		
+    		String destDir = System.getenv("IMAGE_DIR");
+    		if (destDir == null|| destDir.equals("")) {
+    			redirectAttributes.addFlashAttribute("message", "未能获取文件保存位置，请联系系统管理员。");
+    			return "redirect:/task/";
+    		}
+    		
+    		File destFile = new File(destDir+"/"+newFileName);
+    		
+    		try {
+    			imageFile.transferTo(destFile);
+    		}
+    		catch(Exception e) {
+    			redirectAttributes.addFlashAttribute("message", e.getMessage());
+    			return "redirect:/task/";
+    		}
+    		
+    		newTask.setImageFileName(newFileName);
+		}		
 
 		taskService.createTask(newTask);
 		redirectAttributes.addFlashAttribute("message", "创建任务成功");
@@ -120,6 +154,7 @@ public class TaskController {
 	public String updateForm(@PathVariable("id") Long id, Model model) {
 		model.addAttribute("task", taskService.getTask(id));
 		model.addAttribute("action", "update");
+		
 		return "task/taskForm";
 	}
 	
