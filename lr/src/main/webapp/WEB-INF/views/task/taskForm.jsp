@@ -114,8 +114,8 @@
 			</div>
 			
 			
-			<!-- /upload 目录需在tomcat的server.xml文件中新增虚拟目录配置，
-			目录的docBase位置与系统环境变量的IMAGE_DIR所指向的目录位置一致 -->
+			<%-- /upload 目录需在tomcat的server.xml文件中新增虚拟目录配置，
+			目录的docBase位置与系统环境变量的IMAGE_DIR所指向的目录位置一致 --%>
 			<c:if test="${task.imageFileName!=null}">
 				<div class="control-group">
 					<label for="task_image" class="control-label">图片:</label>
