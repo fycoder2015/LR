@@ -2,6 +2,7 @@
 package com.job.lr.web.task;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -147,10 +148,12 @@ public class TaskController {
 	//@RequestMapping(value = "uploadfile/{id}", method = RequestMethod.POST)
 	@RequestMapping(value = "/uploadfilehere")  //独立的action ，不区分post和get 
 	//public String uploadfileForm(@PathVariable("id") Long id, Model model) {
-	public	String uploadfileForm(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, ModelMap model) {  
-	
+	public	String uploadfileForm(@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest request, ModelMap model) throws Exception {  
+		
 		System.out.println("TaskController ----------here is uploadfileForm get  id=");
-        String path = request.getSession().getServletContext().getRealPath("upload");
+		System.out.println( file.getOriginalFilename());
+		System.out.println( file.getName());
+        String path = request.getSession().getServletContext().getResource("/").getPath();
         System.out.println("path="+path);
         String fileName = file.getOriginalFilename();  
         //String fileName = new Date().getTime()+".jpg";  
@@ -167,7 +170,7 @@ public class TaskController {
         }  		
 		
 		//model.addAttribute("task", taskService.getTask(id));
-		model.addAttribute("action", "uploadfile");
+		//model.addAttribute("action", "uploadfile");
 		return "redirect:/task/";
 	}
 	
