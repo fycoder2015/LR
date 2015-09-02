@@ -64,6 +64,8 @@ public class Task extends IdEntity {
 	private Long pv ;
 	
 	private Long uv ;
+	
+	private String imageFileName;
 
 	// JSR303 BeanValidator的校验规则
 	@NotBlank
@@ -206,6 +208,14 @@ public class Task extends IdEntity {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getImageFileName() {
+		return imageFileName;
+	}
+
+	public void setImageFileName(String imageFileName) {
+		this.imageFileName = imageFileName;
 	}
 
 	@Override
