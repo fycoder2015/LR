@@ -7,10 +7,11 @@
 </head>
 
 <body>
-	<form id="inputForm" action="${ctx}/task/${action}" method="post" class="form-horizontal">
+	<form id="inputForm" action="${ctx}/task/${action}" method="post" class="form-horizontal" enctype="multipart/form-data">
 		<input type="hidden" name="id" value="${task.id}"/>
 		<fieldset>
 			<legend><small>管理任务</small></legend>
+			
 			<div class="control-group">
 				<label for="task_title" class="control-label">任务名称:</label>
 				<div class="controls">
@@ -102,7 +103,27 @@
 					<textarea id="phoneCall" name="phoneCall" class="input-large">${task.phoneCall}</textarea>
 				</div>
 			</div>
+			<!-- 
 			<div><a class="btn" href="${ctx}/task/uploadfile/${task.id}">任务上传文件</a></div>
+			 -->
+			<div class="control-group">
+				<label for="imageFile" class="control-label">文件:</label>
+				<div class="controls">
+					<input type="file"  id="imageFile" name="imageFile" class="input-large" />
+                </div>
+			</div>
+			
+			
+			<!-- /upload 目录需在tomcat的server.xml文件中新增虚拟目录配置，
+			目录的docBase位置与系统环境变量的IMAGE_DIR所指向的目录位置一致 -->
+			<c:if test="${task.imageFileName!=null}">
+				<div class="control-group">
+					<label for="task_image" class="control-label">图片:</label>
+					<div class="controls">
+						<img src="/upload/${task.imageFileName}" />  
+					</div>
+				</div>
+			</c:if>
 			
 			<div class="form-actions">
 				<input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;	
