@@ -3,7 +3,10 @@ package com.job.lr.entity;
 import java.util.UUID;
 
 public class testustring {
-
+	/**
+	 * 生成 UUID 字符串
+	 * 
+	 * */
 	public static void main(String[] args) {
 		UUID uuid = UUID.randomUUID();  
 		UUID uuid2 = UUID.randomUUID();  

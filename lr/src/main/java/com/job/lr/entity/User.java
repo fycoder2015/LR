@@ -24,7 +24,11 @@ public class User extends IdEntity {
 	private String password;
 	private String salt;
 	private String roles;
+	private String phonenumber;
+	private String captchacode;
 	private Date registerDate;
+	
+	
 
 	public User() {
 	}
