@@ -1,7 +1,9 @@
 
 package com.job.lr.service.account;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -10,8 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.User;
 import com.job.lr.filter.Constants;
+import com.job.lr.repository.PhonenumberDao;
 import com.job.lr.repository.TaskDao;
 import com.job.lr.repository.UserDao;
 import com.job.lr.service.ServiceException;
@@ -38,6 +43,7 @@ public class AccountService {
 
 	private UserDao userDao;
 	private TaskDao taskDao;
+	private PhonenumberDao  phonenumberDao;
 	private Clock clock = Clock.DEFAULT;
 
 	public List<User> getAllUser() {
@@ -51,6 +57,93 @@ public class AccountService {
 	public User findUserByLoginName(String loginName) {
 		return userDao.findByLoginName(loginName);
 	}
+	
+	/**
+	 * @return  1 匹配
+	 * 			0 不匹配
+	 * */
+	public int checkUserPhone(String phonenumber ,String captchacode){
+		int bematched =1 ;
+		int nomatched =0 ;
+		Phonenumber p =phonenumberDao.findByPhonenumber(phonenumber);
+		if( p == null){
+			return nomatched;
+		}else{
+			String correctcaptchacode= p.getCaptchacode();
+			if("".equals(correctcaptchacode)||correctcaptchacode==null ){			
+				return nomatched;
+			}else{
+				if(correctcaptchacode.equals(captchacode)){
+					return bematched;
+				}else{
+					return nomatched;
+				}
+			}
+		}		
+	}
+	
+	public Phonenumber findUserPhone(String phonenumber ){
+		Phonenumber p =phonenumberDao.findByPhonenumber(phonenumber);		
+		return p ;
+	}
+	/**
+	 * phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+	 * */
+	public void registerUserPhone(String phonenumber ){
+		int not_activated = 0 ;
+		Phonenumber p = new Phonenumber();
+		p.setPhonenumber(phonenumber);
+		p.setCaptchacode(genRandom());
+		p.setPhonestatus(not_activated);//0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+		p.setRegisterDate(new Date());		
+		phonenumberDao.save(p);			
+	}
+	
+	/**
+	 * 仅仅更新 验证码 和 更新日期
+	 * phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+	 * */
+	public void updatePhonenumber(Phonenumber p ){			
+		p.setCaptchacode(genRandom());		
+		p.setRegisterDate(new Date());		
+		phonenumberDao.save(p);			
+	}
+	
+	/**
+	 * startdate 起始时间
+	 * enddate	   终止时间  new Date()
+	 * gaptime   时间间隔   1 = 一分钟
+	 * 
+	 * @return
+	 * 		0    超时
+	 * 		1   未超时
+	 * */
+	public int compareTimes(Date startdate , Date enddate , int gaptime){
+		int returnCode = 0 ;
+		
+		Long PARAM_TIMEGAP = 60000L ;//单位时间间隔(一分钟); 60*1000 = 一分钟
+		Long gaptimeL = gaptime*PARAM_TIMEGAP ; //总间隔时间
+		Long startdatel = startdate.getTime();
+		Long enddatel =  enddate.getTime();
+		
+		Long totaltimeL = startdatel+gaptimeL+1000L ;
+		if (totaltimeL > enddatel ){
+			//未超时
+			returnCode = 1 ;
+		}else{
+			//超时
+			returnCode = 0 ;
+		}
+		
+		return returnCode ;
+	}
+	
+	
+	public String  genRandom(){
+		Random rand = new Random();
+		int n = 100000+rand.nextInt(99900000);
+		return n+"";
+	}
 
 	public void registerUser(User user) {
 		entryptPassword(user);
@@ -59,6 +152,7 @@ public class AccountService {
 
 		userDao.save(user);
 	}
+	
 
 	public void updateUser(User user) {
 		if (StringUtils.isNotBlank(user.getPlainPassword())) {
@@ -132,4 +226,15 @@ public class AccountService {
 	public void setClock(Clock clock) {
 		this.clock = clock;
 	}
+
+	public PhonenumberDao getPhonenumberDao() {
+		return phonenumberDao;
+	}
+	@Autowired
+	public void setPhonenumberDao(PhonenumberDao phonenumberDao) {
+		this.phonenumberDao = phonenumberDao;
+	}
+	
+	
+	
 }

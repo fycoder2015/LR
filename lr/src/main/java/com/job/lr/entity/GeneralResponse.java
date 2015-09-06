@@ -1,5 +1,10 @@
 package com.job.lr.entity;
 
+
+/**
+ * @author suiys  
+ * 
+ * */
 public class GeneralResponse {
 	
 	private Integer retCode=0;

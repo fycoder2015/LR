@@ -62,7 +62,8 @@
 				
 				/api/** = anon
 				-->
-				/api/** = statelessAuthc
+				/api/v1/phoneCollect/checkPhonenumber = anon
+				/api/** = statelessAuthc				
 				/register/** = anon
 				/admin/** = roles[admin]
 				/** = statelessAuthc

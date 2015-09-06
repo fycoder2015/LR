@@ -1,6 +1,8 @@
 
 package com.job.lr.web.account;
 
+import java.util.Date;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.User;
 import com.job.lr.service.account.AccountService;
 
@@ -32,7 +36,23 @@ public class RegisterController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	public String register(@Valid User user, RedirectAttributes redirectAttributes) {
-		accountService.registerUser(user);
+		int  be_activated = 1 ;
+		String phonenumber = user.getPhonenumber();
+		
+		int  bematch = accountService.checkUserPhone(phonenumber, user.getCaptchacode().trim());
+		
+		if( bematch ==1 ){
+			//匹配
+			accountService.registerUser(user);//注册用户
+			//-----注册用户时 改变  Phonenumber 类中 对应的用户号码装态	
+			Phonenumber p = accountService.findUserPhone(phonenumber);
+			p.setPhonestatus(be_activated);//0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+			p.setRegisterDate(new Date());
+			accountService.updatePhonenumber(p);//更新手机号
+			//-----
+		}
+
+
 		redirectAttributes.addFlashAttribute("username", user.getLoginName());
 		return "redirect:/login";
 	}

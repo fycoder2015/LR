@@ -30,7 +30,7 @@
 <body>
 	<form id="inputForm" action="${ctx}/register" method="post" class="form-horizontal">
 		<fieldset>
-			<legend><small>用户注册</small></legend>
+			<legend><small>用户注册（仅供测试使用）</small></legend>
 			<div class="control-group">
 				<label for="loginName" class="control-label">登录名:</label>
 				<div class="controls">
@@ -41,6 +41,18 @@
 				<label for="name" class="control-label">用户名:</label>
 				<div class="controls">
 					<input type="text" id="name" name="name" class="input-large required"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="name" class="control-label">手机号（12345678901）:</label>
+				<div class="controls">
+					<input type="text" id="phonenumber" name="phonenumber" class="input-large required" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="name" class="control-label">验证码（123456）:</label>
+				<div class="controls">
+					<input type="text" id="captchacode" name="captchacode" class="input-large required" />
 				</div>
 			</div>
 			<div class="control-group">
