@@ -21,7 +21,7 @@ public class Phonenumber extends IdEntity {
 
 	private String phonenumber; //唯一
 	private String captchacode;
-	private Integer phonestatus;  // 0 ,未激活 ； 1，已激活 ； 2，解绑
+	private Integer phonestatus;  //0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
 	private Date registerDate;	
 
 	public String getPhonenumber() {

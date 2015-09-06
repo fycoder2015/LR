@@ -26,6 +26,8 @@ public class User extends IdEntity {
 	private String roles;
 	private String phonenumber;
 	private String captchacode;
+	
+
 	private Date registerDate;
 	
 	
@@ -88,6 +90,26 @@ public class User extends IdEntity {
 
 	public void setRoles(String roles) {
 		this.roles = roles;
+	}
+	
+	
+	
+	
+
+	public String getPhonenumber() {
+		return phonenumber;
+	}
+
+	public void setPhonenumber(String phonenumber) {
+		this.phonenumber = phonenumber;
+	}
+
+	public String getCaptchacode() {
+		return captchacode;
+	}
+
+	public void setCaptchacode(String captchacode) {
+		this.captchacode = captchacode;
 	}
 
 	@Transient
