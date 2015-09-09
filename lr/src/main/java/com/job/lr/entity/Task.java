@@ -60,9 +60,12 @@ public class Task extends IdEntity {
 	
 	//创建时间
 	private Date createTime;
-	
+	//pv page view
+
+	//用来统计某项任务的被访问次数和访问人数的
+	//每次浏览任务详情的时候，由客户端调用一下这个url
 	private Long pv ;
-	
+	//uv user view
 	private Long uv ;
 	
 	private String imageFileName;
