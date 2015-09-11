@@ -8,5 +8,7 @@ public class Constants {
     public static final boolean PARAM_REMBER = false;
     public static final Long PARAM_TIMEGAP = 7200000L ;//两小时的时间间隔; 2*60*60*1000
     public static final int  SMS_Gap_Time = 2 ; //分钟为单位
+    public static final int  CaptchacodeSize=4;//短信验证码的长度
+    
     
 }

@@ -59,6 +59,7 @@ public class AccountService {
 	}
 	
 	/**
+	 * 比对 手机号 和 验证码 是否匹配
 	 * @return  1 匹配
 	 * 			0 不匹配
 	 * */
@@ -87,25 +88,43 @@ public class AccountService {
 		return p ;
 	}
 	/**
+	 * 注意： 已废弃 
 	 * phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+	 * @deprecated
 	 * */
-	public void registerUserPhone(String phonenumber ){
+//	public void registerUserPhone(String phonenumber ){
+//		int not_activated = 0 ;
+//		Phonenumber p = new Phonenumber();
+//		p.setPhonenumber(phonenumber);
+//		p.setCaptchacode(genRandom());
+//		p.setPhonestatus(not_activated);//0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+//		p.setRegisterDate(new Date());		
+//		phonenumberDao.save(p);			
+//	}
+//	
+	
+	/**
+	 * phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+	 * 
+	 * */
+	public void registerUserPhone(String phonenumber ,String captchacode ){
 		int not_activated = 0 ;
 		Phonenumber p = new Phonenumber();
 		p.setPhonenumber(phonenumber);
-		p.setCaptchacode(genRandom());
+		p.setCaptchacode(captchacode);
 		p.setPhonestatus(not_activated);//0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
 		p.setRegisterDate(new Date());		
 		phonenumberDao.save(p);			
 	}
+	
 	
 	/**
 	 * 仅仅更新 验证码 和 更新日期
 	 * phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
 	 * */
 	public void updatePhonenumber(Phonenumber p ){			
-		p.setCaptchacode(genRandom());		
-		p.setRegisterDate(new Date());		
+		//p.setCaptchacode(p);		
+		//p.setRegisterDate(new Date());		
 		phonenumberDao.save(p);			
 	}
 	

@@ -1,7 +1,9 @@
 package com.job.lr.web.api;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.ServletRequest;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springside.modules.web.MediaTypes;
 
+
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
@@ -20,6 +23,7 @@ import com.job.lr.filter.Constants;
 import com.job.lr.rest.TaskRestController;
 import com.job.lr.service.account.AccountService;
 import com.job.lr.service.task.TaskService;
+import com.job.sendSms.SDKSendTemplateSMS;
 
 /**
  * Phonenumber  的Restful API的Controller.
@@ -48,6 +52,10 @@ public class PhoneRestController {
 	 * 		captchacode
 	 * @return 
 	 * 		{@value}  url: /api/v1/phoneCollect/checkPhonenumber
+	 * 
+	 * 核实手机和验证码是否匹配 ？
+	 * url ：
+	 * 	http://localhost/lr/api/v1/phoneCollect/checkPhonenumber?phonenumber=  &captchacode=3361
 	 */
 	@RequestMapping(value = "/checkPhonenumber", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse  checkPhonenumber(ServletRequest request) {
@@ -89,14 +97,14 @@ public class PhoneRestController {
 			//1  匹配
 			gp.setRetInfo("验证码匹配");
 		}else{
-			gp.setRetInfo("未知错误");
+			gp.setRetInfo("phone未知错误 1001");
 		}		
 		return gp;
 
 	}
 	
 	/**
-	 * 	根据手机号码 生成 验证码
+	 * 	根据手机号码 生成 验证码        验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
 	 *  ---- 短信接入
 	 *  
 	 * 	         未有号码  增加验证码
@@ -112,47 +120,87 @@ public class PhoneRestController {
 	 *  @return 
 	 *  	returnCode 0  未激活状态
 	 *  			   1  手机已激活
-	 *  			   2 
-	 * 		{@value}  url: /api/v1/phoneCollect/genCaptchacodeByPhone
+	 *  			   2  短信发送失败
+	 *  			   3  空值 
+	 * 		{@value}  url: 
+	 * 				http://localhost/lr/api/v1/phoneCollect/genCaptchacodeByPhone?phonenumber=
 	 * */
 	@RequestMapping(value = "/genCaptchacodeByPhone", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse  genCaptchacodeByPhone(ServletRequest request) {
 		
 		int phonestatus_not_activated = 0; 
 		int phonestatus_activated = 1; 
+		int phone_no_send_sms = 2; 
+		int null_phone  = 3; 
 		
 		int phonestatus_not_activated_flag = 0;
-		int phonestatus_activated_flag = 1;
-		
+		int phonestatus_activated_flag = 1;	
+		int phone_sms_not_send_flag = 2;
+		int phone_null_flag = 3;
 		
 		int returnCode = phonestatus_not_activated_flag; 
+		Date phoneRegisterDate = new Date();
 		 
-		String phonenumber = request.getParameter("phonenumber").trim();		
+		String phonenumber = request.getParameter("phonenumber");		
 		if("".equals(phonenumber)||phonenumber==null){
 			//do nothing
+			returnCode =  null_phone;
 		}else{		
 			//			
 			Phonenumber p = accountService.findUserPhone(phonenumber);
 			if (p == null){
 				//数据库中没有响应的手机号----  新用户
-				accountService.registerUserPhone(phonenumber);	
-				returnCode = 0; 
+				String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数							
+				/**
+				 * 发送短信 * 
+				 * */						
+				SDKSendTemplateSMS s = new  SDKSendTemplateSMS();						
+				Integer SMS_Gap_TimeI = Constants.SMS_Gap_Time ;
+				String message = s.SendTemplateSMS(p.getPhonenumber() ,captchacode, "1",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
+				String sendOkflag ="sendok";
+				if (sendOkflag.equals(message) ){
+					accountService.registerUserPhone(phonenumber,captchacode);	
+					returnCode = phonestatus_not_activated; 
+				}else{
+					//调用短信接口 ，短息发送失败
+					returnCode = phone_no_send_sms ;
+				}				
+				
 			}else{
 				//老用户
 				int nowstatus =  p.getPhonestatus();
 				if (nowstatus == phonestatus_not_activated ){
 					//分辨验证码是否超时 
-					int gap_time =2; //两分钟  超时
+					int gap_time = Constants.SMS_Gap_Time; //两分钟  超时
 					
 					//返回时间： 0    超时  ； 1   未超时
 					int  istimeoutflag =accountService.compareTimes(p.getRegisterDate(), new Date(), Constants.SMS_Gap_Time) ;
 					if(istimeoutflag == 0){// 0    超时
 						//重新生成验证码 和 日期 ，后 保存
-						accountService.updatePhonenumber(p);						
+						p.setRegisterDate(new Date()); //现在的时间 
+						String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数
+						p.setCaptchacode(captchacode);
+						/**
+						 * 发送短信 * 
+						 * */						
+						SDKSendTemplateSMS s = new  SDKSendTemplateSMS();						
+						Integer SMS_Gap_TimeI = Constants.SMS_Gap_Time ;
+						String message = s.SendTemplateSMS(p.getPhonenumber() ,captchacode, "1",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
+						String sendOkflag ="sendok";						
+						if (sendOkflag.equals(message) ){
+							accountService.updatePhonenumber(p);
+							returnCode = phonestatus_not_activated; 
+						}else{
+							//调用短信接口 ，短息发送失败
+							returnCode = phone_no_send_sms ;
+						}						
+											
 					}else{// 1   未超时
 						//不做改动
+						phoneRegisterDate = p.getRegisterDate() ;
+						returnCode = phonestatus_not_activated_flag ; //手机未激活
 					}
-					returnCode = phonestatus_not_activated_flag ; //手机未激活
+					
 				}else if(nowstatus == phonestatus_activated) {
 					//手机已激活
 					returnCode = phonestatus_activated_flag ; //手机已激活
@@ -164,19 +212,53 @@ public class PhoneRestController {
 		gp.setRetCode(returnCode);
 		if(returnCode == phonestatus_not_activated_flag){
 			//0  未激活
-			gp.setRetInfo("手机未激活");
+			SimpleDateFormat myFmt=new SimpleDateFormat("yyyyMMddHHmmss");
+			String phoneRegisterDateString = myFmt.format(phoneRegisterDate);
+			gp.setRetInfo("手机未激活,验证码已发送到此手机号，有效时间为"+Constants.SMS_Gap_Time+"分钟，超过时间后，请重新请求本接口，会重新生成新的验证码发送到用户手机.验证码生成时间为:"+phoneRegisterDateString);
+			
 		}else if(returnCode == phonestatus_activated_flag){
 			//1 手机已激活
-			gp.setRetInfo("手机已激活");
+			gp.setRetInfo("手机已激活，需要先解绑手机号，才能再次注册本号码");
+		}else if(returnCode == phone_sms_not_send_flag ){
+			//2 短信发送失败
+			gp.setRetInfo("短信发送失败");
+		}else if(returnCode == phone_null_flag){
+			//3  手机号空值
+			gp.setRetInfo("手机号空值");
 		}else{
-			gp.setRetInfo("未知错误");
+			gp.setRetInfo("phone未知错误1002");
 		}		
 		return gp;
 		
 		
 	}
 	
-
+	/**
+	 * 产生验证码
+	 * 
+	 * @author ly 
+	 * 
+	 * 现使用固定号码  作为验证码  9951
+	 * 当使用正常短信时 可以修改此接口
+	 * 
+	 * canbechang  ####
+	 * 
+	 * */
+	public static String getRandomString(int length) {   
+	      //StringBuffer buffer = new StringBuffer("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");   
+	      StringBuffer buffer = new StringBuffer("012345678998765432100123456789");	      
+	      StringBuffer sb = new StringBuffer();   
+	      Random random = new Random();   
+	      int range = buffer.length();   
+	      for (int i = 0; i < length; i ++) {   
+	         sb.append(buffer.charAt(random.nextInt(range)));   
+	      }   
+	      
+	      //return sb.toString();   
+	      return "5123";
+	}
+	
+	
 	public AccountService getAccountService() {
 		return accountService;
 	}

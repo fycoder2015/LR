@@ -53,6 +53,7 @@
 							anon,rest[user]-->
 				/login = anon
 				/login/fromForm = anon
+				/api/v1/userregister/* = anon
 				/logout = logout
 				/static/** = anon
 				<!--  
@@ -62,7 +63,7 @@
 				
 				/api/** = anon
 				-->
-				/api/v1/phoneCollect/checkPhonenumber = anon
+				/api/v1/phoneCollect/** = anon
 				/api/** = statelessAuthc				
 				/register/** = anon
 				/admin/** = roles[admin]

@@ -20,6 +20,8 @@ import com.job.lr.service.account.AccountService;
 /**
  * 用户注册的Controller.
  * 
+ * 与com.job.lr.web.api  UserregisterRestController 有重复部分 修改时需要注意
+ * 
  * @author calvin
  */
 @Controller
