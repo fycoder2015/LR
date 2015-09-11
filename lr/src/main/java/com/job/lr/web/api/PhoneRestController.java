@@ -156,7 +156,8 @@ public class PhoneRestController {
 				 * */						
 				SDKSendTemplateSMS s = new  SDKSendTemplateSMS();						
 				Integer SMS_Gap_TimeI = Constants.SMS_Gap_Time ;
-				String message = s.SendTemplateSMS(p.getPhonenumber() ,captchacode, "1",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
+				phonenumber=phonenumber.trim();
+				String message = s.SendTemplateSMS(phonenumber ,captchacode, "1",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
 				String sendOkflag ="sendok";
 				if (sendOkflag.equals(message) ){
 					accountService.registerUserPhone(phonenumber,captchacode);	
