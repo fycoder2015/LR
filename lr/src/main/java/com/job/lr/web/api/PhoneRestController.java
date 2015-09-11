@@ -152,14 +152,16 @@ public class PhoneRestController {
 				//数据库中没有响应的手机号----  新用户
 				String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数							
 				/**
-				 * 发送短信 * 
+				 * 发送短信 SendTemplateSMS* 
 				 * */						
 				SDKSendTemplateSMS s = new  SDKSendTemplateSMS();						
 				Integer SMS_Gap_TimeI = Constants.SMS_Gap_Time ;
 				phonenumber=phonenumber.trim();
 				String message = s.SendTemplateSMS(phonenumber ,captchacode, "1",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
-				String sendOkflag ="sendok";
-				if (sendOkflag.equals(message) ){
+				String sendOkflag ="sendok"; 
+				
+				//-- if (sendOkflag.equals(message) ){  //短信发送成功验证处  liuy add  #####
+				if (true){ 	
 					accountService.registerUserPhone(phonenumber,captchacode);	
 					returnCode = phonestatus_not_activated; 
 				}else{
@@ -178,17 +180,19 @@ public class PhoneRestController {
 					int  istimeoutflag =accountService.compareTimes(p.getRegisterDate(), new Date(), Constants.SMS_Gap_Time) ;
 					if(istimeoutflag == 0){// 0    超时
 						//重新生成验证码 和 日期 ，后 保存
-						p.setRegisterDate(new Date()); //现在的时间 
+						
 						String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数
 						p.setCaptchacode(captchacode);
 						/**
-						 * 发送短信 * 
+						 * 发送短信 SendTemplateSMS* 
 						 * */						
 						SDKSendTemplateSMS s = new  SDKSendTemplateSMS();						
 						Integer SMS_Gap_TimeI = Constants.SMS_Gap_Time ;
 						String message = s.SendTemplateSMS(p.getPhonenumber() ,captchacode, "1",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
-						String sendOkflag ="sendok";						
-						if (sendOkflag.equals(message) ){
+						String sendOkflag ="sendok";
+						p.setRegisterDate(new Date()); //现在的时间 
+						//-- if (sendOkflag.equals(message) ){  //短信发送成功验证处  liuy add  #####
+						if (true){ 							
 							accountService.updatePhonenumber(p);
 							returnCode = phonestatus_not_activated; 
 						}else{
