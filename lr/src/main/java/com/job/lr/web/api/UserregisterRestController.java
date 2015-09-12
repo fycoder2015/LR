@@ -45,7 +45,9 @@ public class UserregisterRestController {
 	 * 
 	 * 	String loginName;
 	 * 	String name;
-	 *  String password;
+	 *  @see 
+	 *  String password; 此处传递的是明文 非加密后的  用来代替  plainPassword，这个PlainPassword属性不能缺。
+	 *  
 	 *  String phonenumber;
 	 *  String captchacode;
 	 * 
@@ -60,6 +62,7 @@ public class UserregisterRestController {
 		
 		if( bematch ==1 ){
 			//匹配
+			user.setPlainPassword(user.getPassword());
 			accountService.registerUser(user);//注册用户
 			//-----注册用户时 改变  Phonenumber 类中 对应的用户号码装态	
 			Phonenumber p = accountService.findUserPhone(phonenumber);

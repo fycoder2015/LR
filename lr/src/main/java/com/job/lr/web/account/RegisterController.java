@@ -45,6 +45,7 @@ public class RegisterController {
 		
 		if( bematch ==1 ){
 			//匹配
+			user.setPlainPassword(user.getPassword()); //需要设置一下
 			accountService.registerUser(user);//注册用户
 			//-----注册用户时 改变  Phonenumber 类中 对应的用户号码装态	
 			Phonenumber p = accountService.findUserPhone(phonenumber);
