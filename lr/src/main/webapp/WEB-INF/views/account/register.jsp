@@ -54,6 +54,7 @@
 				<div class="controls">
 					<input type="text" id="captchacode" name="captchacode" class="input-large required" />
 				</div>
+				<input id="submit_btn" class="btn btn-primary" type="button" value="获取验证码（待修改）"/>
 			</div>
 			<div class="control-group">
 				<label for="plainPassword" class="control-label">密码:</label>
