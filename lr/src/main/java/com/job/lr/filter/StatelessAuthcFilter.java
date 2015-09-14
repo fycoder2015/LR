@@ -90,7 +90,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
     	System.out.println("in StatelessAuthcFilter 的 onAccessDenied() ---");    	
-    	String  login_to_action= "/task" ;//登录成功后跳转到的页面 
+    	String login_to_action= "/task" ;//登录成功后跳转到的页面 
     	
     	String urlparam_token = ""; //链接中传递的参数1
     	String urlparam_username_passwd = ""; //链接中传递的参数2
