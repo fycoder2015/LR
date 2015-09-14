@@ -8,6 +8,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.apache.shiro.web.util.WebUtils;
 
+import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.User;
 import com.job.lr.entity.Usertoken;
 import com.job.lr.service.account.AccountService;
@@ -183,74 +184,83 @@ public class StatelessAuthcFilter extends AccessControlFilter {
         	onLoginFail(response); //6、登录失败
         	return false;
         }else{
-        //----6、登录成功 传递登陆的 token
-        	username = username.trim() ;
-        	clientDigest = clientDigest.trim();
-        	User user = accountService.findUserByLoginName(username);
-        	String userpassword = user.getPassword();
-        	if (userpassword.equals(clientDigest)){
-        		//写入 session 中  
-        		//当 fromuserToken=FLASE 时可以写入 
-        		//当writesess = 23时 ，写入session，  username digest
-        		urlparam_username_passwd="username="+username+"&digest="+clientDigest;
-        		if(!fromuserToken ){
-        			if ("".equals(writesess) || writesess== null){
-        				
-        			}else if (writesess.equals("23") ){
-        			 //写session
-        			 //System.out.println( "---- 写入 session");
-        			 httpreq.getSession().setAttribute("username", username);	
-        			 httpreq.getSession().setAttribute("digest", userpassword);
-        			 urlparam_writesess_flag = "writesess=23" ;        			 
-        			}else{        				
-        			}
-        		}
-        		
-	        	//AuthenticationToken token = new UsernamePasswordToken(username, seceretstr, remeberme, hostip);
-	        	StatelessToken token = new StatelessToken(username, params, clientDigest);  
-	        	/** 
-	             * To ShiroDbRealm.class  old
-	             * 
-	             * TO StatelessRealm.class new
-	             * */
-	        	Usertoken ut = new  Usertoken();
-	        	Long userId =user.getId() ;
-	        	ut.setUserId(userId);
-	        	System.out.println("开始查询 Usertoken");
-	        	usertokenService.findUsertoken(userId);
-	        	
-	            try {
-	   //----7、委托给 StatelessRealm 进行登录 
-	            	//SecurityUtils.getSubject().login(token);
-	            	getSubject(request, response).login(token);	            	
-	            	HttpServletResponse httpresponse = (HttpServletResponse) response;
-
-	         	   //----8、随后跳转到不同的页面进行登录 	         
-	            	if(urlparam_jump_flag != 0){//可以跳转  urlparam_jump_flag=0时,不能跳转
-	            	   	String toactionnanme = httpreq.getServletPath();//获取现在的页面跳转action， 如/task
-		            	String urlgetparm = httpreq.getQueryString(); //类似username=xxx&passwd= 
-	            		String urlpath = httpreq.getContextPath()+"/task?"+urlgetparm;
-	            		
-//	            		if(toactionnanme!=login_to_action){ //来自 token  login_to_action 登录后跳转到的页面
-//	            			System.out.println("--1111---");
-//	            			urlpath=urlpath+"&nj=0"; //加上不去跳转的标志            		    
-//	            		    //RequestDispatcher dispatcher = httpreq.getRequestDispatcher(urlpath);
-//	            		    //dispatcher .forward(httpreq, httpresponse);
-//	            		    System.out.println("做跳转");
-//	            			System.out.println("--1111---toactionnanme---------"+toactionnanme+"-----urlpath:"+urlpath);
-//	            			//httpresponse.sendRedirect(urlpath);	        		   
-//	            		}	            	
-	            	}
-	            } catch (Exception e) {
-	                e.printStackTrace();
+	        //----6、登录成功 传递登陆的 token
+	        	username = username.trim() ;
+	        	clientDigest = clientDigest.trim();
+	        	User user = accountService.findUserByLoginName(username);
+	        	//判断用户是否为空
+	        	if( user == null){
 	                onLoginFail(response); //6、登录失败
 	                return false;
-	            }
-	            return true;
-        	}else{        		
-        		 onLoginFail(response); //6、登录失败
-	             return false;
-        	}
+		        }else{
+		        	String userpassword = user.getPassword();
+		        	if (userpassword.equals(clientDigest)){
+		        		//写入 session 中  
+		        		//当 fromuserToken=FLASE 时可以写入 
+		        		//当writesess = 23时 ，写入session，  username digest
+		        		urlparam_username_passwd="username="+username+"&digest="+clientDigest;
+		        		if(!fromuserToken ){
+		        			if ("".equals(writesess) || writesess== null){
+		        				
+		        			}else if (writesess.equals("23") ){
+		        			 //写session
+		        			 //System.out.println( "---- 写入 session");
+		        			 httpreq.getSession().setAttribute("username", username);	
+		        			 httpreq.getSession().setAttribute("digest", userpassword);
+		        			 urlparam_writesess_flag = "writesess=23" ;        			 
+		        			}else{        				
+		        			}
+		        		}
+		        		
+			        	//AuthenticationToken token = new UsernamePasswordToken(username, seceretstr, remeberme, hostip);
+			        	StatelessToken token = new StatelessToken(username, params, clientDigest);  
+			        	/** 
+			             * To ShiroDbRealm.class  old
+			             * 
+			             * TO StatelessRealm.class new
+			             * */
+			        	Usertoken ut = new  Usertoken();
+			        	Long userId =user.getId() ;
+			        	ut.setUserId(userId);
+			        	System.out.println("开始查询 Usertoken");
+			        	usertokenService.findUsertoken(userId);
+			        	
+			            try {
+			            	//----7、委托给 StatelessRealm 进行登录 
+			            	//SecurityUtils.getSubject().login(token);
+			            	getSubject(request, response).login(token);	            	
+			            	HttpServletResponse httpresponse = (HttpServletResponse) response;
+		
+			         	   //----8、随后跳转到不同的页面进行登录 	         
+			            	if(urlparam_jump_flag != 0){//可以跳转  urlparam_jump_flag=0时,不能跳转
+			            	   	String toactionnanme = httpreq.getServletPath();//获取现在的页面跳转action， 如/task
+				            	String urlgetparm = httpreq.getQueryString(); //类似username=xxx&passwd= 
+			            		String urlpath = httpreq.getContextPath()+"/task?"+urlgetparm;
+			            		
+		//	            		if(toactionnanme!=login_to_action){ //来自 token  login_to_action 登录后跳转到的页面
+		//	            			System.out.println("--1111---");
+		//	            			urlpath=urlpath+"&nj=0"; //加上不去跳转的标志            		    
+		//	            		    //RequestDispatcher dispatcher = httpreq.getRequestDispatcher(urlpath);
+		//	            		    //dispatcher .forward(httpreq, httpresponse);
+		//	            		    System.out.println("做跳转");
+		//	            			System.out.println("--1111---toactionnanme---------"+toactionnanme+"-----urlpath:"+urlpath);
+		//	            			//httpresponse.sendRedirect(urlpath);	        		   
+		//	            		}	            	
+			            	}
+			            } catch (Exception e) {
+			                e.printStackTrace();
+			                onLoginFail(response); //6、登录失败
+			                return false;
+			            }
+			            return true;
+		        	}else{        		
+		        		 onLoginFail(response); //6、登录失败
+			             return false;
+		        	}
+		        	
+		       }
+        	
+        	
         }
         
     }
@@ -264,7 +274,16 @@ public class StatelessAuthcFilter extends AccessControlFilter {
     	System.out.println("in StatelessAuthcFilter 的 onLoginFail()");
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        httpResponse.getWriter().write("login error");
+		GeneralResponse gp = new GeneralResponse();
+		gp.setRetCode(0);
+		gp.setRetInfo("请使用post方法传参");
+		
+		String returnCode = "{"
+				+ "\"retCode\" : 0,"
+				+ "\"retInfo\" : \"Login Error\""
+				+ "}";
+		//System.out.println(returnCode);
+        httpResponse.getWriter().write(returnCode);
     }    
 
     
