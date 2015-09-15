@@ -126,6 +126,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
         							  //flase 的话，表明不是来自 usertoken，可以在session中写入 
         
     	HttpServletRequest httpreq = (HttpServletRequest) request;
+    	HttpServletResponse httpresp = (HttpServletResponse) response;
     	String urlgetparm = httpreq.getQueryString(); //类似username=xxx&passwd= 
     	
         //----2.1 测试session中是否有参数
@@ -248,6 +249,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 				            	 username ="";
 				            	 clientDigest="";
 				             	 onLoginFail(response); //6.注销登录
+				             	 httpresp.sendRedirect(httpreq.getContextPath());//获取现在的页面跳转action,重定向到此处
 				    	         return false;			    	         
 		        			}else if (writesess.equals("23") ){
 			        			 //写session
