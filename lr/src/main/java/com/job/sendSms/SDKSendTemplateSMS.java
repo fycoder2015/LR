@@ -15,7 +15,10 @@ public class SDKSendTemplateSMS {
 	 * @param  
 	 * 			phonenum
 	 * 			captchacode  验证码
-	 * 		 	templatNum 模板号
+	 * 		 	templatNum 模板号   
+	 * 				 如果不是0  为真模板号 ，直接传值即可
+	 * 				是0 ，选用默认模板号
+	 * 						
 	 * 		   	timegap  时间间隔
 	 * 
 	 * @return returnString "sendok" or "错误码 加 报错信息"  
@@ -23,6 +26,29 @@ public class SDKSendTemplateSMS {
 	public String  SendTemplateSMS(String phonenum ,String captchacode,String templatNum,String timegap) {
 		String returnString = "";
 		HashMap<String, Object> result = null;
+		
+		/**
+		 * 短信四要素  start * 
+		 * */
+		String accountSid = "8a48b5514f4fc588014f5e24b3cc15fe";
+		String accountToken = "67960318c8b8431ab8b1d189f6c95ccc";
+		if("".equals(templatNum)|| templatNum == null){
+			templatNum = "36337"; //短信模板号
+		}else if(templatNum.equals("0")){
+			templatNum = "36337"; //短信模板号
+		}else{
+			//采用传进的 templatNum 值。  //templatNum
+		}			
+		String AppId = "8a48b5514f4fc588014f5e7c410717fb";//换应用需要调整 				
+		/**
+		 * 短信四要素  end * 
+		 * */
+		
+		
+		
+		
+		
+		
 		//初始化SDK
 		CCPRestSmsSDK restAPI = new CCPRestSmsSDK();		
 		//******************************注释*********************************************
@@ -49,7 +75,7 @@ public class SDKSendTemplateSMS {
 		 * 
 		 * */
 		//-- restAPI.setAccount("8a48b5514f4fc588014f5e24b3cc15fe", "67960318c8b8431ab8b1d189f6c95ccc");
-		restAPI.setAccount("8a48b5514f4fc588014f5e24b3cc15fe", "67960318c8b8431ab8b1d189f6c95ccc");
+		restAPI.setAccount(accountSid, accountToken);
 		
 		//******************************注释*********************************************
 		//*初始化应用ID                                                                 *
@@ -58,7 +84,7 @@ public class SDKSendTemplateSMS {
 		//*******************************************************************************
 		
 		//-- restAPI.setAppId("8a48b5514f4fc588014f5e7c410717fb");
-		restAPI.setAppId("8a48b5514f4fc588014f5e24ff8b1601");
+		restAPI.setAppId(AppId);
 		//
 		//测试  ff8080813c37da53013c3054f567007e
 		

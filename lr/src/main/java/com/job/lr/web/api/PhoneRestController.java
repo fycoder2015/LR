@@ -153,11 +153,13 @@ public class PhoneRestController {
 				String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数							
 				/**
 				 * 发送短信 SendTemplateSMS* 
+				 * 
+				 * 
 				 * */						
 				SDKSendTemplateSMS s = new  SDKSendTemplateSMS();						
 				Integer SMS_Gap_TimeI = Constants.SMS_Gap_Time ;
 				phonenumber=phonenumber.trim();
-				String message = s.SendTemplateSMS(phonenumber ,captchacode, "1",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
+				String message = s.SendTemplateSMS(phonenumber ,captchacode, "",  SMS_Gap_TimeI.toString()); //"" 是 短信模板数
 				String sendOkflag ="sendok"; 
 				
 				//-- if (sendOkflag.equals(message) ){  //短信发送成功验证处  liuy add  #####
@@ -188,7 +190,7 @@ public class PhoneRestController {
 						 * */						
 						SDKSendTemplateSMS s = new  SDKSendTemplateSMS();						
 						Integer SMS_Gap_TimeI = Constants.SMS_Gap_Time ;
-						String message = s.SendTemplateSMS(p.getPhonenumber() ,captchacode, "1",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
+						String message = s.SendTemplateSMS(p.getPhonenumber() ,captchacode, "",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
 						String sendOkflag ="sendok";
 						p.setRegisterDate(new Date()); //现在的时间 
 						//-- if (sendOkflag.equals(message) ){  //短信发送成功验证处  liuy add  #####
@@ -259,8 +261,8 @@ public class PhoneRestController {
 	         sb.append(buffer.charAt(random.nextInt(range)));   
 	      }   
 	      
-	      //return sb.toString();   
-	      return "5123";
+	      return sb.toString();   
+	      //return "5123";
 	}
 	
 	
