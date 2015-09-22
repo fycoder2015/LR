@@ -2,6 +2,7 @@
 package com.job.lr.service.account;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -66,7 +67,8 @@ public class AccountService {
 	public int checkUserPhone(String phonenumber ,String captchacode){
 		int bematched =1 ;
 		int nomatched =0 ;
-		Phonenumber p =phonenumberDao.findByPhonenumber(phonenumber);
+		Phonenumber p  = findUserPhone(phonenumber);
+
 		if( p == null){
 			return nomatched;
 		}else{
@@ -84,7 +86,14 @@ public class AccountService {
 	}
 	
 	public Phonenumber findUserPhone(String phonenumber ){
-		Phonenumber p =phonenumberDao.findByPhonenumber(phonenumber);		
+		Phonenumber  p ;
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumberOrderByIdDesc(phonenumber);
+		if(null == lp || lp.size() ==0){
+			p = null;
+		}else{
+			Iterator <Phonenumber> lpi = lp.iterator();  
+			p = lpi.next();
+		}
 		return p ;
 	}
 	/**
