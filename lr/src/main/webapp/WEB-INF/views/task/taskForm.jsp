@@ -103,6 +103,27 @@
 					<textarea id="phoneCall" name="phoneCall" class="input-large">${task.phoneCall}</textarea>
 				</div>
 			</div>
+			<div class="control-group">
+				<label for="enterprise.id" class="control-label">企业ID:</label>
+				<div class="controls">
+					<textarea id="enterprise.id" name="enterprise.id" class="input-large">${task.enterprise.id}</textarea>
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="employeeCnt" class="control-label">雇佣人数:</label>
+				<div class="controls">
+					<textarea id="employeeCnt" name="employeeCnt" class="input-large">${task.employeeCnt}</textarea>
+				</div>
+			</div>
+			<div class="control-group">
+				<label for="jobClass" class="control-label">兼职类型:</label>
+				<div class="controls">
+					<textarea id="jobClass" name="jobClass" class="input-large">${task.jobClass}</textarea>
+				</div>
+			</div>
+			
+			
+			
 			<!-- 
 			<div><a class="btn" href="${ctx}/task/uploadfile/${task.id}">任务上传文件</a></div>
 			 -->

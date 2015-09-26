@@ -125,23 +125,24 @@ public class TaskController {
 	@RequestMapping(value = "create", method = RequestMethod.POST)
 	public String create(@Valid Task newTask, RedirectAttributes redirectAttributes,
 			@RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
-		
-		System.out.println("-------------========== i am in here Task()create()");
+
 		User user = new User(getCurrentUserId());
 		newTask.setUser(user);
+		
+		Date curDate = new Date();
+		newTask.setCreateTime(curDate);
 		
 		if (imageFile!=null && imageFile.getContentType().contains("image")) {
 
             String fileName = imageFile.getOriginalFilename();
 
             String suffix = fileName.substring(fileName.indexOf("."));
-            Date curDate = new Date();
+            
     		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
     		
     		String newFileName = user.getId()+"_"+format.format(curDate)+suffix;
     		System.out.println(newFileName);
     	   
-
     		String destDir = System.getenv("IMAGE_DIR");
     		//destDir="c:/loko";
     		//System.out.println("destDir:"+destDir);

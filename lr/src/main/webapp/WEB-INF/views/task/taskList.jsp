@@ -40,5 +40,6 @@
 
 	<div><a class="btn" href="${ctx}/task/create">创建任务</a></div>
 	<div><a class="btn" href="${ctx}/comment/create">创建评论</a></div>
+	<div><a class="btn" href="${ctx}/enterprise/create">注册企业</a></div>
 </body>
 </html>
