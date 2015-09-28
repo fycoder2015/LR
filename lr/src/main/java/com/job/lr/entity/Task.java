@@ -28,6 +28,8 @@ public class Task extends IdEntity {
 	
 	private User user;
 	
+	private Enterprise enterprise;
+	
 	//性别
 	private String gender;
 	
@@ -69,6 +71,10 @@ public class Task extends IdEntity {
 	private Long uv ;
 	
 	private String imageFileName;
+	
+	private Integer employeeCnt;
+	
+	private String jobClass;
 
 	// JSR303 BeanValidator的校验规则
 	@NotBlank
@@ -212,6 +218,16 @@ public class Task extends IdEntity {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	@ManyToOne
+	@JoinColumn(name = "enterprise_id")
+	public Enterprise getEnterprise() {
+		return enterprise;
+	}
+
+	public void setEnterprise(Enterprise enterprise) {
+		this.enterprise = enterprise;
+	}
 
 	public String getImageFileName() {
 		return imageFileName;
@@ -219,6 +235,22 @@ public class Task extends IdEntity {
 
 	public void setImageFileName(String imageFileName) {
 		this.imageFileName = imageFileName;
+	}
+
+	public Integer getEmployeeCnt() {
+		return employeeCnt;
+	}
+
+	public void setEmployeeCnt(Integer employeeCnt) {
+		this.employeeCnt = employeeCnt;
+	}
+
+	public String getJobClass() {
+		return jobClass;
+	}
+
+	public void setJobClass(String jobClass) {
+		this.jobClass = jobClass;
 	}
 
 	@Override
