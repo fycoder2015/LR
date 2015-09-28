@@ -54,6 +54,7 @@
 				/login = anon
 				/login/fromForm = anon
 				/api/v1/userregister/* = anon
+				/api/v1/usertools/gogetuserId = anon
 				/logout = logout
 				/static/** = anon
 				<!--  
