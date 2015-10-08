@@ -38,9 +38,13 @@
 	
 	<tags:pagination page="${tasks}" paginationSize="5"/>
 
-	<div><a class="btn" href="${ctx}/task/create">创建任务</a></div>
+	<div><a class="btn" href="${ctx}/task/create">创建兼职</a></div>
 	<div><a class="btn" href="${ctx}/comment/create">创建评论</a></div>
 	
 	<div><a class="btn" href="${ctx}/enterprise">企业列表</a></div>
+	<br>
+	<br>
+	<br>
+	<div><a class="btn" href="${ctx}/bounty">赏金任务列表</a></div>
 </body>
 </html>
