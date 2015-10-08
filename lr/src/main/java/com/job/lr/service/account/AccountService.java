@@ -85,6 +85,29 @@ public class AccountService {
 		}		
 	}
 	
+	/**
+	 * 通过username 和 password查找用户 
+	 * username  loginname
+	 * password  digest 加密后的参数
+	 * 
+	 * @return  u 
+	 * 
+	 * */
+	public User findUserByUsernamePasswd(String username ,String password){
+		User u ;
+		List <User> ul =userDao.findByLoginNameAndPasswordOrderByIdDesc(username,password);
+		if(null == ul || ul.size() ==0){
+			u = null;
+		}else{
+			Iterator <User> ui = ul.iterator();  
+			u = ui.next();
+		}
+		return u ;
+	}
+	
+	
+	
+	
 	public Phonenumber findUserPhone(String phonenumber ){
 		Phonenumber  p ;
 		List <Phonenumber> lp =phonenumberDao.findByPhonenumberOrderByIdDesc(phonenumber);
