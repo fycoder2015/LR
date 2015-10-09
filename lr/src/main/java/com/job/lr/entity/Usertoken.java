@@ -19,12 +19,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.ImmutableList;
 
+
+/**
+ * 用户令牌
+ * 
+ * @author ly
+ * 
+ * */
 @Entity
 @Table(name = "lr_usertoken")
 public class Usertoken extends IdEntity {
 	
 	private Long  userId;
-
 	private String usertoken;
 	private String usertokenold;
 	private String usertokenold2;
