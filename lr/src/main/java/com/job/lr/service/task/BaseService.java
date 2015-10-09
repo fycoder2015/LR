@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Task;
 import com.job.lr.repository.TaskDao;
+import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
+
 import org.springside.modules.persistence.DynamicSpecifications;
 import org.springside.modules.persistence.SearchFilter;
 import org.springside.modules.persistence.SearchFilter.Operator;
@@ -60,5 +63,17 @@ public class BaseService {
 		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
 		Specification<Task> spec = DynamicSpecifications.bySearchFilter(filters.values(), Task.class);
 		return spec;
+	}
+	
+	/**
+	 * 取出Shiro中的当前用户Id.
+	 */
+	public Long getCurrentUserId() {		
+		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		if (user== null){
+			return 0L;
+		}else{
+			return user.id;
+		}	
 	}
 }
