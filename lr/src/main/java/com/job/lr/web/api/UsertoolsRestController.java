@@ -133,5 +133,34 @@ public class UsertoolsRestController {
 		return gp;
 	}
 	
-	
+	/**
+	 * 通过用户手机号获取用户名 loginName
+	 * 
+	 * @param
+	 *  	phonenum
+	 *  	
+	 * @return
+	 * 		loginName
+	 * 
+	 *  url ：
+	 *  	/api/v1/usertools/gogetUsernameByPhonenum?phonenum={phonenum}
+	 *  
+	 * 		http://localhost/lr/api/v1/usertools/gogetUsernameByPhonenum?phonenum=15522214561
+	 * */
+	@RequestMapping(value = "gogetUsernameByPhonenum",method = RequestMethod.GET)
+	@ResponseBody
+	public GeneralResponse gogetLoginNameByPhonenum(@RequestParam("phonenum") String phonenum ) {
+		
+		User u =accountService.findUserByPhonenumber(phonenum);
+		
+		GeneralResponse gp = new GeneralResponse();		
+		if(u == null ){
+			gp.setRetCode(-1);
+			gp.setRetInfo("此电话号码不匹配任何的用户");
+		}else{			
+			gp.setRetCode(1);
+			gp.setRetInfo(u.getLoginName());
+		}
+		return gp;
+	}
 }

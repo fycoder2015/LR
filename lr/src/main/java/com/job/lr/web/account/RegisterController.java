@@ -48,7 +48,7 @@ public class RegisterController {
 			user.setPlainPassword(user.getPassword()); //需要设置一下
 			accountService.registerUser(user);//注册用户
 			//-----注册用户时 改变  Phonenumber 类中 对应的用户号码装态	
-			Phonenumber p = accountService.findUserPhone(phonenumber);
+			Phonenumber p = accountService.findUserPhoneInPhonenumber(phonenumber);
 			p.setPhonestatus(be_activated);//0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
 			p.setRegisterDate(new Date());
 			accountService.updatePhonenumber(p);//更新手机号

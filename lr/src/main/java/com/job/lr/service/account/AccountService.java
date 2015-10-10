@@ -68,7 +68,7 @@ public class AccountService {
 	public int checkUserPhone(String phonenumber ,String captchacode){
 		int bematched =1 ;
 		int nomatched =0 ;
-		Phonenumber p  = findUserPhone(phonenumber);
+		Phonenumber p  = findUserPhoneInPhonenumber(phonenumber);
 
 		if( p == null){
 			return nomatched;
@@ -135,14 +135,14 @@ public class AccountService {
 	}
 	
 	/**
-	 * 通过Phonenum查找用户 
+	 * 通过phonenum 查找用户  在User中
 	 * 
 	 * @return  u 
 	 * 
 	 * */
-	public User findUserByPhonenum(String phonenum){
+	public User findUserByPhonenumber(String phonenumber){
 		User u ;
-		List <User> ul =userDao.findByPhonenumberOrderByIdDesc(phonenum);
+		List <User> ul =userDao.findByPhonenumberOrderByIdDesc(phonenumber);
 		if(null == ul || ul.size() ==0){
 			u = null;
 		}else{
@@ -154,7 +154,14 @@ public class AccountService {
 	
 	
 	
-	public Phonenumber findUserPhone(String phonenumber ){
+	
+
+	
+	
+	/**
+	 * 返回对象不同
+	 * */
+	public Phonenumber findUserPhoneInPhonenumber(String phonenumber ){
 		Phonenumber  p ;
 		List <Phonenumber> lp =phonenumberDao.findByPhonenumberOrderByIdDesc(phonenumber);
 		if(null == lp || lp.size() ==0){

@@ -60,7 +60,9 @@
 				
 				/register/** = anon
 				/api/v1/usertools/checkPhonenum/** = anon  <!-- 查询手机号码是否已占用 -->
+				/api/v1/usertools/gogetUsernameByPhonenum/** = anon
 				/api/v1/phoneCollect/** = anon
+				
 				<!--  
 				  API中需要验证的，需要注掉下面的内容，才能获取到用户ID
 				    使用SecurityUtils.getSubject().getPrincipal().id 这个方法才可以。
