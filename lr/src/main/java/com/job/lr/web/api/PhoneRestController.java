@@ -69,7 +69,7 @@ public class PhoneRestController {
 		}else{
 			phonenumber =phonenumber.trim();
 			captchacode =captchacode.trim();
-			Phonenumber p = accountService.findUserPhone(phonenumber);
+			Phonenumber p = accountService.findUserPhoneInPhonenumber(phonenumber);
 			if(p== null){
 				returncode = 0 ; //没有相关对象 ，不做比对 返回不匹配
 			}else{
@@ -151,7 +151,7 @@ public class PhoneRestController {
 			returnCode =  null_phone;
 		}else{		
 			//			
-			Phonenumber p = accountService.findUserPhone(phonenumber);
+			Phonenumber p = accountService.findUserPhoneInPhonenumber(phonenumber);
 			if (p == null){
 				//数据库中没有响应的手机号----  新用户
 				String captchacode = UserPhoneTools.getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数							

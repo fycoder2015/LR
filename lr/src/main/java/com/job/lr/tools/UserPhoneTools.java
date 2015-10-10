@@ -52,7 +52,7 @@ public class UserPhoneTools {
 		Integer returncode = 0 ;
 		phonenumber =phonenumber.trim();
 		captchacode =captchacode.trim();		
-		Phonenumber p = accountService.findUserPhone(phonenumber);  //倒序查找最新的一个 Phonenumber
+		Phonenumber p = accountService.findUserPhoneInPhonenumber(phonenumber);  //倒序查找最新的一个 Phonenumber
 		if(p== null){
 			returncode = 0 ; //没有相关对象 ，不做比对 返回不匹配
 		}else{
@@ -111,7 +111,7 @@ public class UserPhoneTools {
 		Integer returnCode = phonestatus_not_activated_flag; 
 		Date phoneRegisterDate = new Date();		
 	
-		Phonenumber p = accountService.findUserPhone(phonenumber);
+		Phonenumber p = accountService.findUserPhoneInPhonenumber(phonenumber);
 		if (p == null){
 			//数据库中没有响应的手机号----  新用户
 			String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数							
@@ -380,7 +380,7 @@ public class UserPhoneTools {
 		int erro = 6 ;
 		Integer returncode = unbinding ;
 		
-		User u = accountService.findUserByPhonenum(phonenumber);
+		User u = accountService.findUserByPhonenumber(phonenumber);
 		if(u==null){
 			//未绑定
 			
