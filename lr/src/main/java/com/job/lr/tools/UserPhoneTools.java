@@ -5,22 +5,25 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Phonenumber;
+import com.job.lr.entity.User;
 import com.job.lr.filter.Constants;
 import com.job.lr.service.account.AccountService;
 import com.job.sendSms.SDKSendTemplateSMS;
 
 @Component
+@Transactional
 public class UserPhoneTools {
 	
 	private static Logger logger = LoggerFactory.getLogger(UserPhoneTools.class);
+	
 	@Autowired
 	private AccountService  accountService;
 
@@ -104,11 +107,9 @@ public class UserPhoneTools {
 		Integer phonestatus_not_activated_flag = 0;
 		Integer phonestatus_activated_flag = 1;	
 		Integer phone_sms_not_send_flag = 2;
-		Integer phone_null_flag = 3;
-		
+		Integer phone_null_flag = 3;		
 		Integer returnCode = phonestatus_not_activated_flag; 
-		Date phoneRegisterDate = new Date();
-		
+		Date phoneRegisterDate = new Date();		
 	
 		Phonenumber p = accountService.findUserPhone(phonenumber);
 		if (p == null){
@@ -221,10 +222,45 @@ public class UserPhoneTools {
 	}
 	
 	
+	
+	/**
+	 * 将User对象中的phonenumber手机号状态置为空，或是新的手机号
+	 *   
+	 * 解绑手机号Step1
+	 * -------------------------------------
+	 * 功能描述：
+	 * 		核对用户的loginame、密码后， 将User对象中的phonenumber手机号状态置为空，或是新的手机号
+	 * -------------------------------------  
+	 * @param 
+	 * 		loginName
+	 * 		password
+	 * 		phonenumber
+	 * 		
+	 * @return 
+	 * 		 returncode	0		未能修改 
+	 * 					1		成功
+	 *  
+	 */
+	public Integer unbindStep1UserPhonenum(String loginName ,String password , String phonenumber) {
+		Integer returncode = 0 ;
+		User u = accountService.findUserByUsernamePasswd(loginName, password);
+		if(u==null){
+			
+		}else{
+			if (phonenumber.equals(u.getPhonenumber())){	 
+				u.setPhonenumber("");
+				accountService.updateUser(u);
+				returncode = 1 ;
+			}
+		}		
+		return returncode;   
+	}
+	
+	
 	/**
 	 * 将Phonenumber对象中的，手机号状态置为未激活状态
 	 *   //0 ,未激活  not_activated ； 1，已激活 ； 
-	 * 解绑手机号
+	 * 解绑手机号Step2
 	 * -------------------------------------
 	 * 功能描述：
 	 * 		找出phonenumber的所有Phonenumber对象，并将其中的 phonestatus 值改为0 
@@ -237,7 +273,7 @@ public class UserPhoneTools {
 	 * 					1		成功
 	 *  
 	 */
-	public Integer unbindedPhonenum(String phonenumber) {
+	public Integer unbindStep2PhoneOnlyInPhonenum(String phonenumber) {
 		Integer returncode = 0 ;
 	
 		List <Phonenumber> lp = accountService.findAllPhonenumberByphone(phonenumber); 
@@ -256,12 +292,116 @@ public class UserPhoneTools {
 		return returncode;		
 	}
 	
+	/**
+	 * 将Phonenumber对象中的，手机号状态置为激活状态
+	 *   //0 ,未激活  not_activated ； 1，已激活 ； 
+	 * 绑定手机号Step1
+	 * -------------------------------------
+	 * 功能描述：
+	 * 		找出phonenumber的所有Phonenumber对象，并将其中的 phonestatus 值改为1 
+	 * -------------------------------------  
+	 * @param 
+	 * 		phonenumber
+	 * 		
+	 * @return 
+	 * 		 returncode	0		未能修改 ，对象为空，未能修改
+	 * 					1		成功
+	 *  
+	 */
+	public Integer bindStep1PhoneOnlyInPhonenum(String phonenumber) {
+		Integer returncode = 0 ;	
+		List <Phonenumber> lp = accountService.findAllPhonenumberByphone(phonenumber); 
+		if(null == lp || lp.size() ==0){
+			returncode = 0;
+		}else{
+			int activated = 1 ;
+			Iterator <Phonenumber> lpi = lp.iterator();  
+			while(lpi.hasNext()){
+				Phonenumber p =lpi.next();
+				p.setPhonestatus(activated);
+				accountService.updatePhonenumber(p);				
+			}
+			returncode = 1;	
+		}		
+		return returncode;		
+	}
+	
+	
+	/**
+	 * 将User对象中的phonenumber手机号状态置为手机号
+	 *   
+	 * 绑定手机号Step2
+	 * -------------------------------------
+	 * 功能描述：
+	 * 		核对用户的loginame、密码后， 将User对象中的phonenumber手机号状态置为手机号参数
+	 * -------------------------------------  
+	 * @param 
+	 * 		loginName
+	 * 		password
+	 * 		phonenumber 
+	 * 		
+	 * @return 
+	 * 		 returncode	0		未能修改 
+	 * 					1		成功
+	 *  
+	 */
+	public Integer bindStep2UserPhonenum(String loginName,String password,String phonenumber) {
+		Integer returncode = 0 ;
+		User u = accountService.findUserByUsernamePasswd(loginName, password);
+		if(u==null){
+			
+		}else{
+			u.setPhonenumber(phonenumber);
+			accountService.updateUser(u);
+			returncode = 1 ;
+		}	
+		return returncode;   
+	}
 	
 	
 	
+	/**
+	 * 在Phonenumber和User的对象中，检查是否存在phonenumber手机。查看号码是否已经绑定
+	 * 
+	 * @param 
+	 * 		phonenumber 
+	 * 		
+	 * @return 
+	 * 		 returncode	0		未绑定 unbinding
+	 * 
+	 * 					1		绑定     binding
+	 * 
+	 * 					6        	出现问题了    user表没有， Phonenumber中有
+	 *  
+	 */
+	public Integer checkPhonenumBinding(String phonenumber) {
+		int binding = 1 ;
+		int unbinding = 0;
+		int erro = 6 ;
+		Integer returncode = unbinding ;
+		
+		User u = accountService.findUserByPhonenum(phonenumber);
+		if(u==null){
+			//未绑定
+			
+			//---在Phonenumber表中再次查询 已绑定的号码 ，看是否存在
+			Integer phonestatus = binding;
+			List <Phonenumber> ul = accountService.findPhonenumberByPhoneAndStatus(phonenumber, phonestatus);
+			if( ul== null ||ul.size() ==0 ){
+				//ok  真没绑定
+				returncode = unbinding ;
+			}else{
+				//出现问题了    user表没有， Phonenumber中有
+				returncode = erro ;
+			}			
+			
+		}else{
+			returncode = binding ;
+		}	
+		return returncode;   
+	}
 	
-	
-	
+
 	
 	public static Logger getLogger() {
 		return logger;

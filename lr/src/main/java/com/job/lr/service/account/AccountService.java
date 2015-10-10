@@ -122,9 +122,9 @@ public class AccountService {
 	 * @return  u 
 	 * 
 	 * */
-	public User findUserByUsernamePasswd(String username ,String password){
+	public User findUserByUsernamePasswd(String loginname ,String password){
 		User u ;
-		List <User> ul =userDao.findByLoginNameAndPasswordOrderByIdDesc(username,password);
+		List <User> ul =userDao.findByLoginNameAndPasswordOrderByIdDesc(loginname,password);
 		if(null == ul || ul.size() ==0){
 			u = null;
 		}else{
@@ -134,6 +134,23 @@ public class AccountService {
 		return u ;
 	}
 	
+	/**
+	 * 通过Phonenum查找用户 
+	 * 
+	 * @return  u 
+	 * 
+	 * */
+	public User findUserByPhonenum(String phonenum){
+		User u ;
+		List <User> ul =userDao.findByPhonenumberOrderByIdDesc(phonenum);
+		if(null == ul || ul.size() ==0){
+			u = null;
+		}else{
+			Iterator <User> ui = ul.iterator();  
+			u = ui.next();
+		}
+		return u ;
+	}
 	
 	
 	
@@ -154,6 +171,11 @@ public class AccountService {
 		return lp ;
 	}
 	
+	
+	public List <Phonenumber>  findPhonenumberByPhoneAndStatus(String phonenumber, Integer  phonestatus){	
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumberAndPhonestatus(phonenumber, phonestatus) ;
+		return lp ;
+	}
 	
 
 	
