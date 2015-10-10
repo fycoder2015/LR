@@ -75,13 +75,15 @@ public class StatelessAuthcFilter extends AccessControlFilter {
      * digest   =  password  
      * 
      * writesess=23  当是用户密码时候，23写入session 其他不写session 
-     * nj = 0  不去跳转
+     * nj = 0  不去跳转    废掉此参数
      * ----------------------------------
      * usertoken 传递token
      *  reset 负责重置usertoken 
      * ---------------------------------- 
      *  链接示例：
      *  http://127.0.0.1:8080/lr/api/v1/usertoken/gogetUsertoken?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb
+     *  http://127.0.0.1/lr/api/v1/usertoken/gogetUsertoken?username=admin&digest=f6364126029045522b9a3dc0937ec26106bbe0d3
+     *  http://127.0.0.1/lr/api/v1/task?username=admin&digest=f6364126029045522b9a3dc0937ec26106bbe0d3
      *  http://127.0.0.1:8080/lr/api/v1/usertoken/gogetUsertoken?username=admin&digest=b4fff23ec4129a22fc8601817e399ebd7d70e4bb&reset=yes
      *  可以发起重置请求 挂上参数 ：reset=yes 
      *  
@@ -272,7 +274,8 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 			             * */
 		        		//---登录---
 			        	//AuthenticationToken token = new UsernamePasswordToken(username, seceretstr, remeberme, hostip);
-			        	StatelessToken token = new StatelessToken(username, params, clientDigest);  
+			        	StatelessToken token = new StatelessToken(username, params, clientDigest); 
+			        	
 			        	//--Usertoken ut = new  Usertoken();
 			        	//--Long userId = user.getId() ;
 			        	//--ut.setUserId(userId);
@@ -282,7 +285,8 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 			            try {
 			            	//----7、委托给 StatelessRealm 进行登录 
 			            	//SecurityUtils.getSubject().login(token);
-			            	getSubject(request, response).login(token);	            	
+			            	getSubject(request, response).login(token);	
+			            	
 			            	HttpServletResponse httpresponse = (HttpServletResponse) response;
 		
 			         	    //----8、随后跳转到不同的页面进行登录 	         

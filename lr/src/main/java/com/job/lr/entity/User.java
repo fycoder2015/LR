@@ -23,10 +23,14 @@ public class User extends IdEntity {
 	private String plainPassword;
 	private String password;
 	private String salt;
-	private String roles;
+	private String roles;// 角色列表在数据库中实际以逗号分隔字符串存储，因此返回不能修改的List.
 	private String phonenumber;
 	private String captchacode;
 	private Date registerDate;
+	private String picpathBig;//大头像  
+	private String picpathMid;//中头像  
+	private String picpathSmall;//小头像  
+
 
 	public User() {
 	}
@@ -119,6 +123,34 @@ public class User extends IdEntity {
 
 	public void setRegisterDate(Date registerDate) {
 		this.registerDate = registerDate;
+	}
+	
+	
+
+
+
+	public String getPicpathBig() {
+		return picpathBig;
+	}
+
+	public void setPicpathBig(String picpathBig) {
+		this.picpathBig = picpathBig;
+	}
+
+	public String getPicpathMid() {
+		return picpathMid;
+	}
+
+	public void setPicpathMid(String picpathMid) {
+		this.picpathMid = picpathMid;
+	}
+
+	public String getPicpathSmall() {
+		return picpathSmall;
+	}
+
+	public void setPicpathSmall(String picpathSmall) {
+		this.picpathSmall = picpathSmall;
 	}
 
 	@Override

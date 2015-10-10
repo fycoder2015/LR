@@ -61,6 +61,7 @@ public class AccountService {
 	
 	/**
 	 * 比对 手机号 和 验证码 是否匹配
+	 * 注意：此方法未做超时比对
 	 * @return  1 匹配
 	 * 			0 不匹配
 	 * */
@@ -84,6 +85,34 @@ public class AccountService {
 			}
 		}		
 	}
+	
+	
+	/**
+	 * 比对 手机号 和 验证码 是否匹配
+	 * 注意：此方法未做超时比对
+	 * @return  1 匹配
+	 * 			0 不匹配
+	 * */
+	public int checkUserPhone2(Phonenumber p ,String captchacode){
+		int bematched =1 ;
+		int nomatched =0 ;
+		if( p == null){
+			return nomatched;
+		}else{
+			String correctcaptchacode= p.getCaptchacode();
+			if("".equals(correctcaptchacode)||correctcaptchacode==null ){			
+				return nomatched;
+			}else{
+				if(correctcaptchacode.equals(captchacode)){
+					return bematched;
+				}else{
+					return nomatched;
+				}
+			}
+		}		
+	}
+	
+	
 	
 	/**
 	 * 通过username 和 password查找用户 
@@ -119,6 +148,16 @@ public class AccountService {
 		}
 		return p ;
 	}
+	
+	public List <Phonenumber>  findAllPhonenumberByphone(String phonenumber ){	
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumber(phonenumber);
+		return lp ;
+	}
+	
+	
+
+	
+	
 	/**
 	 * 注意： 已废弃 
 	 * phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
@@ -151,12 +190,15 @@ public class AccountService {
 	
 	
 	/**
-	 * 仅仅更新 验证码 和 更新日期
-	 * phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+	 * 更新保存 Phonenumber对象
+	 *  
+	 * 注：
+	 * 	phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
 	 * */
 	public void updatePhonenumber(Phonenumber p ){			
 		//p.setCaptchacode(p);		
-		//p.setRegisterDate(new Date());		
+		//p.setRegisterDate(new Date());
+		
 		phonenumberDao.save(p);			
 	}
 	
