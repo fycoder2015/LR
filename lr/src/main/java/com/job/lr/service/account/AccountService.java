@@ -29,7 +29,7 @@ import org.springside.modules.utils.Encodes;
 /**
  * 用户管理类.
  * 
- * @author calvin
+ * @author liuy
  */
 // Spring Service Bean的标识.
 @Component
@@ -152,7 +152,24 @@ public class AccountService {
 		return u ;
 	}
 	
-	
+	/**
+	 * 通过phonenum password  查找用户  在User中
+	 * 
+	 * @return  u 
+	 * 
+	 * */
+	public User findUserByPhonenumberPassword(String phonenumber,String  password){
+		User u ;
+		List <User> ul =userDao.findByPhonenumberAndPasswordOrderByIdDesc(phonenumber, password);
+		
+		if(null == ul || ul.size() ==0){
+			u = null;
+		}else{
+			Iterator <User> ui = ul.iterator();  
+			u = ui.next();
+		}
+		return u ;
+	}
 	
 	
 

@@ -13,4 +13,6 @@ public interface UserDao extends PagingAndSortingRepository<User, Long> {
 	
 	List <User> findByPhonenumberOrderByIdDesc (String Phonenumber );
 	
+	List <User> findByPhonenumberAndPasswordOrderByIdDesc (String Phonenumber,String password );
+	
 }

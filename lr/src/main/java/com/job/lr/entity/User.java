@@ -25,6 +25,7 @@ public class User extends IdEntity {
 	private String salt;
 	private String roles;// 角色列表在数据库中实际以逗号分隔字符串存储，因此返回不能修改的List.
 	private String phonenumber;
+	@JsonIgnore  //不在json的返回值中显示
 	private String captchacode;
 	private Date registerDate;
 	private String picpathBig;//大头像  
@@ -67,7 +68,7 @@ public class User extends IdEntity {
 	public void setPlainPassword(String plainPassword) {
 		this.plainPassword = plainPassword;
 	}
-	@JsonIgnore
+	@JsonIgnore  //不在json的返回值中显示
 	public String getPassword() {
 		return password;
 	}
@@ -75,7 +76,7 @@ public class User extends IdEntity {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	@JsonIgnore  //不在json的返回值中显示
 	public String getSalt() {
 		return salt;
 	}
