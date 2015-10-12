@@ -26,11 +26,7 @@ public class User extends IdEntity {
 	private String roles;
 	private String phonenumber;
 	private String captchacode;
-	
-
 	private Date registerDate;
-	
-	
 
 	public User() {
 	}
@@ -92,10 +88,6 @@ public class User extends IdEntity {
 		this.roles = roles;
 	}
 	
-	
-	
-	
-
 	public String getPhonenumber() {
 		return phonenumber;
 	}
