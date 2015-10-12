@@ -23,7 +23,7 @@ public class BountyComment extends IdEntity {
 	
 	private Integer starLevel;
 	
-	private Long bountyUserId;
+	private Long byCommentUserId;
 
 	private String sts="A";
 
@@ -79,14 +79,16 @@ public class BountyComment extends IdEntity {
 		this.starLevel = starLevel;
 	}
 
-	public Long getBountyUserId() {
-		return bountyUserId;
+
+	
+	public Long getByCommentUserId() {
+		return byCommentUserId;
 	}
 
-	public void setBountyUserId(Long bountyUserId) {
-		this.bountyUserId = bountyUserId;
+	public void setByCommentUserId(Long byCommentUserId) {
+		this.byCommentUserId = byCommentUserId;
 	}
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);

@@ -19,5 +19,8 @@ public interface BountyApplyDao extends PagingAndSortingRepository<BountyApply, 
 	@Query("from BountyApply t where t.applyUser.id=?1 and t.taskUserId=?2 ")
 	public BountyApply getOne(Long userId,Long bountyId);
 	
+	@Query("from BountyApply t where t.bountyTask.id=?1")
+	public Page<BountyApply> getByBounty(Long bountyId,Pageable pageRequest);
+	
 	
 }

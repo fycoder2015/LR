@@ -36,6 +36,17 @@ public class BountyApplyService extends BaseService {
 	}
 	
 	/**
+	 * 按照赏金任务Id分页查询揭榜申请记录
+	 * @param bountyId
+	 * @param pageNum
+	 * @return
+	 */
+	public Page<BountyApply>  pageByBountyId(Long bountyId, int pageNum) {
+		PageRequest pageRequest = buildPageRequest(pageNum, 20, "auto");
+		return applyDao.getByBounty(bountyId, pageRequest);
+	}
+	
+	/**
 	 * 按照揭榜申请用户ID分页查询揭榜申请记录
 	 * @param applyUserId
 	 * @param pageNum
@@ -67,6 +78,16 @@ public class BountyApplyService extends BaseService {
 		return applyDao.getOne(userId, bountyId);
 	}
 	
+	public BountyApply getOne(Long applyId) {
+		return applyDao.findOne(applyId);
+	}
+	
+	public GeneralResponse saveApply(BountyApply apply){
+		
+		this.applyDao.save(apply);
+		GeneralResponse response = new GeneralResponse();
+		return response;
+	}
 	
 	/**
 	 * 创建用户对赏金任务的申请记录，对应“揭榜”操作

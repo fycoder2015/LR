@@ -17,7 +17,8 @@
 	
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead><tr><th>编号</th><th>标题</th><th>性别要求</th><th>任务地址</th>
-		<th>任务时间</th><th>关闭时间</th><th>酬谢方式</th><th>金额</th><th>状态</th><th></th></tr></thead>
+		<th>任务时间</th><th>关闭时间</th><th>酬谢方式</th><th>金额</th><th>状态</th><th></th>
+		<th></th></tr></thead>
 		<tbody>
 		<c:forEach items="${bountyList.content}" var="bountyTask">
 			<tr>
@@ -31,6 +32,7 @@
 				<td>${bountyTask.bounty}</td>
 				<td>${bountyTask.sts}</td>
 				<td><a href="${ctx}/bounty/update/${bountyTask.id}">详情</a></td>
+				<td><a href="${ctx}/bountyApply/listByBountyId/${bountyTask.id}_1">揭榜记录</a></td>
 			</tr>
 		</c:forEach>
 		</tbody>
