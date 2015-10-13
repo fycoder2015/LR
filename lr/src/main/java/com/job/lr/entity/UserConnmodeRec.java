@@ -11,17 +11,17 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 /**
- * 用户和角色的关系表
- * User 和  UserRole 的对应关系表
+ * 用户和联系方式的关系表
+ * User 和  UserConnmode 的对应关系表
  * 
  * */
 @Entity
-@Table(name = "lr_user_role_rec")
-public class UserRoleRec extends IdEntity {
+@Table(name = "lr_user_connmode_rec")
+public class UserConnmodeRec extends IdEntity {
 
 	private Long userId;
 	
-	private Long roleId;
+	private Long userconnmodeId;
 	
 	private Date viewDate;
 
@@ -33,8 +33,6 @@ public class UserRoleRec extends IdEntity {
 		this.userId = userId;
 	}
 
-
-
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	public Date getViewDate() {
 		return viewDate;
@@ -44,15 +42,24 @@ public class UserRoleRec extends IdEntity {
 		this.viewDate = viewDate;
 	}
 
-	public UserRoleRec(Long userId, Long roleId) {
+	public UserConnmodeRec(Long userId, Long userconnmodeId) {
 		super();
 		this.userId = userId;
-		this.roleId = roleId;
+		this.userconnmodeId = userconnmodeId;
 		this.viewDate = Clock.DEFAULT.getCurrentDate();
 	}
 
-	public UserRoleRec() {
+	public UserConnmodeRec() {
 		super();
 	}
+
+	public Long getUserconnmodeId() {
+		return userconnmodeId;
+	}
+
+	public void setUserconnmodeId(Long userconnmodeId) {
+		this.userconnmodeId = userconnmodeId;
+	}
+	
 	
 }

@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 
 
 /**
- * 用户角色、积分
+ * 用户角色、积分、信誉度
  * 
  * @author ly
  * 
