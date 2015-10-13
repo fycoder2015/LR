@@ -44,6 +44,15 @@ public class BountyCommentController {
 		return "bounty/bountyCommentForm";
 	}
 	
+	@RequestMapping(value="detail/{commentId}", method=RequestMethod.GET)
+	public String commentDetail(@PathVariable("commentId") Long commentId,
+			Model model, ServletRequest request)
+	{
+		BountyComment comment = this.commentSerivce.getById(commentId);
+		model.addAttribute("comment",comment);
+		return "bounty/bountyCommentDetail";
+	}
+	
 	@RequestMapping(value="listByApply/{applyId}_{pageNum}", method=RequestMethod.GET)
 	public String listComment(@PathVariable("applyId") Long applyId,
 			@PathVariable("pageNum") int pageNum,

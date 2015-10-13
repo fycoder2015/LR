@@ -162,7 +162,7 @@ public class TaskController {
     		}
     		
     		newTask.setImageFileName(newFileName);
-		}		
+		}
 
 		taskService.createTask(newTask);
 		redirectAttributes.addFlashAttribute("message", "创建任务成功");

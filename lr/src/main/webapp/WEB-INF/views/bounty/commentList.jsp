@@ -18,7 +18,7 @@
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead><tr><th>编号</th><th>任务标题</th><th>评论者</th>
 		<th>被评论者</th><th>评论时间</th>
-		<th>评论内容</th><th>星级</th></tr></thead>
+		<th>评论内容</th><th>星级</th><th>详情</th></tr></thead>
 		<tbody>
 		<c:forEach items="${commentList.content}" var="bountyComment">
 			<tr>
@@ -29,7 +29,7 @@
 				<td>${bountyComment.commentDate}</td>
 				<td>${bountyComment.comment}</td>
 				<td>${bountyComment.starLevel}</td>
-
+				<td><a href="${ctx}/bountyComment/detail/${bountyComment.id}">详情</a></td>
 			</tr>
 		</c:forEach>
 		</tbody>

@@ -7,7 +7,8 @@
 </head>
 
 <body>
-	<form id="inputForm" action="${ctx}/rest/comment/${action}" method="post" class="form-horizontal" >
+	<form id="inputForm" action="${ctx}/rest/comment/${action}" method="post" class="form-horizontal" enctype="multipart/form-data">
+	
 		<input type="hidden" name="apply.id" value="${applyId}"/>
 		<fieldset>
 			<legend><small>发表评论</small></legend>
@@ -23,6 +24,27 @@
 				<div class="controls">
 					<input type="text" id="starLevel" name="starLevel"  value="${comment.starLevel}" class="input-large"/>
 				</div>
+			</div>
+			
+			<div class="control-group">
+				<label for="imageFile1" class="control-label">文件:</label>
+				<div class="controls">
+					<input type="file"  id="imageFile1" name="imageFile1" class="input-large" />
+                </div>
+			</div>
+			
+			<div class="control-group">
+				<label for="imageFile2" class="control-label">文件:</label>
+				<div class="controls">
+					<input type="file"  id="imageFile2" name="imageFile2" class="input-large" />
+                </div>
+			</div>
+			
+			<div class="control-group">
+				<label for="imageFile3" class="control-label">文件:</label>
+				<div class="controls">
+					<input type="file"  id="imageFile3" name="imageFile3" class="input-large" />
+                </div>
 			</div>		
 			
 			<div class="form-actions">

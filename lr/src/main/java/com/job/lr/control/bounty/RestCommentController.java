@@ -1,5 +1,8 @@
 package com.job.lr.control.bounty;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+
 import javax.validation.Valid;
 import javax.validation.Validator;
 
@@ -10,7 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.utils.Clock;
 import org.springside.modules.web.MediaTypes;
@@ -43,8 +48,12 @@ public class RestCommentController {
 		return commentService.pageAll(pageNum);
 	}
 	
-	@RequestMapping(value = "create", method = RequestMethod.POST,produces = MediaTypes.JSON_UTF_8)
-	public GeneralResponse create(@Valid BountyComment comment, RedirectAttributes redirectAttributes) {
+	@RequestMapping(value = "create", method = RequestMethod.POST, produces = MediaTypes.JSON_UTF_8)
+	public GeneralResponse create(@Valid BountyComment comment,RedirectAttributes redirectAttributes,
+			@RequestParam(value = "imageFile1", required = false) MultipartFile imageFile1,
+			@RequestParam(value = "imageFile2", required = false) MultipartFile imageFile2,
+			@RequestParam(value = "imageFile3", required = false) MultipartFile imageFile3
+			) {
 		
 		GeneralResponse resp = new GeneralResponse();
 		
@@ -78,16 +87,60 @@ public class RestCommentController {
 			
 			if (currentUserId.equals(applyUserId)) {
 				comment.setByCommentUserId(bountyUserId);
+				apply.setHunterCommentSts("D");
 			}
 			else if (currentUserId.equals(bountyUserId)) {
 				comment.setByCommentUserId(applyUserId);
+				apply.setHunterCommentSts("D");
 			}
 			
+			/*
+			 * 检测是否有图片上传，如果有则保存图片
+			 */
+			if (imageFile1!=null && imageFile1.getContentType().contains("image")) {
+
+				String newFileName = this.saveImageFile(imageFile1, currentUserId, apply.getId());
+				if (newFileName.startsWith("OK:")) {
+					comment.setImageFileName1(newFileName.substring(3));
+				}
+				else {
+					resp.setRetCode(-1);
+					resp.setRetInfo(newFileName);
+					return resp;
+				}
+			}
+			
+			if (imageFile2!=null && imageFile2.getContentType().contains("image")) {
+
+				String newFileName = this.saveImageFile(imageFile2, currentUserId, apply.getId());
+				if (newFileName.startsWith("OK:")) {
+					comment.setImageFileName2(newFileName.substring(3));
+				}
+				else {
+					resp.setRetCode(-1);
+					resp.setRetInfo(newFileName);
+					return resp;
+				}
+			}
+			
+			if (imageFile3!=null && imageFile3.getContentType().contains("image")) {
+
+				String newFileName = this.saveImageFile(imageFile3, currentUserId, apply.getId());
+				if (newFileName.startsWith("OK:")) {
+					comment.setImageFileName3(newFileName.substring(3));
+				}
+				else {
+					resp.setRetCode(-1);
+					resp.setRetInfo(newFileName);
+					return resp;
+				}
+			}
+			
+			//创建评论
 			resp = commentService.createComment(comment);
 			if (resp.getRetCode()<0) {
 				return resp;
 			}
-			
 			
 			//目前业务需求尚未明确，暂定评论完成后，订单即为‘完成’状态
 /*			apply.setSts("F");
@@ -99,6 +152,34 @@ public class RestCommentController {
 		}
 		
 		return resp;
+	}
+	
+	private String saveImageFile(MultipartFile imageFile,Long userId, Long applyId) {
+		
+		String fileName = imageFile.getOriginalFilename();
+
+        String suffix = fileName.substring(fileName.indexOf("."));
+        
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+		
+		String newFileName = userId+"_comment_"+applyId+"_"+format.format(Clock.DEFAULT.getCurrentDate())+suffix;
+		System.out.println(newFileName);
+	   
+		String destDir = System.getenv("IMAGE_DIR");
+
+		if (destDir == null|| destDir.equals("")) {
+			return "未能获取文件保存位置，请联系系统管理员。";
+		}
+		
+		File destFile = new File(destDir+"/"+newFileName);
+		
+		try {
+			imageFile.transferTo(destFile);
+		}
+		catch(Exception e) {
+			return e.getMessage();
+		}
+		return "OK:"+newFileName;
 	}
 	
 }
