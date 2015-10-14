@@ -86,8 +86,6 @@ public class BountyController {
 		return "redirect:/bounty/";
 	}
 	
-	
-	
 	@RequestMapping(value = "update", method = RequestMethod.POST)
 	public String update(@Valid @ModelAttribute("ent") BountyTask bounty, RedirectAttributes redirectAttributes) {
 		bountyTaskService.saveBountyTask(bounty);

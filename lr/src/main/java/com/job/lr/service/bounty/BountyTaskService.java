@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springside.modules.utils.Clock;
 
 import com.job.lr.entity.BountyTask;
+import com.job.lr.entity.User;
 import com.job.lr.repository.BountyTaskDao;
 import com.job.lr.service.task.BaseService;
 
@@ -54,6 +55,8 @@ public class BountyTaskService extends BaseService {
 	 * @return
 	 */
 	public void createBountyTask(BountyTask entity) {
+		User user = new User(getCurrentUserId());
+		entity.setUser(user);
 		entity.setCreateDate(Clock.DEFAULT.getCurrentDate());
 		bountyTaskDao.save(entity);
 	}

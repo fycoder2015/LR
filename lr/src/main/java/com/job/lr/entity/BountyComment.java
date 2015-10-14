@@ -23,7 +23,13 @@ public class BountyComment extends IdEntity {
 	
 	private Integer starLevel;
 	
-	private Long bountyUserId;
+	private Long byCommentUserId;
+	
+	private String imageFileName1;
+	
+	private String imageFileName2;
+	
+	private String imageFileName3;
 
 	private String sts="A";
 
@@ -79,14 +85,40 @@ public class BountyComment extends IdEntity {
 		this.starLevel = starLevel;
 	}
 
-	public Long getBountyUserId() {
-		return bountyUserId;
+
+	
+	public Long getByCommentUserId() {
+		return byCommentUserId;
 	}
 
-	public void setBountyUserId(Long bountyUserId) {
-		this.bountyUserId = bountyUserId;
+	public void setByCommentUserId(Long byCommentUserId) {
+		this.byCommentUserId = byCommentUserId;
 	}
-	
+
+	public String getImageFileName1() {
+		return imageFileName1;
+	}
+
+	public void setImageFileName1(String imageFileName1) {
+		this.imageFileName1 = imageFileName1;
+	}
+
+	public String getImageFileName2() {
+		return imageFileName2;
+	}
+
+	public void setImageFileName2(String imageFileName2) {
+		this.imageFileName2 = imageFileName2;
+	}
+
+	public String getImageFileName3() {
+		return imageFileName3;
+	}
+
+	public void setImageFileName3(String imageFileName3) {
+		this.imageFileName3 = imageFileName3;
+	}
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);

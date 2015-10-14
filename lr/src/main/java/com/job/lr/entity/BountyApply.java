@@ -28,6 +28,10 @@ public class BountyApply extends IdEntity {
 	private Date applyDate;
 	
 	private String sts="W";
+	
+	private String hunterCommentSts;
+	
+	private String bountyUserCommentSts;
 
 	@ManyToOne
 	@JoinColumn(name = "apply_user_id")
@@ -73,6 +77,22 @@ public class BountyApply extends IdEntity {
 
 	public void setTaskUserId(Long taskUserId) {
 		this.taskUserId = taskUserId;
+	}
+
+	public String getHunterCommentSts() {
+		return hunterCommentSts;
+	}
+
+	public void setHunterCommentSts(String hunterCommentSts) {
+		this.hunterCommentSts = hunterCommentSts;
+	}
+
+	public String getBountyUserCommentSts() {
+		return bountyUserCommentSts;
+	}
+
+	public void setBountyUserCommentSts(String bountyUserCommentSts) {
+		this.bountyUserCommentSts = bountyUserCommentSts;
 	}
 
 	@Override

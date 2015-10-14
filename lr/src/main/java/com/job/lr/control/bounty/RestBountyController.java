@@ -1,5 +1,6 @@
 package com.job.lr.control.bounty;
 
+import javax.validation.Valid;
 import javax.validation.Validator;
 
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springside.modules.web.MediaTypes;
 
 import com.job.lr.entity.BountyTask;
+import com.job.lr.entity.GeneralResponse;
 import com.job.lr.service.bounty.BountyTaskService;
 
 @RestController
@@ -28,6 +30,22 @@ public class RestBountyController {
 	@SuppressWarnings("unused")
 	@Autowired
 	private Validator validator;
+	
+	
+	
+	@RequestMapping(value = "/create",method = RequestMethod.POST,produces = MediaTypes.JSON_UTF_8) 
+	public GeneralResponse create(@Valid BountyTask bountyTask) {
+		
+		GeneralResponse resp = new GeneralResponse();
+		try {
+			bountyService.createBountyTask(bountyTask);
+		}
+		catch(Exception e) {
+			resp.setRetCode(-1);
+			resp.setRetInfo(e.getMessage());
+		}
+		return resp;
+	}
 	
 	
 	/**
@@ -66,6 +84,19 @@ public class RestBountyController {
 	public Page<BountyTask> pageByGender (@PathVariable("gender") String gender,
 			@PathVariable("pageNum") int pageNum){
 		return bountyService.getBountyByGender(gender, pageNum);
+	}
+	
+	/**
+	 * 根据用户ID分页查询该用户发布的赏金任务
+	 * @param userId
+	 * @param pageNum
+	 * @return
+	 */
+	@RequestMapping(value = "/getPageByUser/{userId}_{pageNum}",method = RequestMethod.GET,
+			produces = MediaTypes.JSON_UTF_8) 
+	public Page<BountyTask> pageByUser (@PathVariable("userId") Long userId,
+			@PathVariable("pageNum") int pageNum){
+		return bountyService.getUserBountyTask(userId, pageNum);
 	}
 
 }

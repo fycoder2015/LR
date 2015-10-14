@@ -2,7 +2,7 @@ package com.job.lr.entity;
 
 
 /**
- * @author suiys  
+ * @author  
  * 
  * */
 public class GeneralResponse {
@@ -19,11 +19,15 @@ public class GeneralResponse {
 		this.retCode = retCode;
 	}
 
+	public void setRetInfo(String retInfo) {
+		this.retInfo = retInfo;
+	}
+
 	public String getRetInfo() {
 		return retInfo;
 	}
 
-	public void setRetInfo(String retInfo) {
+	public void resp(String retInfo) {
 		this.retInfo = retInfo;
 	}
 
