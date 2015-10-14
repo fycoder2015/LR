@@ -16,7 +16,7 @@
 	<br/>
 	
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<thead><tr><th>编号</th><th>用户名</th><th>申请时间</th><th>申请状态</th><th></th><th></th></tr></thead>
+		<thead><tr><th>编号</th><th>用户名</th><th>申请时间</th><th>申请状态</th><th>雇主评论状态</th><th>猎人评论状态</th><th></th><th></th></tr></thead>
 		<tbody>
 		<c:forEach items="${applyList.content}" var="bountyApply">
 			<tr>
@@ -24,6 +24,8 @@
 				<td>${bountyApply.applyUser.loginName}</td>
 				<td>${bountyApply.applyDate}</td>
 				<td>${bountyApply.sts}</td>
+				<td>${bountyApply.bountyUserCommentSts}</td>
+				<td>${bountyApply.hunterCommentSts}</td>
 				<td><a href="${ctx}/bountyComment/create/${bountyApply.id}">评论</a></td>
 				<td><a href="${ctx}/bountyComment/listByApply/${bountyApply.id}_1">评论列表</a></td>
 			</tr>
