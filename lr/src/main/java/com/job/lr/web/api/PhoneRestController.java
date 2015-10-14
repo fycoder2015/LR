@@ -23,6 +23,7 @@ import com.job.lr.filter.Constants;
 import com.job.lr.rest.TaskRestController;
 import com.job.lr.service.account.AccountService;
 import com.job.lr.service.task.TaskService;
+import com.job.lr.tools.UserPhoneTools;
 import com.job.sendSms.SDKSendTemplateSMS;
 
 /**
@@ -35,7 +36,7 @@ import com.job.sendSms.SDKSendTemplateSMS;
 @RequestMapping(value = "/api/v1/phoneCollect")
 public class PhoneRestController {
 	
-	private static Logger logger = LoggerFactory.getLogger(TaskRestController.class);
+	private static Logger logger = LoggerFactory.getLogger(PhoneRestController.class);
 
 	@Autowired
 	private AccountService  accountService;
@@ -68,7 +69,7 @@ public class PhoneRestController {
 		}else{
 			phonenumber =phonenumber.trim();
 			captchacode =captchacode.trim();
-			Phonenumber p = accountService.findUserPhone(phonenumber);
+			Phonenumber p = accountService.findUserPhoneInPhonenumber(phonenumber);
 			if(p== null){
 				returncode = 0 ; //没有相关对象 ，不做比对 返回不匹配
 			}else{
@@ -124,6 +125,9 @@ public class PhoneRestController {
 	 *  			   3  空值 
 	 * 		{@value}  url: 
 	 * 				http://localhost/lr/api/v1/phoneCollect/genCaptchacodeByPhone?phonenumber=
+	 * 
+	 *  注：
+	 *  	PhoneRestController类色 genCaptchacodeByPhone() 相同于 UserPhoneTools genCaptchacodeByPhone()，后续考虑移植
 	 * */
 	@RequestMapping(value = "/genCaptchacodeByPhone", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse  genCaptchacodeByPhone(ServletRequest request) {
@@ -147,10 +151,10 @@ public class PhoneRestController {
 			returnCode =  null_phone;
 		}else{		
 			//			
-			Phonenumber p = accountService.findUserPhone(phonenumber);
+			Phonenumber p = accountService.findUserPhoneInPhonenumber(phonenumber);
 			if (p == null){
 				//数据库中没有响应的手机号----  新用户
-				String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数							
+				String captchacode = UserPhoneTools.getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数							
 				/**
 				 * 发送短信 SendTemplateSMS* 
 				 * 
@@ -162,8 +166,8 @@ public class PhoneRestController {
 				String message = s.SendTemplateSMS(phonenumber ,captchacode, "",  SMS_Gap_TimeI.toString()); //"" 是 短信模板数
 				String sendOkflag ="sendok"; 
 				
-				//-- if (sendOkflag.equals(message) ){  //短信发送成功验证处  liuy add  #####
-				if (true){ 	
+				if (sendOkflag.equals(message) ){  //短信发送成功验证处  liuy add  #####
+				//if (true){ 	
 					accountService.registerUserPhone(phonenumber,captchacode);	
 					returnCode = phonestatus_not_activated; 
 				}else{
@@ -183,7 +187,7 @@ public class PhoneRestController {
 					if(istimeoutflag == 0){// 0    超时
 						//重新生成验证码 和 日期 ，后 保存
 						
-						String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数
+						String captchacode = UserPhoneTools.getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数
 						p.setCaptchacode(captchacode);
 						/**
 						 * 发送短信 SendTemplateSMS* 
@@ -193,8 +197,8 @@ public class PhoneRestController {
 						String message = s.SendTemplateSMS(p.getPhonenumber() ,captchacode, "",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
 						String sendOkflag ="sendok";
 						p.setRegisterDate(new Date()); //现在的时间 
-						//-- if (sendOkflag.equals(message) ){  //短信发送成功验证处  liuy add  #####
-						if (true){ 							
+						if (sendOkflag.equals(message) ){  //短信发送成功验证处  liuy add  #####
+						//if (true){ 							
 							accountService.updatePhonenumber(p);
 							returnCode = phonestatus_not_activated; 
 						}else{
@@ -251,19 +255,19 @@ public class PhoneRestController {
 	 * canbechang  ####
 	 * 
 	 * */
-	public static String getRandomString(int length) {   
-	      //StringBuffer buffer = new StringBuffer("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");   
-	      StringBuffer buffer = new StringBuffer("012345678998765432100123456789");	      
-	      StringBuffer sb = new StringBuffer();   
-	      Random random = new Random();   
-	      int range = buffer.length();   
-	      for (int i = 0; i < length; i ++) {   
-	         sb.append(buffer.charAt(random.nextInt(range)));   
-	      }   
-	      
-	      return sb.toString();   
-	      //return "5123";
-	}
+//	public static String getRandomString(int length) {   
+//	      //StringBuffer buffer = new StringBuffer("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");   
+//	      StringBuffer buffer = new StringBuffer("012345678998765432100123456789");	      
+//	      StringBuffer sb = new StringBuffer();   
+//	      Random random = new Random();   
+//	      int range = buffer.length();   
+//	      for (int i = 0; i < length; i ++) {   
+//	         sb.append(buffer.charAt(random.nextInt(range)));   
+//	      }   
+//	      
+//	      return sb.toString();   
+//	      //return "5123";
+//	}
 	
 	
 	public AccountService getAccountService() {

@@ -17,7 +17,7 @@ import com.google.common.collect.ImmutableList;
 
 
 /**
- * 用户角色、积分
+ * 用户角色、积分、信誉度
  * 
  * @author ly
  * 
@@ -26,12 +26,16 @@ import com.google.common.collect.ImmutableList;
 @Table(name = "lr_userrole")
 public class UserRole extends IdEntity {
 	//http://www.cnblogs.com/jifeng/p/4500410.html
-	
+
 	private String  rolename;//用户角色名称
-	private Integer rolepoints;//用户积分
+	private Integer userpoint;//用户积分
+	private Integer userpoint2;//用户积分  备用
+	private Integer usercredit ; //用户信用
 	private String  roledescription;
-	private Date roledate; 
 	
+	/** 正在使用的与User 一对一，对应User 中的  userroleId  **/	
+	private Integer  useing; //正在用   usering= 1 ; no use= 0 
+	private Date roledate; 	
 
 	public UserRole() {
 	}
@@ -55,13 +59,7 @@ public class UserRole extends IdEntity {
 		this.rolename = rolename;
 	}
 
-	public Integer getRolepoints() {
-		return rolepoints;
-	}
 
-	public void setRolepoints(Integer rolepoints) {
-		this.rolepoints = rolepoints;
-	}
 
 	public String getRoledescription() {
 		return roledescription;
@@ -81,6 +79,38 @@ public class UserRole extends IdEntity {
 	}
 
 	
+	public Integer getUserpoint() {
+		return userpoint;
+	}
+
+	public void setUserpoint(Integer userpoint) {
+		this.userpoint = userpoint;
+	}
+
+	public Integer getUserpoint2() {
+		return userpoint2;
+	}
+
+	public void setUserpoint2(Integer userpoint2) {
+		this.userpoint2 = userpoint2;
+	}
+
+	public Integer getUsercredit() {
+		return usercredit;
+	}
+
+	public void setUsercredit(Integer usercredit) {
+		this.usercredit = usercredit;
+	}
+
+	public Integer getUseing() {
+		return useing;
+	}
+
+	public void setUseing(Integer useing) {
+		this.useing = useing;
+	}
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);

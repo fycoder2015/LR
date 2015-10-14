@@ -10,4 +10,7 @@ import com.job.lr.entity.Phonenumber;
 
 public interface PhonenumberDao extends PagingAndSortingRepository<Phonenumber, Long> {
 	List <Phonenumber> findByPhonenumberOrderByIdDesc(String phonenumber);
+	List <Phonenumber> findByPhonenumber(String phonenumber);
+	List <Phonenumber> findByPhonenumberAndPhonestatus(String phonenumber ,Integer phonestatus );
+
 }

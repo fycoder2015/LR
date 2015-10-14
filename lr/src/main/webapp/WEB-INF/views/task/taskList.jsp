@@ -46,5 +46,6 @@
 	<br>
 	<br>
 	<div><a class="btn" href="${ctx}/bounty">赏金任务列表</a></div>
+	
 </body>
 </html>

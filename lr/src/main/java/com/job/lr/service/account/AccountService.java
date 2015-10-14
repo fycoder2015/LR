@@ -29,7 +29,7 @@ import org.springside.modules.utils.Encodes;
 /**
  * 用户管理类.
  * 
- * @author calvin
+ * @author liuy
  */
 // Spring Service Bean的标识.
 @Component
@@ -61,13 +61,14 @@ public class AccountService {
 	
 	/**
 	 * 比对 手机号 和 验证码 是否匹配
+	 * 注意：此方法未做超时比对
 	 * @return  1 匹配
 	 * 			0 不匹配
 	 * */
 	public int checkUserPhone(String phonenumber ,String captchacode){
 		int bematched =1 ;
 		int nomatched =0 ;
-		Phonenumber p  = findUserPhone(phonenumber);
+		Phonenumber p  = findUserPhoneInPhonenumber(phonenumber);
 
 		if( p == null){
 			return nomatched;
@@ -85,6 +86,34 @@ public class AccountService {
 		}		
 	}
 	
+	
+	/**
+	 * 比对 手机号 和 验证码 是否匹配
+	 * 注意：此方法未做超时比对
+	 * @return  1 匹配
+	 * 			0 不匹配
+	 * */
+	public int checkUserPhone2(Phonenumber p ,String captchacode){
+		int bematched =1 ;
+		int nomatched =0 ;
+		if( p == null){
+			return nomatched;
+		}else{
+			String correctcaptchacode= p.getCaptchacode();
+			if("".equals(correctcaptchacode)||correctcaptchacode==null ){			
+				return nomatched;
+			}else{
+				if(correctcaptchacode.equals(captchacode)){
+					return bematched;
+				}else{
+					return nomatched;
+				}
+			}
+		}		
+	}
+	
+	
+	
 	/**
 	 * 通过username 和 password查找用户 
 	 * username  loginname
@@ -93,9 +122,46 @@ public class AccountService {
 	 * @return  u 
 	 * 
 	 * */
-	public User findUserByUsernamePasswd(String username ,String password){
+	public User findUserByUsernamePasswd(String loginname ,String password){
 		User u ;
-		List <User> ul =userDao.findByLoginNameAndPasswordOrderByIdDesc(username,password);
+		List <User> ul =userDao.findByLoginNameAndPasswordOrderByIdDesc(loginname,password);
+		if(null == ul || ul.size() ==0){
+			u = null;
+		}else{
+			Iterator <User> ui = ul.iterator();  
+			u = ui.next();
+		}
+		return u ;
+	}
+	
+	/**
+	 * 通过phonenum 查找用户  在User中
+	 * 
+	 * @return  u 
+	 * 
+	 * */
+	public User findUserByPhonenumber(String phonenumber){
+		User u ;
+		List <User> ul =userDao.findByPhonenumberOrderByIdDesc(phonenumber);
+		if(null == ul || ul.size() ==0){
+			u = null;
+		}else{
+			Iterator <User> ui = ul.iterator();  
+			u = ui.next();
+		}
+		return u ;
+	}
+	
+	/**
+	 * 通过phonenum password  查找用户  在User中
+	 * 
+	 * @return  u 
+	 * 
+	 * */
+	public User findUserByPhonenumberPassword(String phonenumber,String  password){
+		User u ;
+		List <User> ul =userDao.findByPhonenumberAndPasswordOrderByIdDesc(phonenumber, password);
+		
 		if(null == ul || ul.size() ==0){
 			u = null;
 		}else{
@@ -106,9 +172,13 @@ public class AccountService {
 	}
 	
 	
+
 	
 	
-	public Phonenumber findUserPhone(String phonenumber ){
+	/**
+	 * 返回对象不同
+	 * */
+	public Phonenumber findUserPhoneInPhonenumber(String phonenumber ){
 		Phonenumber  p ;
 		List <Phonenumber> lp =phonenumberDao.findByPhonenumberOrderByIdDesc(phonenumber);
 		if(null == lp || lp.size() ==0){
@@ -119,6 +189,21 @@ public class AccountService {
 		}
 		return p ;
 	}
+	
+	public List <Phonenumber>  findAllPhonenumberByphone(String phonenumber ){	
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumber(phonenumber);
+		return lp ;
+	}
+	
+	
+	public List <Phonenumber>  findPhonenumberByPhoneAndStatus(String phonenumber, Integer  phonestatus){	
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumberAndPhonestatus(phonenumber, phonestatus) ;
+		return lp ;
+	}
+	
+
+	
+	
 	/**
 	 * 注意： 已废弃 
 	 * phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
@@ -151,12 +236,15 @@ public class AccountService {
 	
 	
 	/**
-	 * 仅仅更新 验证码 和 更新日期
-	 * phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+	 * 更新保存 Phonenumber对象
+	 *  
+	 * 注：
+	 * 	phonestatus   0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
 	 * */
 	public void updatePhonenumber(Phonenumber p ){			
 		//p.setCaptchacode(p);		
-		//p.setRegisterDate(new Date());		
+		//p.setRegisterDate(new Date());
+		
 		phonenumberDao.save(p);			
 	}
 	

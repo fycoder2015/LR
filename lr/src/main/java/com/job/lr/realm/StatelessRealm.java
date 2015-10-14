@@ -80,11 +80,13 @@ public class StatelessRealm extends AuthorizingRealm {
         //String username = (String) principals.getPrimaryPrincipal();
         //SimpleAuthorizationInfo authorizationInfo =  new SimpleAuthorizationInfo();
         //authorizationInfo.addRole("admin");
+    	
         ShiroUser shiroUser = (ShiroUser) principals.getPrimaryPrincipal();
 		User user = accountService.findUserByLoginName(shiroUser.loginName);
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-		System.out.println("user.getRoleList():"+user.getRoleList());
+		System.out.println("+++++++++++++ user.getRoleList():"+user.getRoleList());
 		info.addRoles(user.getRoleList());
+	 
         return info;
     }
 

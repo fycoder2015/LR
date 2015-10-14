@@ -127,7 +127,7 @@
 		
 		
 		<!-- liuy add file upload start -->
-		<!-- Apache Commons Upload --> 
+		<!-- Apache Commons Upload 上传图片 上传文件 --> 
 		<dependency>
     		<groupId>commons-io</groupId>
     		<artifactId>commons-io</artifactId>
