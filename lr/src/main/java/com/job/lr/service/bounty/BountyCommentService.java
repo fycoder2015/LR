@@ -53,4 +53,9 @@ public class BountyCommentService extends BaseService {
 		PageRequest pageRequest = buildPageRequest(pageNum, 20, "auto");
 		return commentDao.pageByCommentUserId(commentUserId, pageRequest);
 	}
+	
+	public Page<BountyComment> pageByCommentedUserId(Long commentedUserId,int pageNum) {
+		PageRequest pageRequest = buildPageRequest(pageNum, 20, "auto");
+		return commentDao.pageByCommentedUserId(commentedUserId, pageRequest);
+	}
 }

@@ -43,11 +43,15 @@ public class RestCommentController {
 	@Autowired
 	private BountyApplyService applyService;
 	
-	@RequestMapping(value = "/getPageComment/{pageNum}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8) 
-	public Page<BountyComment> pageBounty(@PathVariable("pageNum") int pageNum) {
-		return commentService.pageAll(pageNum);
-	}
-	
+	/**
+	 * 创建评论
+	 * @param comment
+	 * @param redirectAttributes
+	 * @param imageFile1
+	 * @param imageFile2
+	 * @param imageFile3
+	 * @return
+	 */
 	@RequestMapping(value = "create", method = RequestMethod.POST, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse create(@Valid BountyComment comment,RedirectAttributes redirectAttributes,
 			@RequestParam(value = "imageFile1", required = false) MultipartFile imageFile1,
@@ -154,6 +158,60 @@ public class RestCommentController {
 		return resp;
 	}
 	
+	/**
+	 * 分页查询所有评论
+	 * @param pageNum
+	 * @return
+	 */
+	@RequestMapping(value = "/getPageComment/{pageNum}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8) 
+	public Page<BountyComment> pageComment(@PathVariable("pageNum") int pageNum) {
+		return commentService.pageAll(pageNum);
+	}
+	
+	/**
+	 * 按照评论发起用户的Id分页查询评论记录
+	 * @param pageNum
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/pageByCommentUser/{userId}_{pageNum}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8) 
+	public Page<BountyComment> pageByCommentUser(@PathVariable("pageNum") int pageNum,
+			@PathVariable("userId") Long userId) {
+		return commentService.pageByCommentUserId(userId, pageNum);
+	}
+	
+
+	/**
+	 * 按照被评论用户的用户Id分页查询评论
+	 * @param pageNum
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/pageByCommentedUser/{userId}_{pageNum}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8) 
+	public Page<BountyComment> pageByCommentedUser(@PathVariable("pageNum") int pageNum,
+			@PathVariable("userId") Long userId) {
+		return commentService.pageByCommentedUserId(userId, pageNum);
+	}
+	
+	/**
+	 * 按照赏金任务申请订单(揭榜)Id查询评论
+	 * @param pageNum
+	 * @param userId
+	 * @return
+	 */
+	@RequestMapping(value = "/pageByApply/{applyId}_{pageNum}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+	public Page<BountyComment> pageByApplyId(@PathVariable("pageNum") int pageNum,
+			@PathVariable("applyId") Long applyId) {
+		return commentService.pageByApplyId(applyId, pageNum);
+	}
+	
+	/**
+	 * 保存上传的图片文件
+	 * @param imageFile
+	 * @param userId
+	 * @param applyId
+	 * @return
+	 */
 	private String saveImageFile(MultipartFile imageFile,Long userId, Long applyId) {
 		
 		String fileName = imageFile.getOriginalFilename();
