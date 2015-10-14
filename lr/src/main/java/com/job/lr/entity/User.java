@@ -32,10 +32,13 @@ public class User extends IdEntity {
 	private String picpathMid;//中头像  
 	private String picpathSmall;//小头像 
 	
-	/** 与正在使用的 一对一，UserRole 中的  useing=1，
+	/** 与正在使用的 角色一对一，UserRole 中的  useing=1，
 		以直接调用正在使用的UserRole **/	
 	private Long userroleId; //
-
+	
+	/** 与正在使用头像的 一对一，UserHeadimg 中的  useing=1，
+	以直接调用正在使用的UserHeadimg **/	
+	private Long userheadimgId; //
 
 	public User() {
 	}
@@ -161,6 +164,14 @@ public class User extends IdEntity {
 	
 	
 	
+	public Long getUserheadimgId() {
+		return userheadimgId;
+	}
+
+	public void setUserheadimgId(Long userheadimgId) {
+		this.userheadimgId = userheadimgId;
+	}
+
 	public Long getUserroleId() {
 		return userroleId;
 	}

@@ -26,6 +26,8 @@ import com.google.common.collect.ImmutableList;
 @Table(name = "lr_userheadimg")
 public class UserHeadimg extends IdEntity {
 	
+	private Integer	useing;
+	
 	private String	imgname;//名称
 	
 	private String	imgpath;//存放位置
@@ -179,6 +181,15 @@ public class UserHeadimg extends IdEntity {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+	
+
+	public Integer getUseing() {
+		return useing;
+	}
+
+	public void setUseing(Integer useing) {
+		this.useing = useing;
 	}
 
 	@Override
