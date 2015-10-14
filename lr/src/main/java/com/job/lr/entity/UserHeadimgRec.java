@@ -11,18 +11,18 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 
 /**
- * 用户和角色的关系表
+ * 用户和头像的关系表
  * 保持历史纪录的
- * User 和  UserRole 的对应关系表
+ * User 和  UserHeadimg 的对应关系表
  * 
  * */
 @Entity
-@Table(name = "lr_user_role_rec")
-public class UserRoleRec extends IdEntity {
+@Table(name = "lr_user_headimg_rec")
+public class UserHeadimgRec extends IdEntity {
 
 	private Long userId;
 	
-	private Long roleId;
+	private Long headimgId;
 	
 	private Date viewDate;
 
@@ -45,14 +45,14 @@ public class UserRoleRec extends IdEntity {
 		this.viewDate = viewDate;
 	}
 
-	public UserRoleRec(Long userId, Long roleId) {
+	public UserHeadimgRec(Long userId, Long headimgId) {
 		super();
 		this.userId = userId;
-		this.roleId = roleId;
+		this.headimgId = headimgId;
 		this.viewDate = Clock.DEFAULT.getCurrentDate();
 	}
 
-	public UserRoleRec() {
+	public UserHeadimgRec() {
 		super();
 	}
 	

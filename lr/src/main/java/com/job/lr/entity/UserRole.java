@@ -26,12 +26,15 @@ import com.google.common.collect.ImmutableList;
 @Table(name = "lr_userrole")
 public class UserRole extends IdEntity {
 	//http://www.cnblogs.com/jifeng/p/4500410.html
-	
+
 	private String  rolename;//用户角色名称
 	private Integer userpoint;//用户积分
 	private Integer userpoint2;//用户积分  备用
 	private Integer usercredit ; //用户信用
 	private String  roledescription;
+	
+	/** 正在使用的与User 一对一，对应User 中的  userroleId  **/	
+	private Integer  useing; //正在用   usering= 1 ; no use= 0 
 	private Date roledate; 	
 
 	public UserRole() {
@@ -98,6 +101,14 @@ public class UserRole extends IdEntity {
 
 	public void setUsercredit(Integer usercredit) {
 		this.usercredit = usercredit;
+	}
+
+	public Integer getUseing() {
+		return useing;
+	}
+
+	public void setUseing(Integer useing) {
+		this.useing = useing;
 	}
 
 	@Override

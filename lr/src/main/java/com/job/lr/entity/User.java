@@ -30,7 +30,11 @@ public class User extends IdEntity {
 	private Date registerDate;
 	private String picpathBig;//大头像  
 	private String picpathMid;//中头像  
-	private String picpathSmall;//小头像  
+	private String picpathSmall;//小头像 
+	
+	/** 与正在使用的 一对一，UserRole 中的  useing=1，
+		以直接调用正在使用的UserRole **/	
+	private Long userroleId; //
 
 
 	public User() {
@@ -152,6 +156,17 @@ public class User extends IdEntity {
 
 	public void setPicpathSmall(String picpathSmall) {
 		this.picpathSmall = picpathSmall;
+	}
+
+	
+	
+	
+	public Long getUserroleId() {
+		return userroleId;
+	}
+
+	public void setUserroleId(Long userroleId) {
+		this.userroleId = userroleId;
 	}
 
 	@Override
