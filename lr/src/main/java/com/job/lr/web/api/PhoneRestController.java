@@ -45,9 +45,20 @@ public class PhoneRestController {
 	
 	@Autowired
 	private UserPhoneTools userPhoneTools;
+	/**
+	 * 找回密时，根据 手机号和 验证码
+	 *   核查phonenumber的验证码是否正确  是否匹配
+	 *   需要验证生成验证码的时间是否超时
+	 *   
+	 */   
+	@RequestMapping(value = "/checkPhonenumberInFindPasswd", method = RequestMethod.GET)
+	@ResponseBody
+	public GeneralResponse  checkPhonenumberInFindPasswd(@RequestParam("phonenumber") String phonenum) {
+		
+	}
 	
 	/**
-	 * 根据 手机号和 验证码
+	 * 注册时，根据 手机号和 验证码
 	 *   核查phonenumber的验证码是否正确  是否匹配
 	 *   需要验证生成验证码的时间是否超时
 	 *   
@@ -108,6 +119,7 @@ public class PhoneRestController {
 
 	}
 	
+
 	
 	/**
 	 * 	找回密码时，根据手机号码 生成 验证码
