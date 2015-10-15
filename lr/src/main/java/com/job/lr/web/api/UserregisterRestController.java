@@ -80,7 +80,7 @@ public class UserregisterRestController {
 			gp.setRetInfo("false,用户名手机号不匹配");
 		}else if(bematch == 1){
 			//1  匹配
-			gp.setRetInfo("true,用户名手机号匹配");
+			gp.setRetInfo("true,用户注册成功");
 		}else{
 			gp.setRetInfo("101未知错误");
 		}	

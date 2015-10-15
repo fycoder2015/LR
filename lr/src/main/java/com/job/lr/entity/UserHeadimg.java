@@ -25,8 +25,8 @@ import com.google.common.collect.ImmutableList;
 @Entity
 @Table(name = "lr_userheadimg")
 public class UserHeadimg extends IdEntity {
-	
-	private Integer	useing;
+	/** 正在使用的与User 一对一，对应User 中的  userheadimgId  **/	
+	private Integer	useing;//正在用   usering= 1 ; no use= 0 
 	
 	private String	imgname;//名称
 	

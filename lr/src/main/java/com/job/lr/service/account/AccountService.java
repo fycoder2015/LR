@@ -16,10 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.User;
+import com.job.lr.entity.UserRole;
+import com.job.lr.entity.UserRoleRec;
 import com.job.lr.filter.Constants;
 import com.job.lr.repository.PhonenumberDao;
 import com.job.lr.repository.TaskDao;
 import com.job.lr.repository.UserDao;
+import com.job.lr.repository.UserRoleDao;
+import com.job.lr.repository.UserRoleRecDao;
 import com.job.lr.service.ServiceException;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 import org.springside.modules.security.utils.Digests;
@@ -44,7 +48,9 @@ public class AccountService {
 
 	private UserDao userDao;
 	private TaskDao taskDao;
+	private UserRoleDao userroleDao;
 	private PhonenumberDao  phonenumberDao;
+	private UserRoleRecDao  userroleRecDao ;
 	private Clock clock = Clock.DEFAULT;
 
 	public List<User> getAllUser() {
@@ -66,9 +72,9 @@ public class AccountService {
 	 * 			0 不匹配
 	 * */
 	public int checkUserPhone(String phonenumber ,String captchacode){
-		int bematched =1 ;
-		int nomatched =0 ;
-		Phonenumber p  = findUserPhoneInPhonenumber(phonenumber);
+		int bematched = 1 ;
+		int nomatched = 0 ;
+		Phonenumber p = findUserPhoneInPhonenumber(phonenumber);
 
 		if( p == null){
 			return nomatched;
@@ -284,12 +290,39 @@ public class AccountService {
 		return n+"";
 	}
 
+	//注册用户
 	public void registerUser(User user) {
+		
+		//创建  UserRole 数据
+		int usering= 1 ;
+		String rolename ="新用户" ;
+		String roledescription ="新用户" ;
+		int usercredit = 0 ;
+		int userpoint = 0 ;
+		Date daytime = clock.getCurrentDate() ; // new Date();
+		UserRole ur = new UserRole();
+		ur.setRoledescription(roledescription);
+		ur.setRoledate(daytime);
+		ur.setRolename(rolename);
+		ur.setUseing(usering);
+		ur.setUsercredit(usercredit);
+		ur.setUserpoint(userpoint);
+		UserRole newur = userroleDao.save(ur);		
+		long newuserroleId = newur.getId();
+		
+		//创建  User 数据
 		entryptPassword(user);
 		user.setRoles("user");
-		user.setRegisterDate(clock.getCurrentDate());
-
-		userDao.save(user);
+		user.setRegisterDate(daytime);
+		user.setUserroleId(newuserroleId);		
+		User newu = userDao.save(user);
+		
+		//创建  UserRoleRec 数据
+		UserRoleRec urr = new UserRoleRec();
+		urr.setUserId(newu.getId());
+		urr.setRoleId(newuserroleId);
+		urr.setViewDate(daytime);
+		userroleRecDao.save(urr);
 	}
 	
 
@@ -373,6 +406,24 @@ public class AccountService {
 	public void setPhonenumberDao(PhonenumberDao phonenumberDao) {
 		this.phonenumberDao = phonenumberDao;
 	}
+
+	public UserRoleDao getUserroleDao() {
+		return userroleDao;
+	}
+	@Autowired
+	public void setUserroleDao(UserRoleDao userroleDao) {
+		this.userroleDao = userroleDao;
+	}
+
+	public UserRoleRecDao getUserroleRecDao() {
+		return userroleRecDao;
+	}
+	@Autowired
+	public void setUserroleRecDao(UserRoleRecDao userroleRecDao) {
+		this.userroleRecDao = userroleRecDao;
+	}
+
+
 	
 	
 	
