@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.validation.Valid;
 import javax.validation.Validator;
 
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,11 @@ import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.User;
+import com.job.lr.entity.UserRole;
+import com.job.lr.repository.UserDao;
 import com.job.lr.rest.RestException;
 import com.job.lr.service.account.AccountService;
+import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 import com.job.lr.tools.UserPhoneTools;
 
 /**
@@ -253,6 +257,131 @@ public class UsertoolsRestController {
 			gp.setRetInfo(u.getLoginName());
 		}
 		return gp;
+	}
+	/**
+	 *  通过用户名和加密的密码，获取用户正在使用的积分、认证等信息
+	 * 
+	 *  	根据 username（loginname） 和 加密后的   digest
+	 * 
+	 *  url ：Get 
+	 *  	/api/v1/usertools/gogetUserRole?username={username}&digest={加密后的passwd}
+	 *  
+	 * 		http://localhost/lr/api/v1/usertools/gogetUserRole?username=user007&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * 		http://localhost/lr/api/v1/usertools/gogetUserRole?username=7add6c21f9934cdaac631d16e6eafc49&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * 
+	 *   
+	 * */
+	@RequestMapping(value = "gogetUserRole",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+	//@ResponseBody
+	public UserRole gogetUserRole(@RequestParam("username") String loginName ,@RequestParam("digest") String password) {
+		Long userId = getCurrentUserId();
+		User u = accountService.findUserByUserId(userId);
+		if (u.getUserroleId() == null ){
+			return null;
+		}else{
+			Long userroleId = u.getUserroleId();			
+			UserRole ur = accountService.findUserRoleByUserRoleId(userroleId);
+			if( ur == null ){
+				return null;
+			}else{
+				return ur;
+			}
+		}
+		
+	}
+	
+	/**
+	 *  通过用户名和加密的密码，增加用户正在使用的积分
+	 * 
+	 *  	根据 username（loginname） 和 加密后的   digest
+	 *  	upoint 用户积分数值
+	 * 
+	 *  url ：Get 
+	 *  	/api/v1/usertools/goaddUserPoint?username={username}&digest={加密后的passwd}&upoint={int}
+	 *  
+	 * 		
+http://localhost/lr/api/v1/usertools/goaddUserPoint?username=7add6c21f9934cdaac631d16e6eafc49&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a&upoint=10
+	 * 
+	 * */
+	@RequestMapping(value = "goaddUserPoint",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+	@ResponseBody
+	public GeneralResponse goaddUserPoint(@RequestParam("username") String loginName ,@RequestParam("digest") String password,@RequestParam("upoint") Integer userpoint) {
+		GeneralResponse gp = new GeneralResponse();		
+		int errcode = -1 ;
+		int successcode = 1;		
+		
+		Long userId = getCurrentUserId();
+		User u = accountService.findUserByUserId(userId);
+		if (u.getUserroleId() == null ){
+			gp.setRetCode(errcode);
+			gp.setRetInfo("此用户不存在积分对象");			
+		}else{
+			Long userroleId = u.getUserroleId();			
+			UserRole ur = accountService.findUserRoleByUserRoleId(userroleId);
+			int urpointnum = ur.getUserpoint() ;			
+			urpointnum = userpoint+urpointnum; //新增数值+ 用户原有积分数值
+			ur.setUserpoint(urpointnum);
+			accountService.saveUserRole(ur);
+			gp.setRetCode(successcode);
+			gp.setRetInfo("用户积分增加成功");		
+		}
+
+		return gp; 
+	}
+		
+	
+	/**
+	 *  通过用户名和加密的密码，增加用户正在使用的信誉值
+	 * 
+	 *  	根据 username（loginname） 和 加密后的   digest
+	 *  	ucredit 用户积分数值
+	 * 
+	 *  url ：Get 
+	 *  	/api/v1/usertools/goaddUserCredit?username={username}&digest={加密后的passwd}&ucredit={int}
+	 *  
+	 * 		
+http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac631d16e6eafc49&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a&ucredit=10
+	 * 
+	 * */
+	@RequestMapping(value = "goaddUserCredit",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+	@ResponseBody
+	public GeneralResponse goaddUserCredit(@RequestParam("username") String loginName ,@RequestParam("digest") String password,@RequestParam("ucredit") Integer usercredit) {
+		System.out.println("0000000000000000000000000000000");
+		GeneralResponse gp = new GeneralResponse();		
+		int errcode = -1 ;
+		int successcode = 1;		
+		
+		Long userId = getCurrentUserId();
+		User u = accountService.findUserByUserId(userId);
+		if (u.getUserroleId() == null ){
+			gp.setRetCode(errcode);
+			gp.setRetInfo("此用户不存在信誉值对象");			
+		}else{
+			Long userroleId = u.getUserroleId();			
+			UserRole ur = accountService.findUserRoleByUserRoleId(userroleId);
+			int urcredit = ur.getUsercredit() ;			
+			usercredit = usercredit+urcredit; //新增数值+ 用户原有积分数值
+			ur.setUsercredit(usercredit);
+			accountService.saveUserRole(ur);
+			gp.setRetCode(successcode);
+			gp.setRetInfo("用户信誉值增加成功");		
+		}
+
+		return gp; 
+	}
+	
+	/**
+	 * 取出Shiro中的当前用户Id.
+	 */
+	public Long getCurrentUserId() {
+		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		if (user== null){
+			return 0L;
+		}else{
+			return user.id;
+		}	
 	}
 	
 	

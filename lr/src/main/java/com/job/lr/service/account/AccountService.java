@@ -65,6 +65,26 @@ public class AccountService {
 		return userDao.findByLoginName(loginName);
 	}
 	
+	public User findUserByUserId(Long userId) {
+		return userDao.findOne(userId);
+	}
+	
+	public UserRole findUserRoleByUserRoleId(Long userroleId) {
+		UserRole ur  ;
+		boolean beexist = userroleDao.exists(userroleId) ;		
+		if(beexist){
+			ur = userroleDao.findOne(userroleId) ;
+			return ur;
+		}else{
+			return null ;
+		}
+		
+	}
+	
+	public void saveUserRole(UserRole ur) {
+		userroleDao.save(ur) ;	
+	}
+	
 	/**
 	 * 比对 手机号 和 验证码 是否匹配
 	 * 注意：此方法未做超时比对
