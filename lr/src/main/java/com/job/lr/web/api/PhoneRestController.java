@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springside.modules.web.MediaTypes;
 
@@ -41,13 +43,15 @@ public class PhoneRestController {
 	@Autowired
 	private AccountService  accountService;
 	
+	@Autowired
+	private UserPhoneTools userPhoneTools;
 	
 	/**
 	 * 根据 手机号和 验证码
 	 *   核查phonenumber的验证码是否正确  是否匹配
 	 *   需要验证生成验证码的时间是否超时
 	 *   
-	 *   
+	 *   比对Phonenumber中的对象
 	 * @param 
 	 * 		phonenumber
 	 * 		captchacode
@@ -56,7 +60,7 @@ public class PhoneRestController {
 	 * 
 	 * 核实手机和验证码是否匹配 ？
 	 * url ：
-	 * 	http://localhost/lr/api/v1/phoneCollect/checkPhonenumber?phonenumber=  &captchacode=3361
+	 * 	http://localhost/lr/api/v1/phoneCollect/checkPhonenumber?phonenumber=13662127862&captchacode=3361
 	 */
 	@RequestMapping(value = "/checkPhonenumber", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse  checkPhonenumber(ServletRequest request) {
@@ -104,8 +108,64 @@ public class PhoneRestController {
 
 	}
 	
+	
 	/**
-	 * 	根据手机号码 生成 验证码        验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
+	 * 	找回密码时，根据手机号码 生成 验证码
+	 * 		 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
+	 * 
+	 *  ---- 短信接入
+	 *  
+	 *     向已激活的手机号，  发送手机验证码，每次请求都会发送
+	 * 
+	 *  @param
+	 *  	phonenumber  
+	 *  
+	 *  @return 
+	 *  returnCode -1 不存在相应的用户手机号
+	 *  			   1  短信发送成功
+	 *  			   0  短信发送失败
+	 *  {@value}  url: 
+	 * 	http://localhost/lr/api/v1/phoneCollect/genCaptchacodeByPhoneInFindPasswd?phonenumber={phonemum}
+	 * 
+	 *  
+	 *  	
+	 * */
+	@RequestMapping(value = "/genCaptchacodeByPhoneInFindPasswd", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	@ResponseBody
+	public GeneralResponse  genCaptchacodeByPhoneInFindPasswd (@RequestParam("phonenumber") String phonenum) {
+		
+		GeneralResponse gp = new GeneralResponse();
+		int errcode = -1 ;
+		String errmsg = "不存在相应的用户手机号";
+		int successcode = 1 ;
+		String successmsg = "已向对应手机号发送短信验证码，短信发送成功";
+		int senderr = 0;
+		String senderrmsg="向对应手机号发送验证码短信失败";
+		int err2code = -2 ;
+		String err2msg="未知错误";
+		
+		int returncode = userPhoneTools.genCaptchacodeByPhoneInFindPasswd(phonenum) ;
+		if (returncode == errcode){
+			gp.setRetCode(errcode);
+			gp.setRetInfo(errmsg);			
+		}else if(returncode == successcode){
+			gp.setRetCode(successcode);
+			gp.setRetInfo(successmsg);	
+		}else if(returncode == senderr){
+			gp.setRetCode(senderr);
+			gp.setRetInfo(senderrmsg);
+		}else{
+			gp.setRetCode(err2code);
+			gp.setRetInfo(err2msg);
+		}
+		
+		return gp;
+		
+	}
+		
+	
+	/**
+	 * 	注册时，根据手机号码 生成 验证码        验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
 	 *  ---- 短信接入
 	 *  
 	 * 	         未有号码  增加验证码
@@ -276,6 +336,16 @@ public class PhoneRestController {
 
 	public void setAccountService(AccountService accountService) {
 		this.accountService = accountService;
+	}
+
+
+	public UserPhoneTools getUserPhoneTools() {
+		return userPhoneTools;
+	}
+
+
+	public void setUserPhoneTools(UserPhoneTools userPhoneTools) {
+		this.userPhoneTools = userPhoneTools;
 	}
 	
 	

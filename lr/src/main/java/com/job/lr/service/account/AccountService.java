@@ -216,6 +216,24 @@ public class AccountService {
 		return p ;
 	}
 	
+	/**
+	 * 在已激活的手机号中查找 
+	 * 返回对象不同
+	 * */
+	public Phonenumber findUserPhoneByPhonenumberInFindPasswd(String phonenumber ){
+		Phonenumber  p ;
+		int be_actived =  1;
+		int phonestatus = be_actived ;
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumberAndPhonestatusOrderByIdDesc(phonenumber, phonestatus);
+		if(null == lp || lp.size() ==0){
+			p = null;
+		}else{
+			Iterator <Phonenumber> lpi = lp.iterator();  
+			p = lpi.next();
+		}
+		return p ;
+	}
+	
 	public List <Phonenumber>  findAllPhonenumberByphone(String phonenumber ){	
 		List <Phonenumber> lp =phonenumberDao.findByPhonenumber(phonenumber);
 		return lp ;

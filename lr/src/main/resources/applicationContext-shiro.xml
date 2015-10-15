@@ -61,6 +61,7 @@
 				/register/** = anon
 				/api/v1/usertools/checkPhonenum/** = anon  <!-- 查询手机号码是否已占用 -->
 				/api/v1/usertools/gogetUsernameByPhonenum/** = anon
+				
 				/api/v1/phoneCollect/** = anon
 				/api/v1/usertools/gogetUsernameByPhonenumPasswd/** = anon
 				<!--  

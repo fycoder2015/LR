@@ -72,7 +72,7 @@ public class UserPhoneTools {
 	}
 	
 	/**
-	 * 根据phonenumber生成短信验证码
+	 * 注册时 根据phonenumber生成短信验证码
 	 * 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
 	 * 
 	 * -------------------------------------
@@ -196,7 +196,87 @@ public class UserPhoneTools {
 	}
 	
 	
-	 
+	
+	/**
+	 * 找回密码时 根据phonenumber生成短信验证码
+	 * 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
+	 * 
+	 * -------------------------------------
+	 * 功能描述：
+	 * 		根据phonenumber
+	 *    	Phonenumber对象的调整	    
+	 *     		只修改已激活的手机号  修改新生产的验证码 
+	 * -------------------------------------  
+	 * @param 
+	 * 		phonenumber
+	 * 		
+	 * @return 
+	 *  	returnCode -1 不存在相应的用户手机号
+	 *  			   1  短信发送成功
+	 *  			   0  短信发送失败
+	 *  	
+	 *  
+	 * 
+	 */
+	public int genCaptchacodeByPhoneInFindPasswd(String phonenumber ) {
+		//GeneralResponse gp = new GeneralResponse();
+		int returncode =  0 ;
+		int errcode = -1 ;
+		String errmsg = "不存在相应的用户手机号";
+		int successcode = 1 ;
+		String successmsg = "短信发送成功";
+		int senderr = 0;
+		String senderrmsg="短信发送失败";
+
+		
+		Phonenumber p = accountService.findUserPhoneByPhonenumberInFindPasswd(phonenumber);	
+		//找到 已激活的用户的手机对象 
+		if (p == null){			
+			//gp.setRetCode(errcode);
+			//gp.setRetInfo(errmsg);
+			returncode = errcode;
+			
+		}else{		
+			/**
+			 * 不论是否超时 都发送新的验证码 
+			 * 重新生成验证码 和 日期 ，发送短信成功后 保存Phonenumber对象
+			 * 
+			 * **/	
+		
+			String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数
+		
+			/**
+			 * 发送短信 SendTemplateSMS* 
+			 * */						
+			SDKSendTemplateSMS s = new  SDKSendTemplateSMS();						
+			Integer SMS_Gap_TimeI = Constants.SMS_Gap_Time ;
+			String message = s.SendTemplateSMS(p.getPhonenumber() ,captchacode, "",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
+			String sendOkflag ="sendok";
+			
+			p.setRegisterDate(new Date()); //现在的时间 
+			p.setCaptchacode(captchacode);
+			
+			if (sendOkflag.equals(message) ){  
+				//短信发送成功
+				accountService.updatePhonenumber(p);
+				
+				//gp.setRetCode(successcode);
+				//gp.setRetInfo(successmsg);
+				returncode = successcode;
+			}else{
+				//调用短信接口 ，短息发送失败
+				//gp.setRetCode(senderr);
+				//gp.setRetInfo(senderrmsg);
+				returncode = senderr;
+			}											
+					
+		}
+		
+		return returncode ;
+	}
+	
+	
+
 	/**
 	 * 产生验证码
 	 * 
