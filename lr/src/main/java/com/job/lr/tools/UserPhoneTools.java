@@ -195,8 +195,62 @@ public class UserPhoneTools {
 		return gp;		
 	}
 	
-	
-	
+	/**
+	 * 找回密码时 根据 phonenumber和 验证码captchacode 判断匹配
+	 * 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
+	 * 
+	 * -------------------------------------
+	 * 功能描述：
+	 * 		根据phonenumber captchacode 比对 
+	 *    	Phonenumber对象 	    
+	 *     		 
+	 * -------------------------------------  
+	 * @param 
+	 * 		phonenumber
+	 * 		
+	 * @return 
+	 *  	returnCode -1 比对不成功
+	 *  			   1    匹配、比对成功 
+	 *  			0  验证码超时
+	 *  
+	 *  验证码超时 需要重新获取验证码 
+	 */
+	public int checkPhoneInFindPasswd(String phonenumber ,String captchacode ) {
+		int returncode =  0 ;
+		int errcode = -1 ;
+		String errmsg = "比对不成功";
+		int successcode = 1 ;
+		String successmsg = "匹配、比对成功 ";
+		int overtimecode = 0 ;
+		String overtimemsg = "验证码超时" ;
+		
+		Phonenumber p = accountService.findUserPhoneByPhonenumAndCaptchaInFindPasswd(phonenumber, captchacode);	
+		//找到 已激活的用户的手机对象 
+		if (p == null){	
+			/*** 手机号 验证码 比对失败 * **/	
+			//gp.setRetCode(errcode);
+			//gp.setRetInfo(errmsg);
+			returncode = errcode;
+			
+		}else{					
+			/*** 手机号 验证码 匹配、比对成功 * **/
+			// 验证验证码是否超时
+			int gap_time = Constants.SMS_Gap_Time; //两分钟  超时
+			//返回时间： 0    超时  ； 1   未超时
+			int  istimeoutflag =accountService.compareTimes(p.getRegisterDate(), new Date(), Constants.SMS_Gap_Time) ;
+			if(istimeoutflag == 1){
+				// 1   未超时
+				returncode = successcode ;
+			}else{
+				// 0    超时
+				returncode = overtimecode ;
+			}
+				
+		}
+		
+		return returncode ;
+		
+	}
 	/**
 	 * 找回密码时 根据phonenumber生成短信验证码
 	 * 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  

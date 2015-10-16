@@ -234,6 +234,24 @@ public class AccountService {
 		return p ;
 	}
 	
+	/**
+	 * 在已激活的手机号中查找  找回密码 中使用
+	 * 返回对象不同
+	 * */
+	public Phonenumber findUserPhoneByPhonenumAndCaptchaInFindPasswd(String phonenumber,String captchacode ){
+		Phonenumber  p ;
+		int be_actived =  1;
+		int phonestatus = be_actived ;
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumberAndCaptchacodeAndPhonestatusOrderByIdDesc(phonenumber, captchacode, phonestatus);
+		if(null == lp || lp.size() ==0){
+			p = null;
+		}else{
+			Iterator <Phonenumber> lpi = lp.iterator();  
+			p = lpi.next();
+		}
+		return p ;
+	}
+	
 	public List <Phonenumber>  findAllPhonenumberByphone(String phonenumber ){	
 		List <Phonenumber> lp =phonenumberDao.findByPhonenumber(phonenumber);
 		return lp ;
@@ -295,7 +313,7 @@ public class AccountService {
 	/**
 	 * startdate 起始时间
 	 * enddate	   终止时间  new Date()
-	 * gaptime   时间间隔   1 = 一分钟
+	 * gaptime   时间间隔   单位时间是  1 = 一分钟
 	 * 
 	 * @return
 	 * 		0    超时

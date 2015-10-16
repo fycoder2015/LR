@@ -12,6 +12,7 @@ public interface PhonenumberDao extends PagingAndSortingRepository<Phonenumber, 
 	List <Phonenumber> findByPhonenumberOrderByIdDesc(String phonenumber);
 	
 	List <Phonenumber> findByPhonenumberAndPhonestatusOrderByIdDesc(String phonenumber ,Integer phonestatus );
+	List <Phonenumber> findByPhonenumberAndCaptchacodeAndPhonestatusOrderByIdDesc(String phonenumber ,String captchacode ,Integer phonestatus );
 	List <Phonenumber> findByPhonenumber(String phonenumber);
 	List <Phonenumber> findByPhonenumberAndPhonestatus(String phonenumber ,Integer phonestatus );
 

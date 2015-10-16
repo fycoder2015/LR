@@ -32,6 +32,9 @@ public class User extends IdEntity {
 	private String picpathMid;//中头像  
 	private String picpathSmall;//小头像 
 	
+	private String tempToken;//临时Token 用于找回密码
+	private Date   tempTokenDate; //临时Token 的产生日期  后期进行时间比对  #二期
+	
 	/** 与正在使用的 角色一对一，UserRole 中的  useing=1，
 		以直接调用正在使用的UserRole **/	
 	private Long userroleId; //
@@ -133,9 +136,23 @@ public class User extends IdEntity {
 		this.registerDate = registerDate;
 	}
 	
-	
+	@JsonIgnore  //不在json的返回值中显示
+	public String getTempToken() {
+		return tempToken;
+	}
 
+	public void setTempToken(String tempToken) {
+		this.tempToken = tempToken;
+	}
+	// 设定JSON序列化时的日期格式
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
+	public Date getTempTokenDate() {
+		return tempTokenDate;
+	}
 
+	public void setTempTokenDate(Date tempTokenDate) {
+		this.tempTokenDate = tempTokenDate;
+	}
 
 	public String getPicpathBig() {
 		return picpathBig;
