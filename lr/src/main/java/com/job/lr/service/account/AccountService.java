@@ -161,6 +161,27 @@ public class AccountService {
 	}
 	
 	/**
+	 * 通过username 和 password查找用户 
+	 * username  loginname
+	 * password  digest 加密后的参数
+	 * 
+	 * @return  u 
+	 * 
+	 * */
+	public User findUserByPhonenumberAndTempToken(String phonenumber, String tempToken){
+		User u ;
+		List <User> ul =userDao.findByPhonenumberAndTempTokenOrderByIdDesc( phonenumber, tempToken);
+		if(null == ul || ul.size() ==0){
+			u = null;
+		}else{
+			Iterator <User> ui = ul.iterator();  
+			u = ui.next();
+		}
+		return u ;
+	}
+	
+	
+	/**
 	 * 通过phonenum 查找用户  在User中
 	 * 
 	 * @return  u 

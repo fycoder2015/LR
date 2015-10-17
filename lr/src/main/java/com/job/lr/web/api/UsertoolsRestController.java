@@ -155,8 +155,54 @@ public class UsertoolsRestController {
 		return gp;
 	}
 
-	
-	
+	/**
+	 *  找回密码中，重置用户密码
+	 *  
+	 *  通过手机号和临时令牌校验
+	 *  重置密码 ：
+	 *  	在User中，比对用户手机号 和 临时令牌（tempToken） 
+	 *  		Yes 比对成功 ,存在相关记录，重置密码，并清空临时令牌，(注：临时令牌只能使用一次)
+	 *  		No	比对不成功，不做理会。
+	 *    
+	 * 	@param
+	 *  		phonenumber
+	 *  		tempToken
+	 *  		newpassword  此处传递的是明文
+	 *  	
+	 *  @return
+	 * 		returnCode  -1 比对失败
+	 * 					 1 成功 并修改密码成功，同时清空了临时令牌 
+	 * 
+	 *  url ：
+	 *  	/api/v1/usertools/changeUserPassword?phonenumber={phonenumber}&tempToken={tempToken}&newpassword={newpassword}
+	 * http://localhost/lr/api/v1/usertools/changeUserPassword?phonenumber=13662127862&tempToken=c2cffb66d9e44ee1af4dfc85af93384c&newpassword=1233321
+	 * */
+	@RequestMapping(value = "changeUserPassword",method = RequestMethod.GET)
+	@ResponseBody
+	public GeneralResponse changeUserPassword(@RequestParam("phonenumber") String phonenumber ,
+			@RequestParam("tempToken") String tempToken,
+			@RequestParam("newpassword") String newpassword) {
+		
+		User u =accountService.findUserByPhonenumberAndTempToken(phonenumber, tempToken);
+		GeneralResponse gp = new GeneralResponse();
+		
+		if(u== null ){
+			gp.setRetCode(-1);
+			gp.setRetInfo("比对失败,不匹配");
+		}else{	
+			//比对成功
+			//1. 修改密码
+			u.setPassword(newpassword);
+			//u.setPlainPassword(newpassword);
+			//2. 清空临时令牌
+			u.setTempToken("");
+			u.setTempTokenDate(null);
+			accountService.updateUser(u);
+			gp.setRetCode(1);
+			gp.setRetInfo("匹配,同时修改成功修改密码");
+		}
+		return gp;
+	}
 	/**
 	 *  通过用户名和加密的密码，获取用户的 phonenum
 	 *  
