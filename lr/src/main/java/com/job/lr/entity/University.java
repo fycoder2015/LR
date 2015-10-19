@@ -24,7 +24,7 @@ public class University extends IdEntity {
 
 	private String university;
 	@JsonIgnore  //不在json的返回值中显示
-	private String  longitude; //经度
+	private String  longitude; //经度   
 	@JsonIgnore  //不在json的返回值中显示
 	private String  latitude ; //纬度
 	

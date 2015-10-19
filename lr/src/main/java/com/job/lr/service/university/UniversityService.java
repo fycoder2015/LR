@@ -51,6 +51,11 @@ public class UniversityService {
 		return (List<University>) universityDao.findAll();
 	}
 	
+	public List<University> getAllUniversityByCity(String city) {
+		return (List<University>) universityDao.findByCity(city);
+		
+	}
+	
 	public List<UniversitySubjectRec> findUniversitySubjectRecByUniversityId( Long universityId){
 		return  universitysubjectRecDao.findByUniversityIdOrderByIdDesc(universityId);
 	}

@@ -75,7 +75,42 @@ public class UniversityRestController {
 	public List<University> gogetUniversity() {
 		return universityService.getAllUniversity() ;		
 	}
+
 	
+	/**
+	 * 经纬度附近的大学列表
+	 * url ：
+	 * 	/api/v1/university/gogetUniversity
+	 * 
+	 * 	http://localhost/lr/api/v1/university/gogetUniversityByLocal
+	 * @longitude 
+	 * @latitude
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/gogetUniversityByLocal", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public List<University> gogetUniversityByLocal(@RequestParam("longitude") Long longitude ,@RequestParam("latitude") Long latitude) {
+		//#二期 待补充
+		return universityService.getAllUniversity() ;		
+	}
+	
+	/**
+	 * 某城市的大学列表
+	 * url ：
+	 * 	/api/v1/university/gogetUniversityByCity?city={}
+	 * 
+	 * 	http://localhost/lr/api/v1/university/gogetUniversityByCity?city=天津
+	 * @City
+	 *  
+	 * 
+	 * @return
+	 */
+	@RequestMapping(value = "/gogetUniversityByCity", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public List<University> gogetUniversityByCity(@RequestParam("city") String  city) {
+		
+		return universityService.getAllUniversityByCity(city) ;		
+		
+	}
 
 	/**
 	 * 某大学所有专业列表

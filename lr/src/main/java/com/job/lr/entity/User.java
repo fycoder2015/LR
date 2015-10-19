@@ -45,10 +45,12 @@ public class User extends IdEntity {
 	private String picpathSmall;//小头像 
 	
 	private String tempToken;//临时Token 用于找回密码
+	@JsonIgnore  //不在json的返回值中显示
 	private Date   tempTokenDate; //临时Token 的产生日期  后期进行时间比对  #二期
 	
 	/** 与正在使用的 角色一对一，UserRole 中的  useing=1，
 		以直接调用正在使用的UserRole **/	
+	@JsonIgnore  //不在json的返回值中显示
 	private Long userroleId; //
 	
 	/** 与正在使用头像的 一对一，UserHeadimg 中的  useing=1，

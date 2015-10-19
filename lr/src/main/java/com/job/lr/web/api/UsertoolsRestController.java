@@ -129,11 +129,28 @@ public class UsertoolsRestController {
 		// System.out.println("-----------------in  updateUser() --------------------");
 		// 调用JSR303 Bean Validator进行校验, 异常将由RestExceptionHandler统一处理.
 		BeanValidators.validateWithException(validator, user);
-		
-		User old_u =accountService.findUserByUsernamePasswd(loginName,password);
+		Long userId = getCurrentUserId();
+		User old_u = accountService.findUserByUserId(userId);
+		//User old_u =accountService.findUserByUsernamePasswd(loginName,password);
 		
 		GeneralResponse gp = new GeneralResponse();	
 		
+		old_u.setName(user.getName());
+		old_u.setPhonenumber(user.getPhonenumber());  //更新的手机号需要是在接口验证过的 
+		old_u.setPlainPassword(user.getPassword()); //新密码 为 密码原文  不是加密后的
+		old_u.setUniversity(user.getUniversity());
+		old_u.setUniversityId(user.getUniversityId());
+		old_u.setSubject(user.getSubject());
+		old_u.setSubjectId(user.getSubjectId());
+		old_u.setYears(user.getYears());
+		old_u.setYearsId(user.getYearsId());
+		old_u.setUserheadimgId(user.getUserheadimgId());
+		accountService.updateUser(old_u);
+		
+		gp.setRetCode(1);
+		gp.setRetInfo("已更新成功");
+		
+		/**
 		if(old_u.getLoginName().equals(loginName)){			
 			user.setId(old_u.getId());
 			user.setLoginName(loginName);
@@ -152,6 +169,8 @@ public class UsertoolsRestController {
 			gp.setRetCode(-1);
 			gp.setRetInfo("更新失败");
 		}
+		
+		***/
 		return gp;
 	}
 

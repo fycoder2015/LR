@@ -1,6 +1,8 @@
 
 package com.job.lr.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -12,8 +14,6 @@ import com.job.lr.entity.University;
 
 public interface UniversityDao extends PagingAndSortingRepository<University, Long>, JpaSpecificationExecutor<University> {
 
-
-	//@Modifying
-	//@Query("delete from Task task where task.user.id=?1")
-	//void deleteByUserId(Long id);
+	List <University> findByCity(String city);
+ 
 }
