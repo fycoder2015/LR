@@ -27,6 +27,18 @@ public class User extends IdEntity {
 	private String phonenumber;
 	@JsonIgnore  //不在json的返回值中显示
 	private String captchacode;
+	
+	private String university;
+	@JsonIgnore  //不在json的返回值中显示
+	private Long universityId;
+	private String subject;
+	@JsonIgnore  //不在json的返回值中显示
+	private Long subjectId;
+	private String years;
+	@JsonIgnore  //不在json的返回值中显示
+	private Long yearsId;	
+	
+	
 	private Date registerDate;
 	private String picpathBig;//大头像  
 	private String picpathMid;//中头像  
@@ -195,6 +207,57 @@ public class User extends IdEntity {
 
 	public void setUserroleId(Long userroleId) {
 		this.userroleId = userroleId;
+	}
+	
+	
+	
+
+	public String getUniversity() {
+		return university;
+	}
+
+	public void setUniversity(String university) {
+		this.university = university;
+	}
+
+	public Long getUniversityId() {
+		return universityId;
+	}
+
+	public void setUniversityId(Long universityId) {
+		this.universityId = universityId;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public Long getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(Long subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public String getYears() {
+		return years;
+	}
+
+	public void setYears(String years) {
+		this.years = years;
+	}
+
+	public Long getYearsId() {
+		return yearsId;
+	}
+
+	public void setYearsId(Long yearsId) {
+		this.yearsId = yearsId;
 	}
 
 	@Override

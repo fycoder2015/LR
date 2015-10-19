@@ -64,6 +64,7 @@
 				/api/v1/usertools/changeUserPassword/** = anon
 				/api/v1/usertools/gogetUsernameByPhonenumPasswd/** = anon
 				/api/v1/phoneCollect/** = anon
+				/api/v1/university/** = anon
 				
 				<!--  
 				  API中需要验证的，需要注掉下面的内容，才能获取到用户ID
