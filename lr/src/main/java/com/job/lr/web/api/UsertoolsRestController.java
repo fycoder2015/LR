@@ -31,7 +31,7 @@ import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.User;
-import com.job.lr.entity.UserHeadimg;
+import com.job.lr.entity.UserPicoo;
 import com.job.lr.entity.UserRole;
 import com.job.lr.repository.UserDao;
 import com.job.lr.rest.RestException;
@@ -149,7 +149,7 @@ public class UsertoolsRestController {
 		old_u.setSubjectId(user.getSubjectId());
 		old_u.setYears(user.getYears());
 		old_u.setYearsId(user.getYearsId());
-		old_u.setUserheadimgId(user.getUserheadimgId());
+		old_u.setUserpicooId(user.getUserpicooId() );
 		accountService.updateUser(old_u);
 		
 		gp.setRetCode(1);
@@ -448,6 +448,12 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
 	 * 
 	 *  根据 username 和
 	 *  加密后的   digest
+	 *  
+	 *  返回值：
+	 *  -1	上传文件为空，上传头像失败
+	 *  0	服务端文件路径缺失，导致上传头像失败
+	 * 	1  	上传头像成功
+	 * 
 	 * 
 	 *  url ：
 	 *  	/api/v1/usertools/uploaduserpic?username={username}&digest={加密后的passwd}
@@ -469,71 +475,76 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
     		String newFileName = userId+"_"+format.format(curDate)+suffix;
     		System.out.println(newFileName);	    	   
     		String destDir = System.getenv("IMAGE_DIR");
-    		//destDir="c:/loko";
+    		destDir="C:/uploadpic_here";
     		//System.out.println("destDir:"+destDir);
     		if (destDir == null|| destDir.equals("")) {
     			//redirectAttributes.addFlashAttribute("message", "未能获取文件保存位置，请联系系统管理员。");	    			
     			System.out.println("未能获取文件保存位置，请联系系统管理员。");
-    		}	    		
-    		String path = destDir+"/"+newFileName ;
-    		File destFile = new File(path);
-    		
-    		try {
-    			imageFile.transferTo(destFile);
-    		}catch(Exception e) {	    			
-    			System.out.println("message"+e.getMessage());	    			
+    			//空图片
+        		gp.setRetCode(0);
+        		gp.setRetInfo("服务端文件路径缺失，导致上传头像失败");
+    		}else{	    		
+	    		String path = destDir+"/"+newFileName ;
+	    		File destFile = new File(path);
+	    		
+	    		try {
+	    			imageFile.transferTo(destFile);
+	    		}catch(Exception e) {	    			
+	    			System.out.println("message"+e.getMessage());	    			
+	    		}
+	    		
+	    		int  first = 1 ; 
+	    		int  useing = 1 ;// 正在用   usering= 1 ; no use= 0 
+	    		User u = accountService.findUserByUserId(userId);
+	    		Long userpicooId = u.getUserpicooId();
+	    		//Long userpicooId = userheadimgId ;
+	    		
+	    		if (userpicooId == null || userpicooId == 0){
+	    			//新图片 之前没有图片信息
+	    			UserPicoo uhi = new UserPicoo();    			
+	    	    	uhi.setPicname(newFileName);
+	    	    	uhi.setPicpath(path);
+	    	    	uhi.setPicindate(curDate);
+	    	    	uhi.setPicorder(first);
+	    	    	uhi.setUseing(useing);
+	    	    	uhi = accountService.saveUserPicoo(uhi);
+	    	    	userpicooId = uhi.getId() ;
+	    	    	u.setUserpicooId(userpicooId);
+	    	    	u.setPicpathBig(newFileName);
+	    	    	accountService.updateUser(u);
+	    		}else{
+	    			//旧图片 有相关的图片信息
+	    			UserPicoo ui = accountService.findUserPicoo(userpicooId) ;
+	    			if(ui == null ){
+	    				//没有 图片对象，重新建立图片对象
+	    				UserPicoo uhi = new UserPicoo();       	    	
+	        	    	uhi.setPicname(newFileName);
+	        	    	uhi.setPicpath(path);
+	        	    	uhi.setPicindate(curDate);
+	        	    	uhi.setPicorder(first);
+	        	    	uhi.setUseing(useing);
+	        	    	uhi = accountService.saveUserPicoo(uhi);
+	        	    	userpicooId = uhi.getId() ;
+	        	    	u.setUserpicooId(userpicooId);
+	        	    	u.setPicpathBig(newFileName);
+	        	    	accountService.updateUser(u);
+	    			}else{
+	    				//更新原有的 图片对象
+	    			 	ui.setPicname(newFileName);
+	        	    	ui.setPicpath(path);
+	        	    	ui.setPicindate(curDate);
+	        	    	ui.setPicorder(first);
+	        	    	ui.setUseing(useing);
+	        	    	accountService.saveUserPicoo(ui);
+	    			}    	    		
+	    		}
+	    		gp.setRetCode(1);
+	    		gp.setRetInfo("上传头像成功");
     		}
-    		
-    		int  first = 1 ; 
-    		int  useing = 1 ;// 正在用   usering= 1 ; no use= 0 
-    		User u = accountService.findUserByUserId(userId);
-    		Long userheadimgId = u.getUserheadimgId();
-    		
-    		if (userheadimgId == null || userheadimgId == 0){
-    			//新图片 之前没有图片信息
-       			UserHeadimg uhi = new UserHeadimg();    			
-    	    	uhi.setImgname(newFileName);
-    	    	uhi.setImgpath(path);
-    	    	uhi.setIndate(curDate);
-    	    	uhi.setOrder(first);
-    	    	uhi.setUseing(useing);
-    	    	uhi = accountService.saveUserHeadimg(uhi);
-    	    	userheadimgId = uhi.getId() ;
-    	    	u.setUserheadimgId(userheadimgId);
-    	    	u.setPicpathBig(newFileName);
-    	    	accountService.updateUser(u);
-    		}else{
-    			//旧图片 有相关的图片信息
-    			UserHeadimg ui = accountService.findUserHeadimg(userheadimgId) ;
-    			if(ui == null ){
-    				//没有 图片对象，重新建立图片对象
-           			UserHeadimg uhi = new UserHeadimg();    			
-        	    	uhi.setImgname(newFileName);
-        	    	uhi.setImgpath(path);
-        	    	uhi.setIndate(curDate);
-        	    	uhi.setOrder(first);
-        	    	uhi.setUseing(useing);
-        	    	uhi = accountService.saveUserHeadimg(uhi);
-        	    	userheadimgId = uhi.getId() ;
-        	    	u.setUserheadimgId(userheadimgId);
-        	    	u.setPicpathBig(newFileName);
-        	    	accountService.updateUser(u);
-    			}else{
-    				//更新原有的 图片对象
-    			 	ui.setImgname(newFileName);
-        	    	ui.setImgpath(path);
-        	    	ui.setIndate(curDate);
-        	    	ui.setOrder(first);
-        	    	ui.setUseing(useing);
-        	    	accountService.saveUserHeadimg(ui);
-    			}    	    		
-    		}
-    		gp.setRetCode(1);
-    		gp.setRetInfo("上传头像成功");
 		}else{
 			//空图片
     		gp.setRetCode(-1);
-    		gp.setRetInfo("上传头像失败");
+    		gp.setRetInfo("上传文件为空，上传头像失败");
 		}		
 		
 		return gp;

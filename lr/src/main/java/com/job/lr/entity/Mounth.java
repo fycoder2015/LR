@@ -14,10 +14,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-//年份
+//月份
 @Entity
-@Table(name = "lr_years")
-public class Years extends IdEntity {
+@Table(name = "lr_mounth")
+public class Mounth extends IdEntity {
 	
 	private String year;
 	@JsonIgnore  //不在json的返回值中显示

@@ -53,10 +53,13 @@ public class User extends IdEntity {
 	@JsonIgnore  //不在json的返回值中显示
 	private Long userroleId; //
 	
-	/** 与正在使用头像的 一对一，UserHeadimg 中的  useing=1，
-	以直接调用正在使用的UserHeadimg **/	
-	private Long userheadimgId; //
+	/** 与正在使用头像的 一对一，现在的 UserPicoo (原先的UserHeadimg) 中的  useing=1，
+	以直接调用正在使用的UserPicoo (UserHeadimg 已删除  )**/	
+	//private Long userheadimgId; // UserPicoo 的 Id 
 
+	
+	private Long userpicooId; // UserPicoo 的 Id 
+	
 	public User() {
 	}
 
@@ -195,16 +198,26 @@ public class User extends IdEntity {
 	
 	
 	
-	public Long getUserheadimgId() {
-		return userheadimgId;
-	}
-
-	public void setUserheadimgId(Long userheadimgId) {
-		this.userheadimgId = userheadimgId;
-	}
+//	public Long getUserheadimgId() {
+//		return userheadimgId;
+//	}
+//
+//	public void setUserheadimgId(Long userheadimgId) {
+//		this.userheadimgId = userheadimgId;
+//	}
+	
+	
 
 	public Long getUserroleId() {
 		return userroleId;
+	}
+
+	public Long getUserpicooId() {
+		return userpicooId;
+	}
+
+	public void setUserpicooId(Long userpicooId) {
+		this.userpicooId = userpicooId;
 	}
 
 	public void setUserroleId(Long userroleId) {

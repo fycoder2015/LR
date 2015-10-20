@@ -16,7 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.User;
-import com.job.lr.entity.UserHeadimg;
+
+import com.job.lr.entity.UserPicoo;
 import com.job.lr.entity.UserRole;
 import com.job.lr.entity.UserRoleRec;
 import com.job.lr.filter.Constants;
@@ -57,13 +58,13 @@ public class AccountService {
 	
 	private Clock clock = Clock.DEFAULT;
 	
-	public UserHeadimg saveUserHeadimg(UserHeadimg uhi) {
-		UserHeadimg ui = userheadimgDao.save(uhi) ;
+	public UserPicoo saveUserPicoo(UserPicoo uhi) {
+		UserPicoo ui = userheadimgDao.save(uhi) ;
 		return ui;
 	}
 	
-	public UserHeadimg findUserHeadimg(Long userHeadimgId) {
-		UserHeadimg ui = userheadimgDao.findOne(userHeadimgId) ;
+	public UserPicoo findUserPicoo(Long userHeadimgId) {
+		UserPicoo ui = userheadimgDao.findOne(userHeadimgId) ;
 		return ui;
 	}
 

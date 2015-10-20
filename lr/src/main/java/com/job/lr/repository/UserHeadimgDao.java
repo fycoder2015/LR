@@ -7,10 +7,12 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
-import com.job.lr.entity.UserHeadimg;
+
+import com.job.lr.entity.UserPicoo;
 
 
-public interface UserHeadimgDao extends PagingAndSortingRepository<UserHeadimg, Long>, JpaSpecificationExecutor<UserHeadimg> {
+
+public interface UserHeadimgDao extends PagingAndSortingRepository<UserPicoo, Long>, JpaSpecificationExecutor<UserPicoo> {
 
 
 	//@Modifying
