@@ -57,7 +57,8 @@ public class User extends IdEntity {
 	以直接调用正在使用的UserPicoo (UserHeadimg 已删除  )**/	
 	//private Long userheadimgId; // UserPicoo 的 Id 
 
-	
+	/** 与正在使用头像UserPicoo 一对一，现在的 UserPicoo 中的  useing=1，
+	以直接调用正在使用的UserPicoo**/	
 	private Long userpicooId; // UserPicoo 的 Id 
 	
 	public User() {
