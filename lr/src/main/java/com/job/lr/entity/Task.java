@@ -52,7 +52,7 @@ public class Task extends IdEntity {
 	private String phoneCall;
 	
 	//任务状态：开放、关闭
-	private String jobSts="开放"; 
+	private String jobSts="W"; 
 	
 	//任务类型：全职 兼职
 	private String jobType;
