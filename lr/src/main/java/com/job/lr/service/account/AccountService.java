@@ -16,12 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.User;
+import com.job.lr.entity.UserHeadimg;
 import com.job.lr.entity.UserRole;
 import com.job.lr.entity.UserRoleRec;
 import com.job.lr.filter.Constants;
 import com.job.lr.repository.PhonenumberDao;
 import com.job.lr.repository.TaskDao;
 import com.job.lr.repository.UserDao;
+import com.job.lr.repository.UserHeadimgDao;
 import com.job.lr.repository.UserRoleDao;
 import com.job.lr.repository.UserRoleRecDao;
 import com.job.lr.service.ServiceException;
@@ -50,8 +52,20 @@ public class AccountService {
 	private TaskDao taskDao;
 	private UserRoleDao userroleDao;
 	private PhonenumberDao  phonenumberDao;
-	private UserRoleRecDao  userroleRecDao ;
+	private UserRoleRecDao  userroleRecDao ;	
+	private UserHeadimgDao	userheadimgDao ;
+	
 	private Clock clock = Clock.DEFAULT;
+	
+	public UserHeadimg saveUserHeadimg(UserHeadimg uhi) {
+		UserHeadimg ui = userheadimgDao.save(uhi) ;
+		return ui;
+	}
+	
+	public UserHeadimg findUserHeadimg(Long userHeadimgId) {
+		UserHeadimg ui = userheadimgDao.findOne(userHeadimgId) ;
+		return ui;
+	}
 
 	public List<User> getAllUser() {
 		return (List<User>) userDao.findAll();
@@ -498,6 +512,14 @@ public class AccountService {
 	@Autowired
 	public void setUserroleRecDao(UserRoleRecDao userroleRecDao) {
 		this.userroleRecDao = userroleRecDao;
+	}
+
+	public UserHeadimgDao getUserheadimgDao() {
+		return userheadimgDao;
+	}
+	@Autowired
+	public void setUserheadimgDao(UserHeadimgDao userheadimgDao) {
+		this.userheadimgDao = userheadimgDao;
 	}
 
 

@@ -184,6 +184,18 @@ public class TaskController {
 		redirectAttributes.addFlashAttribute("message", "更新任务成功");
 		return "redirect:/task/";
 	}
+	
+	/**
+	 * 跳转到图片上传页面   newadd
+	 * 
+	 *  /lr/task/toImagePlace
+	 *  
+	 * */
+	@RequestMapping(value = "toImagePlace", method = RequestMethod.GET)
+	public String toImagePlace(Model model, RedirectAttributes redirectAttributes) {
+		return "/account/useruploadfileForm";
+	}
+	
 
 	//转向到接收上传的文件页面 get   liuy
 	@RequestMapping(value = "uploadfile/{id}", method = RequestMethod.GET)

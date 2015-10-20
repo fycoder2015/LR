@@ -1,5 +1,7 @@
 package com.job.lr.web.api;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.validation.Valid;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.beanvalidator.BeanValidators;
 import org.springside.modules.web.MediaTypes;
@@ -27,6 +31,7 @@ import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.User;
+import com.job.lr.entity.UserHeadimg;
 import com.job.lr.entity.UserRole;
 import com.job.lr.repository.UserDao;
 import com.job.lr.rest.RestException;
@@ -436,6 +441,109 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
 
 		return gp; 
 	}
+	
+
+	/**
+	 *  通过用户名和加密的密码，上传图片
+	 * 
+	 *  根据 username 和
+	 *  加密后的   digest
+	 * 
+	 *  url ：
+	 *  	/api/v1/usertools/uploaduserpic?username={username}&digest={加密后的passwd}
+	 * 		http://localhost/lr/api/v1/usertools/uploaduserpic?username=7add6c21f9934cdaac631d16e6eafc49&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * */
+	@RequestMapping(value = "uploaduserpic",method = RequestMethod.POST, produces = MediaTypes.JSON_UTF_8)
+	@ResponseBody
+	public GeneralResponse uploaduserpic(@RequestParam(value = "imageFile") MultipartFile imageFile ) {		
+		//上传图片		
+		Long userId = getCurrentUserId();
+		
+		GeneralResponse gp = new GeneralResponse();	
+		//保存图片
+		Date curDate = new Date();			
+		if (imageFile!=null && imageFile.getContentType().contains("image")) {
+            String fileName = imageFile.getOriginalFilename();
+            String suffix = fileName.substring(fileName.indexOf("."));	            
+    		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");	    		
+    		String newFileName = userId+"_"+format.format(curDate)+suffix;
+    		System.out.println(newFileName);	    	   
+    		String destDir = System.getenv("IMAGE_DIR");
+    		//destDir="c:/loko";
+    		//System.out.println("destDir:"+destDir);
+    		if (destDir == null|| destDir.equals("")) {
+    			//redirectAttributes.addFlashAttribute("message", "未能获取文件保存位置，请联系系统管理员。");	    			
+    			System.out.println("未能获取文件保存位置，请联系系统管理员。");
+    		}	    		
+    		String path = destDir+"/"+newFileName ;
+    		File destFile = new File(path);
+    		
+    		try {
+    			imageFile.transferTo(destFile);
+    		}catch(Exception e) {	    			
+    			System.out.println("message"+e.getMessage());	    			
+    		}
+    		
+    		int  first = 1 ; 
+    		int  useing = 1 ;// 正在用   usering= 1 ; no use= 0 
+    		User u = accountService.findUserByUserId(userId);
+    		Long userheadimgId = u.getUserheadimgId();
+    		
+    		if (userheadimgId == null || userheadimgId == 0){
+    			//新图片 之前没有图片信息
+       			UserHeadimg uhi = new UserHeadimg();    			
+    	    	uhi.setImgname(newFileName);
+    	    	uhi.setImgpath(path);
+    	    	uhi.setIndate(curDate);
+    	    	uhi.setOrder(first);
+    	    	uhi.setUseing(useing);
+    	    	uhi = accountService.saveUserHeadimg(uhi);
+    	    	userheadimgId = uhi.getId() ;
+    	    	u.setUserheadimgId(userheadimgId);
+    	    	u.setPicpathBig(newFileName);
+    	    	accountService.updateUser(u);
+    		}else{
+    			//旧图片 有相关的图片信息
+    			UserHeadimg ui = accountService.findUserHeadimg(userheadimgId) ;
+    			if(ui == null ){
+    				//没有 图片对象，重新建立图片对象
+           			UserHeadimg uhi = new UserHeadimg();    			
+        	    	uhi.setImgname(newFileName);
+        	    	uhi.setImgpath(path);
+        	    	uhi.setIndate(curDate);
+        	    	uhi.setOrder(first);
+        	    	uhi.setUseing(useing);
+        	    	uhi = accountService.saveUserHeadimg(uhi);
+        	    	userheadimgId = uhi.getId() ;
+        	    	u.setUserheadimgId(userheadimgId);
+        	    	u.setPicpathBig(newFileName);
+        	    	accountService.updateUser(u);
+    			}else{
+    				//更新原有的 图片对象
+    			 	ui.setImgname(newFileName);
+        	    	ui.setImgpath(path);
+        	    	ui.setIndate(curDate);
+        	    	ui.setOrder(first);
+        	    	ui.setUseing(useing);
+        	    	accountService.saveUserHeadimg(ui);
+    			}    	    		
+    		}
+    		gp.setRetCode(1);
+    		gp.setRetInfo("上传头像成功");
+		}else{
+			//空图片
+    		gp.setRetCode(-1);
+    		gp.setRetInfo("上传头像失败");
+		}		
+		
+		return gp;
+	}
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 取出Shiro中的当前用户Id.
