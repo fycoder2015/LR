@@ -211,7 +211,7 @@ public class UsertoolsRestController {
 		}else{	
 			//比对成功
 			//1. 修改密码
-			u.setPassword(newpassword);
+			u.setPlainPassword(newpassword);
 			//u.setPlainPassword(newpassword);
 			//2. 清空临时令牌
 			u.setTempToken("");
