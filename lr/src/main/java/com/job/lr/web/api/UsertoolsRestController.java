@@ -3,6 +3,7 @@ package com.job.lr.web.api;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -32,8 +33,10 @@ import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.User;
 import com.job.lr.entity.UserPicoo;
+import com.job.lr.entity.UserPointsLog;
 import com.job.lr.entity.UserRole;
 import com.job.lr.repository.UserDao;
+import com.job.lr.repository.UserPointsLogDao;
 import com.job.lr.rest.RestException;
 import com.job.lr.service.account.AccountService;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
@@ -470,21 +473,58 @@ public class UsertoolsRestController {
 	}
 	
 	/**
-	 *  通过用户名和加密的密码，增加用户正在使用的积分
+	 * 积分记录
+	 *  通过用户名和加密的密码，获取用户积分记录
+	 * 
+	 *  	根据 username（loginname） 和 加密后的   digest
+	 * 
+	 *  url ：Get 
+	 *  	/api/v1/usertools/gogetuserpointslog?username={username}&digest={加密后的passwd}
+	 *  
+	 * 		http://localhost/lr/api/v1/usertools/gogetuserpointslog?username=user007&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * 		http://localhost/lr/api/v1/usertools/gogetuserpointslog?username=7add6c21f9934cdaac631d16e6eafc49&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * http://localhost:8080/lr/api/v1/usertools/gogetuserpointslog?username=7add6c21f9934cdaac631d16e6eafc49&digest=83ba6cc0df6c1a7dbbf908d78680c02a5f2e9077
+	 *   
+	 * */
+	@RequestMapping(value = "gogetuserpointslog",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+	//@ResponseBody
+	public List<UserPointsLog> gogetUserPointsLog(@RequestParam("username") String loginName ,@RequestParam("digest") String password) {
+		Long userId = getCurrentUserId();
+		User u = accountService.findUserByUserId(userId);
+		if (u == null ){
+			return null;
+		}else{					
+			List<UserPointsLog> lu = accountService.findUserPointsLogByUserId(userId);
+			if( lu == null ){
+				return null;
+			}else{
+				return lu;
+			}
+		}
+		
+	}
+	
+	
+	
+	/**
+	 *  通过用户名和加密的密码，增加用户正在使用的积分,同时增加积分日志 UserPointsLog
 	 * 
 	 *  	根据 username（loginname） 和 加密后的   digest
 	 *  	upoint 用户积分数值
 	 * 
 	 *  url ：Get 
-	 *  	/api/v1/usertools/goaddUserPoint?username={username}&digest={加密后的passwd}&upoint={int}
+	 *  	/api/v1/usertools/goaddUserPoint?username={username}&digest={加密后的passwd}&upoint={int}&upointevent={事件}
 	 *  
 	 * 		
-http://localhost/lr/api/v1/usertools/goaddUserPoint?username=7add6c21f9934cdaac631d16e6eafc49&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a&upoint=10
+http://localhost/lr/api/v1/usertools/goaddUserPoint?username=7add6c21f9934cdaac631d16e6eafc49&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a&upoint=10&upointevent={事件}
+http://localhost:8080/lr/api/v1/usertools/goaddUserPoint?username=7add6c21f9934cdaac631d16e6eafc49&digest=83ba6cc0df6c1a7dbbf908d78680c02a5f2e9077&upoint=10&upointevent=%E7%AD%BE%E5%88%B0
 	 * 
 	 * */
 	@RequestMapping(value = "goaddUserPoint",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
 	@ResponseBody
-	public GeneralResponse goaddUserPoint(@RequestParam("username") String loginName ,@RequestParam("digest") String password,@RequestParam("upoint") Integer userpoint) {
+	public GeneralResponse goaddUserPoint(@RequestParam("username") String loginName ,@RequestParam("digest") String password,@RequestParam("upoint") Integer userpoint,@RequestParam("upointevent") String upointevent) {
 		GeneralResponse gp = new GeneralResponse();		
 		int errcode = -1 ;
 		int successcode = 1;		
@@ -501,6 +541,19 @@ http://localhost/lr/api/v1/usertools/goaddUserPoint?username=7add6c21f9934cdaac6
 			urpointnum = userpoint+urpointnum; //新增数值+ 用户原有积分数值
 			ur.setUserpoint(urpointnum);
 			accountService.saveUserRole(ur);
+			
+			//增加积分记录log
+			UserPointsLog upl = new UserPointsLog();
+			upl.setUserId(userId);
+			upl.setUserpoint(userpoint);
+			upl.setUserpointDate(new Date());
+			if("".equals(upointevent)||upointevent== null){
+				upl.setUserpointevent("无说明");
+			}else{
+				upl.setUserpointevent(upointevent);
+			}
+			accountService.saveUserPointsLog(upl);
+
 			gp.setRetCode(successcode);
 			gp.setRetInfo("用户积分增加成功");		
 		}
