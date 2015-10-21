@@ -1,4 +1,3 @@
-
 package com.job.lr.web.api;
 
 import org.springframework.stereotype.Controller;

@@ -42,8 +42,9 @@
 	<div><a class="btn" href="${ctx}/comment/create">创建评论</a></div>
 	
 	<div><a class="btn" href="${ctx}/enterprise">企业列表</a></div>
+	<div><a class="btn" href="${ctx}/task/toImagePlace">用户图片上传</a></div>
 	<br>
-	<br>
+	<br> 
 	<br>
 	<div><a class="btn" href="${ctx}/bounty">赏金任务列表</a></div>
 	

@@ -27,19 +27,40 @@ public class User extends IdEntity {
 	private String phonenumber;
 	@JsonIgnore  //不在json的返回值中显示
 	private String captchacode;
+	
+	private String university;
+	@JsonIgnore  //不在json的返回值中显示
+	private Long universityId;
+	private String subject;
+	@JsonIgnore  //不在json的返回值中显示
+	private Long subjectId;
+	private String years;
+	@JsonIgnore  //不在json的返回值中显示
+	private Long yearsId;	
+	
+	
 	private Date registerDate;
 	private String picpathBig;//大头像  
 	private String picpathMid;//中头像  
 	private String picpathSmall;//小头像 
 	
+	private String tempToken;//临时Token 用于找回密码
+	@JsonIgnore  //不在json的返回值中显示
+	private Date   tempTokenDate; //临时Token 的产生日期  后期进行时间比对  #二期
+	
 	/** 与正在使用的 角色一对一，UserRole 中的  useing=1，
 		以直接调用正在使用的UserRole **/	
+	@JsonIgnore  //不在json的返回值中显示
 	private Long userroleId; //
 	
-	/** 与正在使用头像的 一对一，UserHeadimg 中的  useing=1，
-	以直接调用正在使用的UserHeadimg **/	
-	private Long userheadimgId; //
+	/** 与正在使用头像的 一对一，现在的 UserPicoo (原先的UserHeadimg) 中的  useing=1，
+	以直接调用正在使用的UserPicoo (UserHeadimg 已删除  )**/	
+	//private Long userheadimgId; // UserPicoo 的 Id 
 
+	/** 与正在使用头像UserPicoo 一对一，现在的 UserPicoo 中的  useing=1，
+	以直接调用正在使用的UserPicoo**/	
+	private Long userpicooId; // UserPicoo 的 Id 
+	
 	public User() {
 	}
 
@@ -133,9 +154,23 @@ public class User extends IdEntity {
 		this.registerDate = registerDate;
 	}
 	
-	
+	@JsonIgnore  //不在json的返回值中显示
+	public String getTempToken() {
+		return tempToken;
+	}
 
+	public void setTempToken(String tempToken) {
+		this.tempToken = tempToken;
+	}
+	// 设定JSON序列化时的日期格式
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
+	public Date getTempTokenDate() {
+		return tempTokenDate;
+	}
 
+	public void setTempTokenDate(Date tempTokenDate) {
+		this.tempTokenDate = tempTokenDate;
+	}
 
 	public String getPicpathBig() {
 		return picpathBig;
@@ -164,20 +199,81 @@ public class User extends IdEntity {
 	
 	
 	
-	public Long getUserheadimgId() {
-		return userheadimgId;
-	}
-
-	public void setUserheadimgId(Long userheadimgId) {
-		this.userheadimgId = userheadimgId;
-	}
+//	public Long getUserheadimgId() {
+//		return userheadimgId;
+//	}
+//
+//	public void setUserheadimgId(Long userheadimgId) {
+//		this.userheadimgId = userheadimgId;
+//	}
+	
+	
 
 	public Long getUserroleId() {
 		return userroleId;
 	}
 
+	public Long getUserpicooId() {
+		return userpicooId;
+	}
+
+	public void setUserpicooId(Long userpicooId) {
+		this.userpicooId = userpicooId;
+	}
+
 	public void setUserroleId(Long userroleId) {
 		this.userroleId = userroleId;
+	}
+	
+	
+	
+
+	public String getUniversity() {
+		return university;
+	}
+
+	public void setUniversity(String university) {
+		this.university = university;
+	}
+
+	public Long getUniversityId() {
+		return universityId;
+	}
+
+	public void setUniversityId(Long universityId) {
+		this.universityId = universityId;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public Long getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(Long subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	public String getYears() {
+		return years;
+	}
+
+	public void setYears(String years) {
+		this.years = years;
+	}
+
+	public Long getYearsId() {
+		return yearsId;
+	}
+
+	public void setYearsId(Long yearsId) {
+		this.yearsId = yearsId;
 	}
 
 	@Override

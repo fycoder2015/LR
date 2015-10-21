@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import javax.servlet.ServletRequest;
 
@@ -12,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springside.modules.web.MediaTypes;
 
@@ -19,6 +22,7 @@ import org.springside.modules.web.MediaTypes;
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
+import com.job.lr.entity.User;
 import com.job.lr.filter.Constants;
 import com.job.lr.rest.TaskRestController;
 import com.job.lr.service.account.AccountService;
@@ -41,13 +45,91 @@ public class PhoneRestController {
 	@Autowired
 	private AccountService  accountService;
 	
+	@Autowired
+	private UserPhoneTools userPhoneTools;
 	
 	/**
-	 * 根据 手机号和 验证码
+	 * 找回密时，根据 手机号和 验证码
+	 *   核查phonenumber的验证码是否正确  是否匹配
+	 *   需要验证生成验证码的时间是否超时
+	 *
+	 * @param 
+	 * 		phonenumber
+	 * 		captchacode
+	 * @return 
+	 * 		{@value}  url: /api/v1/phoneCollect/checkPhonenumberInFindPasswd
+	 * 
+	 * 找回密时，核实手机和验证码是否匹配
+	 * url ：
+	 * 	http://localhost/lr/api/v1/phoneCollect/checkPhonenumberInFindPasswd?phonenumber=13662127862&captchacode=3361
+	 * 
+	 * 0  验证码超时：
+	 *   	需要重新获取验证码 
+	 *   	调用这个  http://localhost/lr/api/v1/phoneCollect/genCaptchacodeByPhoneInFindPasswd?phonenumber={phonemum}
+	 *    		http://localhost/lr/api/v1/phoneCollect/genCaptchacodeByPhoneInFindPasswd?phonenumber=13662127862
+	 *   	即本类下的  genCaptchacodeByPhoneInFindPasswd()方法
+	 *   
+	 */   
+	@RequestMapping(value = "/checkPhonenumberInFindPasswd", method = RequestMethod.GET)
+	@ResponseBody
+	public GeneralResponse  checkPhonenumberInFindPasswd(@RequestParam("phonenumber") String phonenum,@RequestParam("captchacode") String captchacode ) {
+		GeneralResponse gp = new GeneralResponse();
+		int returncode =  0 ;
+		int errcode = -1 ;
+		String errmsg = "比对不成功";
+		int successcode = 1 ;
+		String successmsg = "比对OK_";
+		int overtimecode = 0 ;
+		String overtimemsg = "验证码超时，需要重新获取验证码" ;
+		int err2code = -2 ;
+		String err2msg="未知错误";
+		int err3code = -3 ;
+		String err3msg="错误：没有找到手机号对应的用户";
+		
+		
+		returncode = userPhoneTools.checkPhoneInFindPasswd(phonenum,captchacode) ;
+		
+		if (returncode == errcode){
+			gp.setRetCode(errcode);
+			gp.setRetInfo(errmsg);			
+		}else if(returncode == successcode){
+			/**
+			 * 1.生成临时验证码，
+			 * 2.找到手机号对应的User， 存储入临时验证码
+			 * 3.返回临时验证码，临时验证码存在RetInfo 中，显示。 
+			 * 
+			 * */
+			String uuid = UUID.randomUUID().toString(); 
+			String tempToken = uuid.substring(0,8)+uuid.substring(9,13)+uuid.substring(14,18)+uuid.substring(19,23)+uuid.substring(24); 
+		    User u = accountService.findUserByPhonenumber(phonenum);
+		    if(u == null){
+		    	gp.setRetCode(err3code);
+				gp.setRetInfo(err3msg);
+		    }else{
+			    u.setTempToken(tempToken);
+			    u.setTempTokenDate(new Date());
+			    accountService.updateUser(u);				
+			    successmsg =successmsg+"令牌是:"+tempToken;				
+				gp.setRetCode(successcode);
+				gp.setRetInfo(successmsg);	
+		    }
+		}else if(returncode == overtimecode){
+			gp.setRetCode(overtimecode);
+			gp.setRetInfo(overtimemsg);
+		}else{
+			gp.setRetCode(err2code);
+			gp.setRetInfo(err2msg);
+		}
+		
+		return gp;
+	}
+	
+	/**
+	 * 注册时，根据 手机号和 验证码
 	 *   核查phonenumber的验证码是否正确  是否匹配
 	 *   需要验证生成验证码的时间是否超时
 	 *   
-	 *   
+	 *   比对Phonenumber中的对象
 	 * @param 
 	 * 		phonenumber
 	 * 		captchacode
@@ -56,7 +138,7 @@ public class PhoneRestController {
 	 * 
 	 * 核实手机和验证码是否匹配 ？
 	 * url ：
-	 * 	http://localhost/lr/api/v1/phoneCollect/checkPhonenumber?phonenumber=  &captchacode=3361
+	 * 	http://localhost/lr/api/v1/phoneCollect/checkPhonenumber?phonenumber=13662127862&captchacode=3361
 	 */
 	@RequestMapping(value = "/checkPhonenumber", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse  checkPhonenumber(ServletRequest request) {
@@ -104,8 +186,64 @@ public class PhoneRestController {
 
 	}
 	
+
+	
 	/**
-	 * 	根据手机号码 生成 验证码        验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
+	 * 	找回密码时，根据手机号码 生成 验证码
+	 * 		 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
+	 * 
+	 *  ---- 短信接入
+	 *  
+	 *     向已激活的手机号，  发送手机验证码，每次请求都会发送
+	 * 
+	 *  @param
+	 *  	phonenumber  
+	 *  
+	 *  @return 
+	 *  returnCode -1 不存在相应的用户手机号
+	 *  			   1  短信发送成功
+	 *  			   0  短信发送失败
+	 *  {@value}  url: 
+	 * 	http://localhost/lr/api/v1/phoneCollect/genCaptchacodeByPhoneInFindPasswd?phonenumber={phonemum}
+	 * 
+	 * 
+	 * */
+	@RequestMapping(value = "/genCaptchacodeByPhoneInFindPasswd", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	@ResponseBody
+	public GeneralResponse  genCaptchacodeByPhoneInFindPasswd (@RequestParam("phonenumber") String phonenum) {
+		
+		GeneralResponse gp = new GeneralResponse();
+		int errcode = -1 ;
+		String errmsg = "不存在相应的用户手机号";
+		int successcode = 1 ;
+		String successmsg = "已向对应手机号发送短信验证码，短信发送成功";
+		int senderr = 0;
+		String senderrmsg="向对应手机号发送验证码短信失败";
+		int err2code = -2 ;
+		String err2msg="未知错误";
+		
+		int returncode = userPhoneTools.genCaptchacodeByPhoneInFindPasswd(phonenum) ;
+		if (returncode == errcode){
+			gp.setRetCode(errcode);
+			gp.setRetInfo(errmsg);			
+		}else if(returncode == successcode){
+			gp.setRetCode(successcode);
+			gp.setRetInfo(successmsg);	
+		}else if(returncode == senderr){
+			gp.setRetCode(senderr);
+			gp.setRetInfo(senderrmsg);
+		}else{
+			gp.setRetCode(err2code);
+			gp.setRetInfo(err2msg);
+		}
+		
+		return gp;
+		
+	}
+		
+	
+	/**
+	 * 	注册时，根据手机号码 生成 验证码        验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
 	 *  ---- 短信接入
 	 *  
 	 * 	         未有号码  增加验证码
@@ -276,6 +414,16 @@ public class PhoneRestController {
 
 	public void setAccountService(AccountService accountService) {
 		this.accountService = accountService;
+	}
+
+
+	public UserPhoneTools getUserPhoneTools() {
+		return userPhoneTools;
+	}
+
+
+	public void setUserPhoneTools(UserPhoneTools userPhoneTools) {
+		this.userPhoneTools = userPhoneTools;
 	}
 	
 	

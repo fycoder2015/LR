@@ -29,6 +29,7 @@ public class UserRole extends IdEntity {
 
 	private String  rolename;//用户角色名称
 	private Integer userpoint;//用户积分
+	@JsonIgnore
 	private Integer userpoint2;//用户积分  备用
 	private Integer usercredit ; //用户信用
 	private String  roledescription;

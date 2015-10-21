@@ -13,7 +13,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 /**
  * 用户和头像的关系表
  * 保持历史纪录的
- * User 和  UserHeadimg 的对应关系表
+ * User 和  UserPicoo 的对应关系表
+ * 
+ * 	原来的UserHeadimg出现奇怪的事 这里不使用它了。
  * 
  * */
 @Entity
@@ -55,5 +57,15 @@ public class UserHeadimgRec extends IdEntity {
 	public UserHeadimgRec() {
 		super();
 	}
+
+	public Long getHeadimgId() {
+		return headimgId;
+	}
+
+	public void setHeadimgId(Long headimgId) {
+		this.headimgId = headimgId;
+	}
+	
+	
 	
 }
