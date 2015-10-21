@@ -21,7 +21,12 @@ public class User extends IdEntity {
 	private String loginName;
 	private String name;
 	private String plainPassword;
-	private String password;
+	private String password;	
+	private Integer sexynum; //性别数字
+	private String sexy; //性别
+	private Integer userage; //年龄
+	private String usersign; //签名
+	private Integer userstarss; //用户星星数	
 	private String salt;
 	private String roles;// 角色列表在数据库中实际以逗号分隔字符串存储，因此返回不能修改的List.
 	private String phonenumber;
@@ -212,7 +217,9 @@ public class User extends IdEntity {
 	public Long getUserroleId() {
 		return userroleId;
 	}
-
+	public void setUserroleId(Long userroleId) {
+		this.userroleId = userroleId;
+	}
 	public Long getUserpicooId() {
 		return userpicooId;
 	}
@@ -220,14 +227,7 @@ public class User extends IdEntity {
 	public void setUserpicooId(Long userpicooId) {
 		this.userpicooId = userpicooId;
 	}
-
-	public void setUserroleId(Long userroleId) {
-		this.userroleId = userroleId;
-	}
 	
-	
-	
-
 	public String getUniversity() {
 		return university;
 	}
@@ -274,6 +274,46 @@ public class User extends IdEntity {
 
 	public void setYearsId(Long yearsId) {
 		this.yearsId = yearsId;
+	}
+	
+	public String getSexy() {
+		return sexy;
+	}
+
+	public void setSexy(String sexy) {
+		this.sexy = sexy;
+	}
+
+	public String getUsersign() {
+		return usersign;
+	}
+
+	public void setUsersign(String usersign) {
+		this.usersign = usersign;
+	}
+
+	public Integer getSexynum() {
+		return sexynum;
+	}
+
+	public void setSexynum(Integer sexynum) {
+		this.sexynum = sexynum;
+	}
+
+	public Integer getUserage() {
+		return userage;
+	}
+
+	public void setUserage(Integer userage) {
+		this.userage = userage;
+	}
+
+	public Integer getUserstarss() {
+		return userstarss;
+	}
+
+	public void setUserstarss(Integer userstarss) {
+		this.userstarss = userstarss;
 	}
 
 	@Override

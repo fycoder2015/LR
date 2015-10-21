@@ -140,6 +140,12 @@ public class UsertoolsRestController {
 		
 		GeneralResponse gp = new GeneralResponse();	
 		
+		old_u.setUserage(user.getUserage()); ;
+		old_u.setSexynum(user.getSexynum());
+		old_u.setSexy(user.getSexy());
+		old_u.setUsersign(user.getUsersign());
+		old_u.setUserstarss(user.getUserstarss());
+		
 		old_u.setName(user.getName());
 		old_u.setPhonenumber(user.getPhonenumber());  //更新的手机号需要是在接口验证过的 
 		old_u.setPlainPassword(user.getPassword()); //新密码 为 密码原文  不是加密后的
@@ -178,6 +184,40 @@ public class UsertoolsRestController {
 		***/
 		return gp;
 	}
+	
+	/**
+	 *  通过用户名和加密的密码，更新用户密码
+	 * 
+	 *  根据 username  和 加密后的   digest
+	 *  
+	 *  post：  passwd 密码原文
+	 * 
+	 *  url ：Post 
+	 *  	/api/v1/usertools/updateuserpasswd?username={username}&digest={加密后的passwd}
+	 * 		http://localhost/lr/api/v1/usertools/updateuserPasswd?username=user007&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * http://localhost/lr/api/v1/usertools/updateuserPasswd?username=fab8cf43a14d4f90aab28d31ce1aa11b&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * post passwd
+	 * */
+	@RequestMapping(value = "updateuserPasswd", method = RequestMethod.POST) //, consumes = MediaTypes.JSON
+	public GeneralResponse updateuserpasswd(@Valid String passwd ,@RequestParam("username") String loginName ,@RequestParam("digest") String password) {
+		BeanValidators.validateWithException(validator, passwd);
+		Long userId = getCurrentUserId();
+		User old_u = accountService.findUserByUserId(userId);
+		GeneralResponse gp = new GeneralResponse();	
+		if( old_u == null) {
+			gp.setRetCode(0);
+			gp.setRetInfo("未找到相应的用户");
+		}else{
+			old_u.setPlainPassword(passwd); //新密码 为 密码原文  不是加密后的			
+			accountService.updateUser(old_u);
+			gp.setRetCode(1);
+			gp.setRetInfo("用户密码已更新成功");			
+		}
+		return gp;
+	}
+	
 
 	/**
 	 *  找回密码中，重置用户密码
