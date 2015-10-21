@@ -55,20 +55,20 @@
         }
 </script>
 
-
-
-
-
-
 <sitemesh:head/>
 </head>
 
 <body>
 	<div class="container">
 		<%@ include file="/WEB-INF/layouts/header.jsp"%>
+		<div class="banner-join"></div>
+		<!-- liuy add 1
 		<div id="content">
+		 -->
 			<sitemesh:body/>
+		<!-- liuy add 2
 		</div>
+		-->
 		<%@ include file="/WEB-INF/layouts/footer.jsp"%>
 	</div>
 	<!-- old  有下面这句  -->

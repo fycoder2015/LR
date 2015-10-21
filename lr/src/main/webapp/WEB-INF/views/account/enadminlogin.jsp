@@ -11,9 +11,11 @@
 
 <body>
 
-<!-- 幻灯开始 -->
+
+<!--  liuy 调整  幻灯开始 
 <div class="banner-join"></div>
-<!-- 幻灯结束 -->
+   幻灯结束 -->
+   
 <!-- 中间内容开始  -->
 <div class="log">
     <div class="logDiv">
