@@ -218,6 +218,73 @@ public class UsertoolsRestController {
 		return gp;
 	}
 	
+	/**
+	 *  通过用户名和加密的密码，更新用户签名
+	 * 
+	 *  根据 username  和 加密后的   digest
+	 *  
+	 *  post：  usersign 密码原文
+	 * 
+	 *  url ：Post 
+	 *  	/api/v1/usertools/updateusersign?username={username}&digest={加密后的passwd}
+	 * 		http://localhost/lr/api/v1/usertools/updateusersign?username=user007&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * http://localhost/lr/api/v1/usertools/updateusersign?username=fab8cf43a14d4f90aab28d31ce1aa11b&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * post passwd
+	 * */
+	@RequestMapping(value = "updateusersign", method = RequestMethod.POST) //, consumes = MediaTypes.JSON
+	public GeneralResponse updateusersign(@Valid String usersign ,@RequestParam("username") String loginName ,@RequestParam("digest") String password) {
+		BeanValidators.validateWithException(validator, usersign);
+		Long userId = getCurrentUserId();
+		User old_u = accountService.findUserByUserId(userId);
+		GeneralResponse gp = new GeneralResponse();	
+		if( old_u == null) {
+			gp.setRetCode(0);
+			gp.setRetInfo("未找到相应的用户");
+		}else{
+			old_u.setUsersign(usersign); //更改签名	
+			accountService.updateUser(old_u);
+			gp.setRetCode(1);
+			gp.setRetInfo("用户签名已更新成功");			
+		}
+		return gp;
+	}
+	
+	/**
+	 *  通过用户名和加密的密码，更新用户星数
+	 * 
+	 *  根据 username  和 加密后的   digest
+	 *  
+	 *  post：  userstars 密码原文
+	 * 
+	 *  url ：Post 
+	 *  	/api/v1/usertools/updateuserstars?username={username}&digest={加密后的passwd}
+	 * 		http://localhost/lr/api/v1/usertools/updateuserstars?username=user007&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * http://localhost/lr/api/v1/usertools/updateuserstars?username=fab8cf43a14d4f90aab28d31ce1aa11b&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * 
+	 * post userstars  int
+	 * */
+	@RequestMapping(value = "updateuserstars", method = RequestMethod.POST) //, consumes = MediaTypes.JSON
+	public GeneralResponse updateuserstars(@Valid Integer userstars ,@RequestParam("username") String loginName ,@RequestParam("digest") String password) {
+		BeanValidators.validateWithException(validator, userstars);
+		Long userId = getCurrentUserId();
+		User old_u = accountService.findUserByUserId(userId);
+		GeneralResponse gp = new GeneralResponse();	
+		if( old_u == null) {
+			gp.setRetCode(0);
+			gp.setRetInfo("未找到相应的用户");
+		}else{
+			old_u.setUserstarss(userstars); //更改星星数
+			accountService.updateUser(old_u);
+			gp.setRetCode(1);
+			gp.setRetInfo("用户星星已更新成功");			
+		}
+		return gp;
+	}
+	
+	
 
 	/**
 	 *  找回密码中，重置用户密码
