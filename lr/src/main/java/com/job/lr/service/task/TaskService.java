@@ -102,7 +102,7 @@ public class TaskService {
 	public List<Task> getAllOpenTask() {
 		
 		Map<String, Object> searchParams = new HashMap<String, Object> ();
-		searchParams.put(Operator.EQ+"_jobSts", "开放");
+		searchParams.put(Operator.EQ+"_jobSts", "D");
 		Specification<Task> spec = this.buildSpecification(searchParams);
 		return taskDao.findAll(spec);
 		

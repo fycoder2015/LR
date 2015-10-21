@@ -85,6 +85,18 @@ public class TaskController {
 		return "task/taskList";
 	}
 	
+	@RequestMapping(value = "pageUserTask/{pageNum}", method = RequestMethod.GET)
+	public String pageUserTask(@PathVariable("pageNum") int pageNum,
+			Model model,
+			ServletRequest request) {
+		
+		Long userId = this.getCurrentUserId();
+		Page<Task> taskList = taskService.getUserTask(userId, pageNum);
+		model.addAttribute("taskList",taskList);
+		
+		return "task/newTaskList";
+	}
+	
 	@RequestMapping(value = "viewComment/{taskId}", method = RequestMethod.GET)
 	public String viewComment(@PathVariable("taskId") Long taskId, 
 			@RequestParam(value = "page", defaultValue = "1") int pageNum, 
@@ -103,7 +115,8 @@ public class TaskController {
 	public String createForm(Model model) {
 		model.addAttribute("task", new Task());
 		model.addAttribute("action", "create");
-		return "task/taskForm";
+//		return "task/taskForm";
+		return "task/newTaskForm";
 	}
 	
 	/**
