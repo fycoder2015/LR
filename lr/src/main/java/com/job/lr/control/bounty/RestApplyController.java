@@ -107,6 +107,18 @@ public class RestApplyController {
 		return applyService.cancelApply(applyId);
 	}
 	
+	/**
+	 * 赏金任务发布者拒绝揭榜请求
+	 * @param applyId
+	 * @return
+	 */
+	@RequestMapping(value = "/refuse/{applyId}",method = RequestMethod.GET,
+			produces = MediaTypes.JSON_UTF_8)
+	public GeneralResponse refuseApply(@PathVariable("applyId") Long applyId) {
+		
+		return applyService.refuseApply(applyId);
+	}
+	
 	
 	/**
 	 * 取出Shiro中的当前用户Id.

@@ -28,6 +28,12 @@ import org.springside.modules.persistence.SearchFilter.Operator;
 @Transactional
 @SuppressWarnings("unused")
 public class BaseService {
+	
+	protected static int largePageSize = 100;
+	
+	protected static int smallPageSize = 20;
+	
+	protected static int normalPageSize =60;
 
 	/**
 	 * 创建分页请求.

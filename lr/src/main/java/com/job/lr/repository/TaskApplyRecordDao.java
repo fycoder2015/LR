@@ -12,5 +12,14 @@ public interface TaskApplyRecordDao extends PagingAndSortingRepository<TaskApply
 	
 	@Query("from TaskApplyRecord t where t.taskId=?1")
 	Page<TaskApplyRecord> findByTaskId(Long id, Pageable pageRequest);
-
+	
+	@Query("from TaskApplyRecord t where t.taskId=?1 and t.user.id=?2")
+	Page<TaskApplyRecord> findByTaskAndUser(Long taskId, Long userId, Pageable pageRequest);
+	
+	@Query("from TaskApplyRecord t where t.user.id=?1 and t.sts=?2")
+	Page<TaskApplyRecord> findByUserAndApplySts(Long userId, String sts, Pageable pageRequest);
+	
+	@Query("from TaskApplyRecord t where t.taskId=?1 and t.sts=?2")
+	Page<TaskApplyRecord> findByTaskAndApplySts(Long taskId, String sts, Pageable pageRequest);
+	
 }

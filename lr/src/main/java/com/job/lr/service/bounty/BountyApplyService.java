@@ -195,5 +195,34 @@ public class BountyApplyService extends BaseService {
 		return response;
 		
 	}
+	
+	
+	public GeneralResponse refuseApply(Long applyId) {
+		
+		GeneralResponse response = new GeneralResponse();
+		
+		BountyApply apply = applyDao.findOne(applyId);
+		
+		if (apply==null) {
+			response.setRetCode(-1);
+			response.setRetInfo("没有找到ID为"+applyId+"的申请记录");
+			return response;
+		}
+		
+		Long currentUserId = getCurrentUserId();
+		
+		if (!apply.getBountyTask().getUser().getId().equals(currentUserId)) {
+			response.setRetCode(-1);
+			response.setRetInfo("当前用户与与发布赏金任务的用户不一致，无权拒绝。");
+			return response;
+		}
+		
+		apply.setSts("R");
+		
+		applyDao.save(apply);
+		
+		return response;
+		
+	}
 
 }
