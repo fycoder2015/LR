@@ -33,7 +33,46 @@ public class LoginController {
 		return "account/login";
 	}
 	
+	/**
+	 * 企业用户登录页面
+	 * */
+	@RequestMapping(value = "enadminlogin" ,method = RequestMethod.GET)
+	public String enadminlogin() {
+		return "account/enadminlogin";
+	}
 	
+	/**
+	 * 企业用户登录
+	 * ${ctx}/task/tolisttask
+	 * **/
+	@RequestMapping(value = "enfromForm",method = RequestMethod.POST)
+	public String enloginForm(HttpServletRequest request,HttpServletResponse response) {
+		String username = (request.getParameter("username")).trim();
+		String password = (request.getParameter("password")).trim();
+		if(username==null||"".equals(username) ||password==null||"".equals(password)){			
+			return "redirect:/login/enadminlogin";
+		}else{
+			User u = accountService.findUserByLoginName(username);
+			if(u!=null){
+				String password_en = accountService.entryptPasswordByString(password);
+				String password_db = u.getPassword();
+				System.out.println(password_db);
+				System.out.println(password_en);
+				if(password_en.equals(password_db)){
+					//可以登录用户 设置session  为了后续的过滤
+					request.getSession().setAttribute("username", username);
+					request.getSession().setAttribute("digest", password_db);				
+					return "redirect:/task/tolisttask";
+				}else{
+					return "redirect:/login/enadminlogin";
+				}
+			}else{
+				//未查出用户
+				return "redirect:/login/enadminlogin";
+			}
+		}
+
+	}
 	@RequestMapping(value = "fromForm",method = RequestMethod.POST)
 	public String loginForm(HttpServletRequest request,HttpServletResponse response) {
 		String username = (request.getParameter("username")).trim();
