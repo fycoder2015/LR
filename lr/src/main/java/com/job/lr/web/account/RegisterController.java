@@ -35,7 +35,11 @@ public class RegisterController {
 	public String registerForm() {
 		return "account/register";
 	}
-
+	/**
+	 * 注册用户的接口
+	 * 
+	 * 		
+	 * */
 	@RequestMapping(method = RequestMethod.POST)
 	public String register(@Valid User user, RedirectAttributes redirectAttributes) {
 		int  be_activated = 1 ;
@@ -43,10 +47,11 @@ public class RegisterController {
 		
 		int  bematch = accountService.checkUserPhone(phonenumber, user.getCaptchacode().trim());
 		
-		if( bematch ==1 ){
+		if( bematch == 1 ){
 			//匹配
 			user.setPlainPassword(user.getPassword()); //需要设置一下
-			accountService.registerUser(user);//注册用户
+			/**注册用户**/
+			accountService.registerUser(user);
 			//-----注册用户时 改变  Phonenumber 类中 对应的用户号码装态	
 			Phonenumber p = accountService.findUserPhoneInPhonenumber(phonenumber);
 			p.setPhonestatus(be_activated);//0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>

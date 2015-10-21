@@ -55,5 +55,13 @@ public class UserRoleRec extends IdEntity {
 	public UserRoleRec() {
 		super();
 	}
+
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
 	
 }

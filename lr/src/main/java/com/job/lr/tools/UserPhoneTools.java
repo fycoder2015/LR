@@ -72,7 +72,7 @@ public class UserPhoneTools {
 	}
 	
 	/**
-	 * 根据phonenumber生成短信验证码
+	 * 注册时 根据phonenumber生成短信验证码
 	 * 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
 	 * 
 	 * -------------------------------------
@@ -195,8 +195,142 @@ public class UserPhoneTools {
 		return gp;		
 	}
 	
+	/**
+	 * 找回密码时 根据 phonenumber和 验证码captchacode 判断匹配
+	 * 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
+	 * 
+	 * -------------------------------------
+	 * 功能描述：
+	 * 		根据phonenumber captchacode 比对 
+	 *    	Phonenumber对象 	    
+	 *     		 
+	 * -------------------------------------  
+	 * @param 
+	 * 		phonenumber
+	 * 		
+	 * @return 
+	 *  	returnCode -1 比对不成功
+	 *  			   1    匹配、比对成功 
+	 *  			0  验证码超时
+	 *  
+	 *  验证码超时 需要重新获取验证码 
+	 */
+	public int checkPhoneInFindPasswd(String phonenumber ,String captchacode ) {
+		int returncode =  0 ;
+		int errcode = -1 ;
+		String errmsg = "比对不成功";
+		int successcode = 1 ;
+		String successmsg = "匹配、比对成功 ";
+		int overtimecode = 0 ;
+		String overtimemsg = "验证码超时" ;
+		
+		Phonenumber p = accountService.findUserPhoneByPhonenumAndCaptchaInFindPasswd(phonenumber, captchacode);	
+		//找到 已激活的用户的手机对象 
+		if (p == null){	
+			/*** 手机号 验证码 比对失败 * **/	
+			//gp.setRetCode(errcode);
+			//gp.setRetInfo(errmsg);
+			returncode = errcode;
+			
+		}else{					
+			/*** 手机号 验证码 匹配、比对成功 * **/
+			// 验证验证码是否超时
+			int gap_time = Constants.SMS_Gap_Time; //两分钟  超时
+			//返回时间： 0    超时  ； 1   未超时
+			int  istimeoutflag =accountService.compareTimes(p.getRegisterDate(), new Date(), Constants.SMS_Gap_Time) ;
+			if(istimeoutflag == 1){
+				// 1   未超时
+				returncode = successcode ;
+			}else{
+				// 0    超时
+				returncode = overtimecode ;
+			}
+				
+		}
+		
+		return returncode ;
+		
+	}
+	/**
+	 * 找回密码时 根据phonenumber生成短信验证码
+	 * 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
+	 * 
+	 * -------------------------------------
+	 * 功能描述：
+	 * 		根据phonenumber
+	 *    	Phonenumber对象的调整	    
+	 *     		只修改已激活的手机号  修改新生产的验证码 
+	 * -------------------------------------  
+	 * @param 
+	 * 		phonenumber
+	 * 		
+	 * @return 
+	 *  	returnCode -1 不存在相应的用户手机号
+	 *  			   1  短信发送成功
+	 *  			   0  短信发送失败
+	 *  	
+	 *  
+	 * 
+	 */
+	public int genCaptchacodeByPhoneInFindPasswd(String phonenumber ) {
+		//GeneralResponse gp = new GeneralResponse();
+		int returncode =  0 ;
+		int errcode = -1 ;
+		String errmsg = "不存在相应的用户手机号";
+		int successcode = 1 ;
+		String successmsg = "短信发送成功";
+		int senderr = 0;
+		String senderrmsg="短信发送失败";
+
+		
+		Phonenumber p = accountService.findUserPhoneByPhonenumberInFindPasswd(phonenumber);	
+		//找到 已激活的用户的手机对象 
+		if (p == null){			
+			//gp.setRetCode(errcode);
+			//gp.setRetInfo(errmsg);
+			returncode = errcode;
+			
+		}else{		
+			/**
+			 * 不论是否超时 都发送新的验证码 
+			 * 重新生成验证码 和 日期 ，发送短信成功后 保存Phonenumber对象
+			 * 
+			 * **/	
+		
+			String captchacode = getRandomString(Constants.CaptchacodeSize) ;//Constants.CaptchacodeSize  随机码位数
+		
+			/**
+			 * 发送短信 SendTemplateSMS* 
+			 * */						
+			SDKSendTemplateSMS s = new  SDKSendTemplateSMS();						
+			Integer SMS_Gap_TimeI = Constants.SMS_Gap_Time ;
+			String message = s.SendTemplateSMS(p.getPhonenumber() ,captchacode, "",  SMS_Gap_TimeI.toString()); //1 是 短信模板数
+			String sendOkflag ="sendok";
+			
+			p.setRegisterDate(new Date()); //现在的时间 
+			p.setCaptchacode(captchacode);
+			
+			if (sendOkflag.equals(message) ){  
+				//短信发送成功
+				accountService.updatePhonenumber(p);
+				
+				//gp.setRetCode(successcode);
+				//gp.setRetInfo(successmsg);
+				returncode = successcode;
+			}else{
+				//调用短信接口 ，短息发送失败
+				//gp.setRetCode(senderr);
+				//gp.setRetInfo(senderrmsg);
+				returncode = senderr;
+			}											
+					
+		}
+		
+		return returncode ;
+	}
 	
-	 
+	
+
 	/**
 	 * 产生验证码
 	 * 
