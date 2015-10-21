@@ -7,7 +7,9 @@
 
 <body>
 
+<!--  liuy 调整
 <div class="banner-join"></div>
+ -->
 <!-- 中间内容开始  -->
 <div class="jz"  style="height:1100px;">
     <div class="jzleft">
