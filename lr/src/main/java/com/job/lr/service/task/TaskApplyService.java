@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springside.modules.utils.Clock;
 
 import com.job.lr.entity.GeneralResponse;
+import com.job.lr.entity.Task;
 import com.job.lr.entity.TaskApplyRecord;
 import com.job.lr.entity.User;
 import com.job.lr.repository.TaskApplyRecordDao;
+import com.job.lr.repository.TaskDao;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 
 @Component
@@ -19,6 +21,8 @@ import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 public class TaskApplyService extends BaseService {
 	
 	private TaskApplyRecordDao taskApplyDao;
+	
+	private TaskDao taskDao;
 	
 	public TaskApplyRecord getApply(Long id) {
 		return taskApplyDao.findOne(id);
@@ -58,6 +62,11 @@ public class TaskApplyService extends BaseService {
 
 	}
 	
+	/**
+	 * 取消兼职任务报名申请
+	 * @param applyId
+	 * @return
+	 */
 	public GeneralResponse cancelApply(Long applyId) {
 		
 		GeneralResponse resp = new GeneralResponse();
@@ -76,6 +85,37 @@ public class TaskApplyService extends BaseService {
 		}
 		else {
 			apply.setSts("C");
+			taskApplyDao.save(apply);
+		}
+		return resp;
+	}
+	
+	/**
+	 * 兼职任务发布者确认兼职报名信息
+	 * @param applyId
+	 * @return
+	 */
+	public GeneralResponse confirmApply(Long applyId) {
+		
+		GeneralResponse resp = new GeneralResponse();
+		
+		Long currentUserId =((ShiroUser) SecurityUtils.getSubject().getPrincipal()).id;
+		
+		TaskApplyRecord apply = this.taskApplyDao.findOne(applyId);
+		
+		if (apply==null) {
+			resp.setRetCode(-1);
+			resp.setRetInfo("申请记录不存在");
+		}
+		else {
+			Task task = this.taskDao.findOne(apply.getTaskId());
+			if (!task.getUser().getId().equals(currentUserId)) {
+				resp.setRetCode(-1);
+				resp.setRetInfo("当前用户与发布任务的用户不一致，无权确认报名申请");
+				return resp;
+			}
+			
+			apply.setSts("D");
 			taskApplyDao.save(apply);
 		}
 		return resp;
@@ -130,7 +170,10 @@ public class TaskApplyService extends BaseService {
 	public void setTaskApplyDao(TaskApplyRecordDao taskApplyDao) {
 		this.taskApplyDao = taskApplyDao;
 	}
-	
-	
+
+	@Autowired
+	public void setTaskDao(TaskDao taskDao) {
+		this.taskDao = taskDao;
+	}
 	
 }

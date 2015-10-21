@@ -129,10 +129,28 @@ public class TaskApplyRestController {
 		return response;
 	}
 	
+	/**
+	 * 兼职申请者取消报名申请
+	 * @param applyId
+	 * @return
+	 */
 	@RequestMapping(value = "/cancel/{applyId}",method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse cancelApply(@PathVariable("applyId") Long applyId) {
 		
 		GeneralResponse response = applyService.cancelApply(applyId);
+		
+		return response;
+	}
+	
+	/**
+	 * 兼职任务发布者确认报名申请
+	 * @param applyId
+	 * @return
+	 */
+	@RequestMapping(value = "/confirm/{applyId}",method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public GeneralResponse confirmApply(@PathVariable("applyId") Long applyId) {
+		
+		GeneralResponse response = applyService.confirmApply(applyId);
 		
 		return response;
 	}
