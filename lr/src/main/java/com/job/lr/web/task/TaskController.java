@@ -272,6 +272,26 @@ public class TaskController {
 			model.addAttribute("task", taskService.getTask(id));
 		}
 	}
+	
+	/**
+	 * liuy add  
+	 * 	测试后台企业管理用
+	 * */
+	@RequestMapping(value = "tolisttask", method = RequestMethod.GET)
+	public String tolisttask(@RequestParam(value = "page", defaultValue = "1") int pageNum, 
+			Model model,
+			ServletRequest request) {
+		System.out.println("路遥远  我们一起走 ");
+		//Page<TaskComment> comments = this.commentService.findPageByTaskId(taskId, pageNum);
+		
+		//model.addAttribute("comments", comments);
+		//model.addAttribute("pageNum",pageNum);
+		return "enterprise/enListInUse";
+	}
+	
+	
+	
+	
 
 	/**
 	 * 取出Shiro中的当前用户Id.

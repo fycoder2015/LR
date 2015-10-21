@@ -53,6 +53,8 @@
 							anon,rest[user]-->
 				/login = anon
 				/login/fromForm = anon
+				/login/enfromForm = anon
+				/login/enadminlogin = anon
 				/api/v1/userregister/* = anon
 				/api/v1/usertools/gogetuserId = anon
 				/logout = logout
