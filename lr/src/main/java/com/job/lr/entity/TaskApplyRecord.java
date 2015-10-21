@@ -20,7 +20,17 @@ public class TaskApplyRecord extends IdEntity {
 	private Long taskId;
 	
 	private Date applyDate;
+	
+	private String sts="W";
 
+
+	public String getSts() {
+		return sts;
+	}
+
+	public void setSts(String sts) {
+		this.sts = sts;
+	}
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")

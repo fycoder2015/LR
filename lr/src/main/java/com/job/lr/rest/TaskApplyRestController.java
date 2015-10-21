@@ -71,12 +71,51 @@ public class TaskApplyRestController {
 	}
 	
 	/**
+	 * 根据兼职任务ID和申请状态分页查询申请列表
+	 * @param taskId
+	 * @param sts
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping(value = "/pageByTaskAndSts/{taskId}_{sts}_{pageNum}_{pageSize}",
+			method = RequestMethod.GET,
+			produces = MediaTypes.JSON_UTF_8) 
+	public Page<TaskApplyRecord> pageByTaskAndSts (@PathVariable("taskId") Long taskId,
+			@PathVariable("sts") String sts,
+			@PathVariable("pageNum") int pageNum,
+			@PathVariable("pageSize") int pageSize){
+		return applyService.pageByTaskAndSts(taskId, sts, pageNum, pageSize);
+	}
+	
+	/**
+	 * 根据发起申请的用户的ID和申请状态分页查询申请列表
+	 * @param userId
+	 * @param sts
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping(value = "/pageByUserAndSts/{userId}_{sts}_{pageNum}_{pageSize}",
+			method = RequestMethod.GET,
+			produces = MediaTypes.JSON_UTF_8) 
+	public Page<TaskApplyRecord> pageByUserAndSts (@PathVariable("userId") Long userId,
+			@PathVariable("sts") String sts,
+			@PathVariable("pageNum") int pageNum,
+			@PathVariable("pageSize") int pageSize){
+		return applyService.pageByUserAndSts(userId, sts, pageNum, pageSize);
+	}
+	
+	
+	/**
 	 * 通过向URL发起GET请求建立任务申请记录
 	 * @param taskId
 	 * @return
 	 */
 	@RequestMapping(value = "/create/{taskId}",method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse createApply(@PathVariable("taskId") Long taskId) {
+		
+		GeneralResponse response;
 		
 		TaskApplyRecord entity = new TaskApplyRecord();
 		entity.setTaskId(taskId);
@@ -85,15 +124,16 @@ public class TaskApplyRestController {
 		user.setId(((ShiroUser) SecurityUtils.getSubject().getPrincipal()).id);
 		entity.setUser(user);
 		
-		try {
-			applyService.createApply(entity);
-		}
-		catch (Exception e) {
-			GeneralResponse response = new GeneralResponse(-1,e.getMessage());
-			return response;
-		}
+		response = applyService.createApply(entity);
+	
+		return response;
+	}
+	
+	@RequestMapping(value = "/cancel/{applyId}",method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public GeneralResponse cancelApply(@PathVariable("applyId") Long applyId) {
 		
-		GeneralResponse response = new GeneralResponse();
+		GeneralResponse response = applyService.cancelApply(applyId);
+		
 		return response;
 	}
 	
