@@ -41,6 +41,8 @@ public class LoginController {
 		return "account/enadminlogin";
 	}
 	
+
+	
 	/**
 	 * 企业用户登录
 	 * ${ctx}/task/tolisttask
@@ -73,6 +75,8 @@ public class LoginController {
 		}
 
 	}
+	
+	
 	@RequestMapping(value = "fromForm",method = RequestMethod.POST)
 	public String loginForm(HttpServletRequest request,HttpServletResponse response) {
 		String username = (request.getParameter("username")).trim();
