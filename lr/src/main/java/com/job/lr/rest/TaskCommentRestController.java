@@ -17,16 +17,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springside.modules.beanvalidator.BeanValidators;
 import org.springside.modules.web.MediaTypes;
 
 import com.job.lr.entity.GeneralResponse;
-import com.job.lr.entity.Task;
-import com.job.lr.entity.TaskCollection;
+import com.job.lr.entity.TaskApplyRecord;
 import com.job.lr.entity.TaskComment;
 import com.job.lr.entity.User;
+import com.job.lr.service.task.TaskApplyService;
 import com.job.lr.service.task.TaskCommentService;
 
 @RestController
@@ -37,7 +36,10 @@ public class TaskCommentRestController {
 
 
 	@Autowired
-	TaskCommentService commentService;
+	private TaskCommentService commentService;
+	
+	@Autowired
+	private TaskApplyService applyService;
 
 	@Autowired
 	private Validator validator;
@@ -108,21 +110,53 @@ public class TaskCommentRestController {
 		return new GeneralResponse();
 	}
 	
-	
+	/**
+	 * 创建评论
+	 * @param comment
+	 * @return
+	 */
 	@RequestMapping(value = "create", method = RequestMethod.POST, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse create(@Valid TaskComment comment) {
 		
+		GeneralResponse resp = new GeneralResponse();
 		try {
-			User user = new User(ControllerUtil.getCurrentUserId());
+			
+			Long applyId = comment.getApply().getId();
+			
+			TaskApplyRecord apply = this.applyService.getApply(applyId);
+			
+			if (apply==null) {
+				resp.setRetCode(-1);
+				resp.setRetInfo("ID为"+applyId+"的兼职申请不存在");
+				return resp;
+			}
+			
+			if (!apply.getSts().equals("M")) {
+				resp.setRetCode(-1);
+				resp.setRetInfo("当前兼职订单尚未结算，不能进行评论。");
+				return resp;
+			}
+			
+			Long currentUserId=ControllerUtil.getCurrentUserId();
+			
+			if(!apply.getUser().getId().equals(currentUserId)) {
+				resp.setRetCode(-1);
+				resp.setRetInfo("当前用户与兼职订单申请用户不一致，不能进行评论。");
+				return resp;
+			}
+			
+			User user = new User(currentUserId);
 			comment.setUser(user);
 
 			commentService.createComment(comment);
+			
+			this.applyService.finishApply(applyId);
 		}
 		catch (Exception e) {
 			return new GeneralResponse(-1,e.getMessage());
 		}
 		
-		return new GeneralResponse();
+		return resp;
 		
 	}
 	

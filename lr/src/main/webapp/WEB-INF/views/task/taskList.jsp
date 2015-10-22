@@ -22,7 +22,7 @@
 	    <tags:sort/>
 	</div>
 	
-	<table id="contentTable" class="table table-striped table-bordered table-condensed">
+	<table id="contentTable">
 		<thead><tr><th>编号</th><th>任务</th><th>评论</th><th>管理</th></tr></thead>
 		<tbody>
 		<c:forEach items="${tasks.content}" var="task">
