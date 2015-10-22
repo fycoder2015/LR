@@ -1,6 +1,7 @@
 
 package com.job.lr.service.account;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.User;
 
 import com.job.lr.entity.UserPicoo;
+import com.job.lr.entity.UserPointsLog;
 import com.job.lr.entity.UserRole;
 import com.job.lr.entity.UserRoleRec;
 import com.job.lr.filter.Constants;
@@ -25,6 +27,7 @@ import com.job.lr.repository.PhonenumberDao;
 import com.job.lr.repository.TaskDao;
 import com.job.lr.repository.UserDao;
 import com.job.lr.repository.UserHeadimgDao;
+import com.job.lr.repository.UserPointsLogDao;
 import com.job.lr.repository.UserRoleDao;
 import com.job.lr.repository.UserRoleRecDao;
 import com.job.lr.service.ServiceException;
@@ -55,6 +58,8 @@ public class AccountService {
 	private PhonenumberDao  phonenumberDao;
 	private UserRoleRecDao  userroleRecDao ;	
 	private UserHeadimgDao	userheadimgDao ;
+	private UserPointsLogDao	userpointslogDao ;
+	
 	
 	private Clock clock = Clock.DEFAULT;
 	
@@ -96,9 +101,19 @@ public class AccountService {
 		
 	}
 	
+	public List<UserPointsLog> findUserPointsLogByUserId (Long userId){
+		List<UserPointsLog> lu =new ArrayList<UserPointsLog>();
+		lu = userpointslogDao.findByUserId(userId);
+		return lu ;
+	}
+	
 	public void saveUserRole(UserRole ur) {
 		userroleDao.save(ur) ;	
 	}
+	public void saveUserPointsLog(UserPointsLog ur) {
+		userpointslogDao.save(ur) ;	
+	}
+	
 	
 	/**
 	 * 比对 手机号 和 验证码 是否匹配
@@ -518,6 +533,17 @@ public class AccountService {
 	public UserHeadimgDao getUserheadimgDao() {
 		return userheadimgDao;
 	}
+	
+	
+	
+	public UserPointsLogDao getUserpointslogDao() {
+		return userpointslogDao;
+	}
+	@Autowired
+	public void setUserpointslogDao(UserPointsLogDao userpointslogDao) {
+		this.userpointslogDao = userpointslogDao;
+	}
+
 	@Autowired
 	public void setUserheadimgDao(UserHeadimgDao userheadimgDao) {
 		this.userheadimgDao = userheadimgDao;
