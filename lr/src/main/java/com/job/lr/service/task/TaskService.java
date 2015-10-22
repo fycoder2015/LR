@@ -129,6 +129,25 @@ public class TaskService {
 	}
 	
 	/**
+	 * 把任务的状态置为“开放”
+	 * @param id
+	 */
+	public GeneralResponse openTask(Long id) {
+		
+		try {
+			
+			Task task  = taskDao.findOne(id);
+			task.setJobSts("开放");
+			taskDao.save(task);
+		} 
+		catch (Exception e) {
+			return new GeneralResponse(1,e.getMessage());
+		}
+		
+		return new GeneralResponse();
+	}
+	
+	/**
 	 * 更新任务的pv、uv值
 	 * @param taskId
 	 * @param userId

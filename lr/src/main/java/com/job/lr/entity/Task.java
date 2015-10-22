@@ -77,6 +77,8 @@ public class Task extends IdEntity {
 	private Integer employeeCnt;
 	
 	private String jobClass;
+	
+	private Integer auditFlag = 0;
 
 	// JSR303 BeanValidator的校验规则
 	@NotBlank
@@ -253,6 +255,14 @@ public class Task extends IdEntity {
 
 	public void setJobClass(String jobClass) {
 		this.jobClass = jobClass;
+	}
+
+	public Integer getAuditFlag() {
+		return auditFlag;
+	}
+
+	public void setAuditFlag(Integer auditFlag) {
+		this.auditFlag = auditFlag;
 	}
 
 	@Override
