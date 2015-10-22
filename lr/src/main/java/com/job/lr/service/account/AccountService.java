@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,10 +13,16 @@ import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.Phonenumber;
+import com.job.lr.entity.Task;
 import com.job.lr.entity.User;
 
 import com.job.lr.entity.UserPicoo;
@@ -32,6 +39,10 @@ import com.job.lr.repository.UserRoleDao;
 import com.job.lr.repository.UserRoleRecDao;
 import com.job.lr.service.ServiceException;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
+
+import org.springside.modules.persistence.DynamicSpecifications;
+import org.springside.modules.persistence.SearchFilter;
+import org.springside.modules.persistence.SearchFilter.Operator;
 import org.springside.modules.security.utils.Digests;
 import org.springside.modules.utils.Clock;
 import org.springside.modules.utils.Encodes;
@@ -489,6 +500,43 @@ public class AccountService {
 		return  enPasswd ;
 	}
 	
+	
+	
+	public Page<User> getUserlists(Long id, Map<String, Object> searchParams, int pageNumber, int pageSize,
+			String sortType) {
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortType);
+		//Specification<User> spec = buildSpecification(id, searchParams);
+		//return userDao.findAll(spec, pageRequest);
+		//return userDao.findAll(spec);
+		//return userDao.findAll(pageRequest);		
+		String  rolseadmin = "admin";
+		return userDao.findByRolesNotLikeOrderByIdDesc(rolseadmin, pageRequest) ;//查找角色中不包含admin字段的用户
+	}	
+	/**
+	 * 创建分页请求.
+	 */
+	private PageRequest buildPageRequest(int pageNumber, int pagzSize, String sortType) {
+		Sort sort = null;
+		if ("auto".equals(sortType)) {
+			sort = new Sort(Direction.DESC, "id");
+		} else if ("sexy".equals(sortType)) {
+			sort = new Sort(Direction.ASC, "sexy");
+		}
+		return new PageRequest(pageNumber - 1, pagzSize, sort);
+	}
+
+	/**
+	 * 创建动态查询条件组合.
+	 */
+//	private Specification<User> buildSpecification(Long  id, Map<String, Object> searchParams) {
+//		Map<String, SearchFilter> filters = SearchFilter.parse(searchParams);
+//		//filters.put("id", new SearchFilter("id", Operator.EQ, id));	
+//		System.out.println("--------------filters.values() = "+filters.size());
+//		Specification<User> spec = DynamicSpecifications.bySearchFilter(filters.values(), User.class);
+//		return spec;
+//	}
+	
+
 	
 	
 

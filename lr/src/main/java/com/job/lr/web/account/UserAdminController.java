@@ -20,7 +20,7 @@ import com.job.lr.service.account.AccountService;
 /**
  * 管理员管理用户的Controller.
  * 
- * @author calvin
+ * @author liuy
  */
 @Controller
 @RequestMapping(value = "/admin/user")

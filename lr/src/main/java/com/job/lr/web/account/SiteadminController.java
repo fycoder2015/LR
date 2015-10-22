@@ -1,22 +1,31 @@
 package com.job.lr.web.account;
 
 import java.util.Date;
+import java.util.Map;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springside.modules.web.Servlets;
 
 import com.job.lr.entity.Phonenumber;
+import com.job.lr.entity.Task;
 import com.job.lr.entity.User;
 import com.job.lr.service.account.AccountService;
+import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
+import com.job.lr.service.task.TaskService;
 
 /**
  * 网站管理员使用的Controller.
@@ -29,9 +38,13 @@ import com.job.lr.service.account.AccountService;
 public class SiteadminController {
 	
 	private static  String  adminRoleStr = "admin";
-
+	private static final String AdminPAGE_SIZE = "4";
+	
 	@Autowired
 	private AccountService accountService;
+	
+	@Autowired
+	private TaskService taskService;
 
 	/**
 	 * 网站管理员登录页面
@@ -95,6 +108,41 @@ public class SiteadminController {
 
 	}
 	
+	/**
+	 * 网站用户列表
+	 * 
+	 * 	http://localhost:8080/lr/webadmin/userlist 
+	 * 
+	 * 	/webadmin/userlist
+	 * 成功 跳转
+	 * 
+	 * 		
+	 * */
+	
+	@RequestMapping(value = "userlist", method = RequestMethod.GET)
+	public String userlist(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = AdminPAGE_SIZE) int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+		
+		//Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
+		Long userId = getCurrentUserId();
+		
+		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
+		
+		
+		Page<User> users = accountService.getUserlists(userId, searchParams, pageNumber, pageSize, sortType);
+		
+		model.addAttribute("users", users);
+		model.addAttribute("sortType", sortType);
+		//model.addAttribute("sortTypes", sortTypes);
+		// 将搜索条件编码成字符串，用于排序，分页的URL
+		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
+
+//		return "task/taskList";
+		return "webadmin/userlist1";
+	}
+	
 //	@RequestMapping(method = RequestMethod.GET)
 //	public String registerForm() {
 //		return "account/register";
@@ -112,4 +160,19 @@ public class SiteadminController {
 //			return "false";
 //		}
 //	}
+	
+	
+
+	/**
+	 * 取出Shiro中的当前用户Id.
+	 */
+	private Long getCurrentUserId() {		
+		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		if (user== null){
+			return 0L;
+		}else{
+			//System.out.println("user.id +user.id： "+user.id);
+			return user.id;
+		}	
+	}
 }
