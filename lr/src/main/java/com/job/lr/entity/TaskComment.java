@@ -21,9 +21,13 @@ public class TaskComment extends IdEntity {
 	
 	private Task task;
 	
+	private TaskApplyRecord apply;
+	
 	private Date commentDate;
 	
 	private String sts = "A";
+	
+	private Integer starLevel;
 
 	public String getComment() {
 		return comment;
@@ -70,6 +74,24 @@ public class TaskComment extends IdEntity {
 
 	public void setSts(String sts) {
 		this.sts = sts;
+	}
+
+	public Integer getStarLevel() {
+		return starLevel;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "apply_id")
+	public TaskApplyRecord getApply() {
+		return apply;
+	}
+
+	public void setApply(TaskApplyRecord apply) {
+		this.apply = apply;
+	}
+
+	public void setStarLevel(Integer starLevel) {
+		this.starLevel = starLevel;
 	}
 
 	@Override

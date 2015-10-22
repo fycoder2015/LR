@@ -156,6 +156,32 @@ public class TaskApplyRestController {
 	}
 	
 	/**
+	 * 兼职任务发布者确认申请者已经到岗
+	 * @param applyId
+	 * @return
+	 */
+	@RequestMapping(value = "/comeToPositon/{applyId}",method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public GeneralResponse comeToPositon(@PathVariable("applyId") Long applyId) {
+		
+		GeneralResponse response = applyService.comeToPosition(applyId);
+		
+		return response;
+	}
+	
+	/**
+	 * 兼职任务发布者确认兼职任务已经付款支付
+	 * @param applyId
+	 * @return
+	 */
+	@RequestMapping(value = "/confirmPayment/{applyId}",method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public GeneralResponse confirmPayment(@PathVariable("applyId") Long applyId) {
+		
+		GeneralResponse response = applyService.confirmPayment(applyId);
+		
+		return response;
+	}
+	
+	/**
 	 * 通过向URL提交REST对象建立任务申请记录
 	 * @param apply
 	 * @param uriBuilder

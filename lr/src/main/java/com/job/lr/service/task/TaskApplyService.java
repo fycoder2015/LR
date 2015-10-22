@@ -11,7 +11,6 @@ import org.springside.modules.utils.Clock;
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.TaskApplyRecord;
-import com.job.lr.entity.User;
 import com.job.lr.repository.TaskApplyRecordDao;
 import com.job.lr.repository.TaskDao;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
@@ -118,6 +117,94 @@ public class TaskApplyService extends BaseService {
 			apply.setSts("D");
 			taskApplyDao.save(apply);
 		}
+		return resp;
+	}
+	
+	/**
+	 * 确认到岗
+	 * @param applyId
+	 * @return
+	 */
+	public GeneralResponse comeToPosition(Long applyId) {
+		
+		GeneralResponse resp = new GeneralResponse();
+		
+		Long currentUserId =((ShiroUser) SecurityUtils.getSubject().getPrincipal()).id;
+		
+		TaskApplyRecord apply = this.taskApplyDao.findOne(applyId);
+		
+		if (apply==null) {
+			resp.setRetCode(-1);
+			resp.setRetInfo("申请记录不存在");
+		}
+		else {
+			Task task = this.taskDao.findOne(apply.getTaskId());
+			if (!task.getUser().getId().equals(currentUserId)) {
+				resp.setRetCode(-1);
+				resp.setRetInfo("当前用户与发布任务的用户不一致，无权进行确认到岗操作");
+				return resp;
+			}
+			
+			apply.setSts("P");
+			taskApplyDao.save(apply);
+		}
+		return resp;
+	}
+	
+	/**
+	 * 确认已结算
+	 * @param applyId
+	 * @return
+	 */
+	public GeneralResponse confirmPayment(Long applyId) {
+		
+		GeneralResponse resp = new GeneralResponse();
+		
+		Long currentUserId =((ShiroUser) SecurityUtils.getSubject().getPrincipal()).id;
+		
+		TaskApplyRecord apply = this.taskApplyDao.findOne(applyId);
+		
+		if (apply==null) {
+			resp.setRetCode(-1);
+			resp.setRetInfo("申请记录不存在");
+		}
+		else {
+			Task task = this.taskDao.findOne(apply.getTaskId());
+			if (!task.getUser().getId().equals(currentUserId)) {
+				resp.setRetCode(-1);
+				resp.setRetInfo("当前用户与发布任务的用户不一致，无权进行确认结算操作");
+				return resp;
+			}
+			
+			apply.setSts("M");
+			taskApplyDao.save(apply);
+		}
+		return resp;
+	}
+	
+	
+	/**
+	 * 结束兼职任务流程，将兼职申请状态置为“已完成”
+	 * @param applyId
+	 * @return
+	 */
+	public GeneralResponse finishApply(Long applyId) {
+		
+		GeneralResponse resp = new GeneralResponse();
+		
+		try {
+			TaskApplyRecord apply = this.taskApplyDao.findOne(applyId);
+			
+			apply.setSts("F");
+			
+			this.taskApplyDao.save(apply);
+			
+		}
+		catch(Exception e) {
+			resp.setRetCode(-1);
+			resp.setRetInfo(e.getMessage());
+		}
+		
 		return resp;
 	}
 	

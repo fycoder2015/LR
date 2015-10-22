@@ -12,6 +12,7 @@ import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -52,7 +53,7 @@ public class Task extends IdEntity {
 	private String phoneCall;
 	
 	//任务状态：开放、关闭
-	private String jobSts="W"; 
+	private String jobSts="开放"; 
 	
 	//任务类型：全职 兼职
 	private String jobType;
@@ -61,6 +62,7 @@ public class Task extends IdEntity {
 	private String cityId="022";
 	
 	//创建时间
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 	//pv page view
 

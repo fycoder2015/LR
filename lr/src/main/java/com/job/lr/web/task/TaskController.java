@@ -50,7 +50,7 @@ import com.job.lr.service.task.TaskService;
 @RequestMapping(value = "/task")
 public class TaskController {
 
-	private static final String PAGE_SIZE = "3";
+	private static final String PAGE_SIZE = "40";
 
 	private static Map<String, String> sortTypes = Maps.newLinkedHashMap();
 	static {
@@ -82,7 +82,8 @@ public class TaskController {
 		// 将搜索条件编码成字符串，用于排序，分页的URL
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
 
-		return "task/taskList";
+//		return "task/taskList";
+		return "task/newTaskList";
 	}
 	
 	@RequestMapping(value = "pageUserTask/{pageNum}", method = RequestMethod.GET)
@@ -261,6 +262,13 @@ public class TaskController {
 		redirectAttributes.addFlashAttribute("message", "删除任务成功");
 		return "redirect:/task/";
 	}
+	
+	@RequestMapping(value = "close/{id}")
+	public String close(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+		taskService.closeTask(id);
+//		redirectAttributes.addFlashAttribute("message", "删除任务成功");
+		return "redirect:/task/";
+	}
 
 	/**
 	 * 所有RequestMapping方法调用前的Model准备方法, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出Task对象,再把Form提交的内容绑定到该对象上。
@@ -281,12 +289,15 @@ public class TaskController {
 	public String tolisttask(@RequestParam(value = "page", defaultValue = "1") int pageNum, 
 			Model model,
 			ServletRequest request) {
-		System.out.println("路遥远  我们一起走 ");
+		
 		//Page<TaskComment> comments = this.commentService.findPageByTaskId(taskId, pageNum);
 		
 		//model.addAttribute("comments", comments);
 		//model.addAttribute("pageNum",pageNum);
-		return "enterprise/enListInUse";
+		//return "enterprise/enListInUse";
+		model.addAttribute("task", new Task());
+		model.addAttribute("action", "create");
+		return "task/newTaskForm";
 	}
 	
 	
