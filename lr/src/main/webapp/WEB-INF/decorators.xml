@@ -8,4 +8,9 @@
 	<decorator name="default" page="default.jsp">
 		<pattern>/*</pattern>
 	</decorator>
+	
+	<decorator name="admin" page="admintmp.jsp">
+		<pattern>/webadmin/*</pattern>
+    </decorator>
+	
 </decorators>
