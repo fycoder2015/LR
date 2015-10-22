@@ -2,10 +2,8 @@
 package com.job.lr.web.task;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -26,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.web.Servlets;
+
 import com.google.common.collect.Maps;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.TaskComment;
@@ -188,7 +187,7 @@ public class TaskController {
 		model.addAttribute("task", taskService.getTask(id));
 		model.addAttribute("action", "update");
 		
-		return "task/taskForm";
+		return "task/updateForm";
 	}
 	
 	
@@ -266,7 +265,14 @@ public class TaskController {
 	@RequestMapping(value = "close/{id}")
 	public String close(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
 		taskService.closeTask(id);
-//		redirectAttributes.addFlashAttribute("message", "删除任务成功");
+
+		return "redirect:/task/";
+	}
+	
+	@RequestMapping(value = "open/{id}")
+	public String open(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+		taskService.openTask(id);
+
 		return "redirect:/task/";
 	}
 
