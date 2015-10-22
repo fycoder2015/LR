@@ -55,6 +55,10 @@
 				/login/fromForm = anon
 				/login/enfromForm = anon
 				/login/enadminlogin = anon
+				/login/webadminlogin = anon
+				/webadmin/webadmlogin = anon
+				/webadmin/webadminlogin = anon
+				/webadmin/fromForm = anon
 				/api/v1/userregister/* = anon
 				/api/v1/usertools/gogetuserId = anon
 				/logout = logout
