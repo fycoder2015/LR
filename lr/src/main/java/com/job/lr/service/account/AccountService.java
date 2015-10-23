@@ -106,6 +106,14 @@ public class AccountService {
 		return userDao.findOne(userId);
 	}
 	
+	public University findUniversityById(Long universityId) {
+		return universityDao.findOne(universityId);
+	}
+	
+	public void saveUniversity(University entity) {
+		universityDao.save(entity);
+	}
+	
 	public UserRole findUserRoleByUserRoleId(Long userroleId) {
 		UserRole ur  ;
 		boolean beexist = userroleDao.exists(userroleId) ;		
