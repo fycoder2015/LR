@@ -34,42 +34,68 @@
 		</div><!-- col-md-2 end-->
 
 
-		<div class="col-md-3">
-		            <tags:pagination page="${users}" paginationSize="5"/>
+		<div class="col-md-3"><strong>用户详情 </strong><br><strong>&nbsp; </strong>
 		</div>
 
 		<div class="col-md-10">
-	          <table class="table table-hover table-striped">
-	              <thead>
-		              <tr>
-		                  <th>编号</th>
-		                  <th>标题</th>
-		                  <th>别名</th>
-		                  <th>操作</th>
-		              </tr>
-	              </thead>
-	              <tbody>
-	              	<tr>
-	                    <td>序号</td>
-	                    <td>登录名</td>
-	                    <td>注册日期</td>
-	                    <td>查看详情</td>
-	                </tr>
-				
-					<c:forEach items="${users.content}" var="user">
-	              	<tr>
-	                    <td>${user.id}</td>
-	                    <td>${user.loginName}</td>
-	                    <td>${user.registerDate}</td>
-	                    <td><a href="${ctx}/webadmin/showuserinfo?showuserId=${user.id}">详情</a>  
-	                    <!--  | <a href="/admin.php?m=Admin&c=category&a=delete&id=1" style="color:red;" 
-	                    	onclick="javascript:return del('您真的确定要删除吗？\n\n删除后将不能恢复!');">删除</a>
-	                     -->
-	                    </td>
-	                 </tr>
-					</c:forEach>			
-		 		</tbody>
-	          </table>
+			<table class="table table-hover table-striped">
+    			<tr>
+	                 <td>用户username:</td>
+	                 <td>${showuser.loginName}</td>
+                </tr>
+				<tr>
+	                 <td>昵称:</td>
+	                 <td>${showuser.name}</td>
+                </tr>
+                <tr>
+	                 <td>性别:</td>
+	                 <td>${showuser.sexy}</td>
+                </tr>
+                <tr>
+	                 <td>年龄:</td>
+	                 <td>${showuser.userage}</td>
+                </tr>
+                <tr>
+	                 <td>签名:</td>
+	                 <td>${showuser.usersign}</td>
+                </tr>
+                <tr>
+	                 <td>星级:</td>
+	                 <td>${showuser.userstarss}</td>
+                </tr>
+                <tr>
+	                 <td>角色:</td>
+	                 <td>${showuser.roles}</td>
+                </tr>
+                <tr>
+	                 <td>手机号:</td>
+	                 <td>${showuser.phonenumber}</td>
+                </tr>
+                <tr>
+	                 <td>所在大学:</td>
+	                 <td>${showuser.university}</td>
+                </tr>
+                <tr>
+	                 <td>所学专业:</td>
+	                 <td>${showuser.subject}</td>
+                </tr>
+                <tr>
+	                 <td>入学年份:</td>
+	                 <td>${showuser.years}</td>
+                </tr>
+                <tr>
+	                 <td>注册日期:</td>
+	                 <td>${showuser.registerDate}</td>
+                </tr>
+                			
+			</table>   
+			
+			<div class="col-md-3">            
+            	<a href="javascript :;" onClick="javascript :history.back(-1);" class="btn btn-success">
+            		返回
+            	</a>
+        	</div>
+        	
 	    </div><!-- col-md-10 end-->
    
 	</div><!-- row end -->
