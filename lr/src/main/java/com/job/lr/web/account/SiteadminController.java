@@ -126,21 +126,34 @@ public class SiteadminController {
 			ServletRequest request) {
 		
 		//Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
-		Long userId = getCurrentUserId();
-		
-		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
-		
-		
-		Page<User> users = accountService.getUserlists(userId, searchParams, pageNumber, pageSize, sortType);
-		
+		Long userId = getCurrentUserId();		
+		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");		
+		Page<User> users = accountService.getUserlists(userId, searchParams, pageNumber, pageSize, sortType);		
 		model.addAttribute("users", users);
 		model.addAttribute("sortType", sortType);
 		//model.addAttribute("sortTypes", sortTypes);
 		// 将搜索条件编码成字符串，用于排序，分页的URL
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
-
-//		return "task/taskList";
 		return "webadmin/userlist1";
+	}
+	
+	/**
+	 * 显示用户详情
+	 * 	/webadmin/showuserinfo?showuserId=${user.id}
+	 * 
+	 * 
+	 * */
+	@RequestMapping(value = "showuserinfo", method = RequestMethod.GET)
+	public String userlist(@RequestParam(value = "showuserId" ) Long showuserId,Model model,
+			ServletRequest request) {		
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){
+			User showuser = accountService.findUserByUserId(showuserId);
+			model.addAttribute("showuser", showuser);
+		}
+		return "webadmin/showuserinfo1";
 	}
 	
 //	@RequestMapping(method = RequestMethod.GET)
@@ -161,8 +174,27 @@ public class SiteadminController {
 //		}
 //	}
 	
+	/**
+	 * 验证权限是否是 admin
+	 * 
+	 * @return true 是
+	 * 		   false 不是管理员
+	 * 
+	 * */
+	private Boolean checkUserRoleIsAdmin(String  rolestr) {	
+		 	   
+	    String[] splitstr=rolestr.split(",");
+	    boolean behaveadminrole = false ;
+	    for(int j=0 ;j<splitstr.length ;j++){	    	
+	    	if (splitstr[j].equals(adminRoleStr)){
+	    		behaveadminrole = true;
+	    		break;
+	    	}
+	    }
+	    return behaveadminrole;
+	}
 	
-
+	
 	/**
 	 * 取出Shiro中的当前用户Id.
 	 */
