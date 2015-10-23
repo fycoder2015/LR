@@ -1,0 +1,15 @@
+
+企业管理员登录： 
+http://localhost:8080/lr/login/enadminlogin
+admin  admin
+
+网站后台管理员：
+http://localhost:8080/lr/webadmin/webadminlogin
+admin  admin
+
+--------------
+管理员的模板页存储在 
+	lr/src/main/webapp/WEB-INF/layouts/admintmp.jsp 下
+管理员样式的页面必须在/WEB-INF/webadmin下
+
+

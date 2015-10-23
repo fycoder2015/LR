@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -191,6 +192,86 @@ public class SiteadminController {
 			model.addAttribute("showuser", null);
 		}
 		return "webadmin/showuserinfo1";
+	}
+	
+	/**
+	 * 显示学校详情
+	 * 	
+	 * 	/webadmin/showuniversityinfo?showuniversityId
+	 * 
+	 * */
+	@RequestMapping(value = "showuniversityinfo", method = RequestMethod.GET)
+	public String showuniversityinfo(@RequestParam(value = "showuniversityId" ) Long showuniversityId,Model model,
+			ServletRequest request) {	
+		
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){			
+			University showuniversity = accountService.findUniversityById(showuniversityId);
+			model.addAttribute("showuniversity", showuniversity);
+		}else{
+			model.addAttribute("showuser", null);
+		}
+		return "webadmin/showuniversityinfo1";
+	}
+	
+	
+	/**
+	 * 更新大学信息
+	 * /webadmin/updateUniversity 
+	 *  
+	 * */
+	@RequestMapping(value = "updateUniversity", method = RequestMethod.POST)
+	public String updateUniversity(@Valid @ModelAttribute("showuniversity") University u, RedirectAttributes redirectAttributes) {
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){
+			//显示大学
+			int  beshow =1 ;
+			u.setStsint(beshow);//stsint -1 为失效 ，不做显示 ; 显示 默认为1   (必填) 
+			
+			accountService.saveUniversity(u);
+			redirectAttributes.addFlashAttribute("message", "更新任务成功");
+		}
+		return "redirect:/webadmin/universitylist";
+	}
+	
+	/**
+	 * 增加大学信息
+	 * /webadmin/addUniversity 
+	 *  
+	 * */
+	@RequestMapping(value = "addUniversity", method = RequestMethod.POST)
+	public String addUniversity(@Valid @ModelAttribute("university") University u, RedirectAttributes redirectAttributes) {
+		System.out.println("111111111111111111111111111111");
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){
+			//显示大学
+			int  beshow =1 ;
+			u.setStsint(beshow);//stsint -1 为失效 ，不做显示 ; 显示 默认为1   (必填) 
+			
+			accountService.saveUniversity(u);
+			redirectAttributes.addFlashAttribute("message", "增加任务成功");
+		}
+		return "redirect:/webadmin/universitylist";
+	}
+	
+	/**
+	 * 跳转到添加大学信息的页面
+	 *  /webadmin/gotoaddUniversity 
+	 *  
+	 * */
+	@RequestMapping(value = "gotoaddUniversity", method = RequestMethod.GET)
+	public String gotoaddUniversity( ) {
+
+		return "webadmin/adduniversityinfo1";
 	}
 	
 //	@RequestMapping(method = RequestMethod.GET)
