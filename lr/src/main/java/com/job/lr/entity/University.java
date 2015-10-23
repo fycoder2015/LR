@@ -2,6 +2,7 @@ package com.job.lr.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,8 +32,15 @@ public class University extends IdEntity {
 	private String place ;  //地点	
 	@JsonIgnore  //不在json的返回值中显示
 	private String sts;
-
-
+	
+	/**
+	 *  stsint -1 为失效 ，不做显示 ; 显示 默认为1   (必填) 
+	 *  
+	 *  */
+	@Column(columnDefinition="INT default 1")
+	@JsonIgnore  //不在json的返回值中显示	
+	private Integer stsint;  /*** -1 为失效 ，不做显示 ; 显示 默认为1   (必填) **/
+	
 	public String getSts() {
 		return sts;
 	}
@@ -81,7 +89,12 @@ public class University extends IdEntity {
 		this.place = place;
 	}
 
+	public Integer getStsint() {
+		return stsint;
+	}
 
-	
+	public void setStsint(Integer stsint) {
+		this.stsint = stsint;
+	}
 	
 }
