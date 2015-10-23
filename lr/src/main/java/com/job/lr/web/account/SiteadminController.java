@@ -22,6 +22,7 @@ import org.springside.modules.web.Servlets;
 
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
+import com.job.lr.entity.University;
 import com.job.lr.entity.User;
 import com.job.lr.service.account.AccountService;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
@@ -138,6 +139,38 @@ public class SiteadminController {
 	}
 	
 	/**
+	 * 大学列表
+	 * 
+	 * 	http://localhost:8080/lr/webadmin/universitylist 
+	 * 
+	 * 	/webadmin/universitylist
+	 * 成功 跳转
+	 * 
+	 * 		
+	 * */
+	
+	@RequestMapping(value = "universitylist", method = RequestMethod.GET)
+	public String universitylist(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = AdminPAGE_SIZE) int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){			
+			Page<University> universitylist = accountService.getUniversitylists(pageNumber, pageSize, sortType);					
+			model.addAttribute("universitys", universitylist);
+			model.addAttribute("sortType", sortType);		
+		}
+		
+		return "webadmin/universitylist1";
+	}
+	
+	
+	
+	/**
 	 * 显示用户详情
 	 * 	/webadmin/showuserinfo?showuserId=${user.id}
 	 * 
@@ -145,13 +178,17 @@ public class SiteadminController {
 	 * */
 	@RequestMapping(value = "showuserinfo", method = RequestMethod.GET)
 	public String userlist(@RequestParam(value = "showuserId" ) Long showuserId,Model model,
-			ServletRequest request) {		
+			ServletRequest request) {	
+		
 		Long userId = getCurrentUserId();	
 		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
 		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
 		if(bradmin){
 			User showuser = accountService.findUserByUserId(showuserId);
 			model.addAttribute("showuser", showuser);
+		}else{
+			model.addAttribute("showuser", null);
 		}
 		return "webadmin/showuserinfo1";
 	}

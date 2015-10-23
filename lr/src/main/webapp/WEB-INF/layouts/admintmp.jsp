@@ -33,7 +33,31 @@
 		<!-- liuy add 1
 		<div id="content">
 		 -->
-			<sitemesh:body/>
+		 <div class="container">
+    		<div class="row">	
+    			<div class="col-md-2" style="background-color: #f3f3f3;">
+				    <ul class="nav" style="margin: 10px 0;">
+						<li><a href="/admin.php?m=Admin&c=post&a=index"><i class="fa fa-dashboard"></i> <strong> 兼职管理 <b class="caret"></b></strong></a></li>
+					    <li><a href="/admin.php?m=Admin&c=category&a=index"><i class="fa fa-reorder"></i> 信息管理</a></li>
+					    <li><a href="/admin.php?m=Admin&c=category&a=index"><i class="fa fa-edit"></i> 分类管理</a></li>
+					    <li><a href="/admin.php?m=Admin&c=page&a=index"><i class="fa fa-file-text-o"></i> 兼职审核</a></li>
+					    <li><a href="/admin.php?m=Admin&c=index&a=index"><i class="fa fa-dashboard"></i> <strong> 赏金任务管理 <b class="caret"></b></strong></a></li>
+					    <li><a href="/admin.php?m=Admin&c=member&a=index"><i class="fa fa-users"></i> 任务管理</a></li>
+					    <li><a href="/admin.php?m=Admin&c=links&a=index"><i class="fa fa-link"></i> 分类管理</a></li>
+					    <li><a href="/admin.php?m=Admin&c=setting&a=index"><i class="fa fa-link"></i> 任务审核</a></li>
+					    <li><a href="/admin.php?m=Admin&c=index&a=index"><i class="fa fa-dashboard"></i> <strong> 用户管理 <b class="caret"></b></strong></a></li>
+					    <li><a href="${ctx}/webadmin/userlist"><i class="fa fa-reorder"></i> 用户列表</a></li>
+					    <li><a href="/admin.php?m=Admin&c=post&a=index"><i class="fa fa-edit"></i> 用户统计</a></li>
+					    <li><a href="/admin.php?m=Admin&c=index&a=index"><i class="fa fa-dashboard"></i> <strong> 系统管理 <b class="caret"></b></strong></a></li>
+					    <li><a href="${ctx}/webadmin/universitylist"><i class="fa fa-reorder"></i> 校区管理</a></li>
+					    <li><a href="/admin.php?m=Admin&c=post&a=index"><i class="fa fa-edit"></i> 企业管理</a></li>
+					</ul>
+	    		</div><!-- col-md-2 end -->	
+	    		 
+				<sitemesh:body/>
+				
+			</div>
+		</div>	
 		<!-- liuy add 2
 		</div>
 		-->

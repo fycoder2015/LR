@@ -5,16 +5,14 @@
 
 <html>
 <head>
-	<title>管理员管理</title>
+	<title>大学列表</title>
 </head>
 
 <body>
 
 
-
-
 		<div class="col-md-3">
-		            <tags:pagination page="${users}" paginationSize="5"/>
+		            <tags:pagination page="${universitys}" paginationSize="5"/>
 		</div>
 
 		<div class="col-md-10">
@@ -35,12 +33,12 @@
 	                    <td>查看详情</td>
 	                </tr>
 				
-					<c:forEach items="${users.content}" var="user">
+					<c:forEach items="${universitys.content}" var="university">
 	              	<tr>
-	                    <td>${user.id}</td>
-	                    <td>${user.loginName}</td>
-	                    <td>${user.registerDate}</td>
-	                    <td><a href="${ctx}/webadmin/showuserinfo?showuserId=${user.id}">详情</a>  
+	                    <td>${university.id}</td>
+	                    <td>${university.id}</td>
+	                    <td>${university.id}</td>
+	                    <td><a href="${ctx}/webadmin/showuserinfo?showuserId=${university.id}">详情</a>  
 	                    <!--  | <a href="/admin.php?m=Admin&c=category&a=delete&id=1" style="color:red;" 
 	                    	onclick="javascript:return del('您真的确定要删除吗？\n\n删除后将不能恢复!');">删除</a>
 	                     -->

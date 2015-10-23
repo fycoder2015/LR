@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
+import com.job.lr.entity.University;
 import com.job.lr.entity.User;
 
 import com.job.lr.entity.UserPicoo;
@@ -31,7 +32,10 @@ import com.job.lr.entity.UserRole;
 import com.job.lr.entity.UserRoleRec;
 import com.job.lr.filter.Constants;
 import com.job.lr.repository.PhonenumberDao;
+import com.job.lr.repository.SubjectDao;
 import com.job.lr.repository.TaskDao;
+import com.job.lr.repository.UniversityDao;
+import com.job.lr.repository.UniversitySubjectRecDao;
 import com.job.lr.repository.UserDao;
 import com.job.lr.repository.UserHeadimgDao;
 import com.job.lr.repository.UserPointsLogDao;
@@ -70,7 +74,9 @@ public class AccountService {
 	private UserRoleRecDao  userroleRecDao ;	
 	private UserHeadimgDao	userheadimgDao ;
 	private UserPointsLogDao	userpointslogDao ;
-	
+	private UniversityDao	universityDao ;
+	private UniversitySubjectRecDao	universitysubjectrecDao ;
+	private SubjectDao		subjectDao;
 	
 	private Clock clock = Clock.DEFAULT;
 	
@@ -501,7 +507,9 @@ public class AccountService {
 	}
 	
 	
-	
+	/**
+	 * 管理员查询用户列表
+	 * */
 	public Page<User> getUserlists(Long id, Map<String, Object> searchParams, int pageNumber, int pageSize,
 			String sortType) {
 		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortType);
@@ -512,6 +520,20 @@ public class AccountService {
 		String  rolseadmin = "admin";
 		return userDao.findByRolesNotLikeOrderByIdDesc(rolseadmin, pageRequest) ;//查找角色中不包含admin字段的用户
 	}	
+	
+	
+	/**
+	 * 查询大学列表
+	 * */
+	public Page<University> getUniversitylists( int pageNumber, int pageSize,String sortType) {
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortType);
+		
+		Integer  stsint =-1 ;//-1 为失效状态 ，不做显示
+		
+		return universityDao.findByStsintNotOrderByIdDesc(stsint, pageRequest); 
+	}	
+	
+	
 	/**
 	 * 创建分页请求.
 	 */
@@ -595,6 +617,30 @@ public class AccountService {
 	@Autowired
 	public void setUserheadimgDao(UserHeadimgDao userheadimgDao) {
 		this.userheadimgDao = userheadimgDao;
+	}
+
+	public UniversityDao getUniversityDao() {
+		return universityDao;
+	}
+	@Autowired
+	public void setUniversityDao(UniversityDao universityDao) {
+		this.universityDao = universityDao;
+	}
+
+	public UniversitySubjectRecDao getUniversitysubjectrecDao() {
+		return universitysubjectrecDao;
+	}
+	@Autowired
+	public void setUniversitysubjectrecDao(UniversitySubjectRecDao universitysubjectrecDao) {
+		this.universitysubjectrecDao = universitysubjectrecDao;
+	}
+
+	public SubjectDao getSubjectDao() {
+		return subjectDao;
+	}
+	@Autowired
+	public void setSubjectDao(SubjectDao subjectDao) {
+		this.subjectDao = subjectDao;
 	}
 
 
