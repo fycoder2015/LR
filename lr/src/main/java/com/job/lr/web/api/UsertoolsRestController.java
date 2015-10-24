@@ -1,7 +1,9 @@
 package com.job.lr.web.api;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +30,8 @@ import org.springside.modules.beanvalidator.BeanValidators;
 import org.springside.modules.web.MediaTypes;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.job.lr.entity.Daysignin;
+import com.job.lr.entity.Daysigninlog;
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
@@ -62,6 +66,245 @@ public class UsertoolsRestController {
 	
 	@Autowired
 	private UserPhoneTools userPhoneTools;
+	
+	/**
+	 *  通过用户名和加密的密码，获取用户签到信息
+	 * 
+	 *  根据 username  和 加密后的   digest
+	 * 
+	 *  url ：
+	 *  	/api/v1/usertools/gogetsignindayinfo?username={username}&digest={加密后的passwd}
+	 *  
+	 *  http://localhost:8080/lr/api/v1/usertools/gogetsignindayinfo?username=7add6c21f9934cdaac631d16e6eafc49&digest=83ba6cc0df6c1a7dbbf908d78680c02a5f2e9077
+	 *  {
+	 *    "id" : 1,
+	 *    "userId" : 6,
+	 *    "severaldays" : 1,  联系签到天数 一旦签到间隔超过一天，会重新变为0 
+	 *    "maxseveraldays" : 1, 最大连续签到天数
+	 *    "totaldays" : 1,	总共签到天数
+	 *    "lastsignday" : "2015-10-25 02:33:22" 最后一次的签到时间
+	 *    }
+	 *    或是
+	 *    	{
+	 *     	"id" : -1,	   id=-1 表示没有找到相应的签到信息
+	 *     	"userId" : null,   
+	 *     	"severaldays" : null,
+	 *     	"maxseveraldays" : null,
+	 *     	"totaldays" : null,
+	 *     	"lastsignday" : null
+	 *     }
+	 * 
+	 * */
+	@RequestMapping(value = "gogetsignindayinfo",method = RequestMethod.GET)
+	@ResponseBody
+	public Daysignin gogetsignindayinfo() {
+		Long userId = getCurrentUserId();
+		User u = accountService.findUserByUserId(userId);
+		Daysignin ds = accountService.findDaysignin(userId);
+		if (ds == null){	
+			ds =new Daysignin();
+			ds.setId(-1L);
+		}else{
+			int betweenday;
+			try {
+				betweenday = daysBetween(ds.getLastsignday(),new Date() );
+			} catch (ParseException e) {
+				betweenday=-1 ;
+				e.printStackTrace();				
+			}			
+			if(betweenday>1){
+				ds.setSeveraldays(0);
+				accountService.saveDaysignin(ds);
+			}
+			
+		}		
+		return ds ;
+	}
+	
+	/**
+	 *  通过用户名和加密的密码，进行签到
+	 * 
+	 *  根据 username  和 加密后的   digest
+	 * 
+	 *  url ：
+	 *  	/api/v1/usertools/signinday?username={username}&digest={加密后的passwd}
+	 *  
+	 *  http://localhost:8080/lr/api/v1/usertools/signinday?username=7add6c21f9934cdaac631d16e6eafc49&digest=83ba6cc0df6c1a7dbbf908d78680c02a5f2e9077
+	 *  
+	 *  1  签到成功
+	 *  -1 已经签过到
+	 *  0 出现问题 未能签到
+	 * 
+	 * */
+	@RequestMapping(value = "signinday",method = RequestMethod.GET)
+	@ResponseBody
+	public GeneralResponse signinday() {//@RequestParam("username") String loginName ,@RequestParam("digest") String password
+		GeneralResponse gp = new GeneralResponse();
+
+		Long userId = getCurrentUserId();
+		User u = accountService.findUserByUserId(userId);
+		Daysigninlog dsl = accountService.findlastnearDaysigninlog(userId);
+		if(dsl == null ){
+			//没有做过签到
+			dsl = new Daysigninlog();			
+		    Calendar cal = Calendar.getInstance();
+		    int day = cal.get(Calendar.DATE);
+		    int month = cal.get(Calendar.MONTH) + 1;
+		    int year = cal.get(Calendar.YEAR);
+			dsl.setDay(day);
+			dsl.setMonth(month);
+			dsl.setYear(year);
+			dsl.setDaytime(new Date());
+			dsl.setUserId(userId);
+			accountService.saveDaysigninlog(dsl);
+			Daysignin ds = accountService.findDaysignin(userId);
+			if(ds == null){
+				ds = new Daysignin();
+				ds.setLastsignday(new Date());
+				ds.setSeveraldays(1);
+				ds.setMaxseveraldays(1);
+				ds.setTotaldays(1);
+				ds.setUserId(userId);
+				accountService.saveDaysignin(ds);				
+			}else{
+				//常态不会走到这里 1
+				ds.setLastsignday(new Date());
+				int severaldays = ds.getSeveraldays()+1 ;
+				int maxseveraldays = ds.getMaxseveraldays();
+				if(maxseveraldays> severaldays ){					
+				}else{
+					ds.setMaxseveraldays(severaldays);
+				}
+				ds.setTotaldays(ds.getTotaldays()+1);			
+				ds.setSeveraldays(severaldays);			
+				accountService.saveDaysignin(ds);
+			}
+			gp.setRetCode(1);
+			gp.setRetInfo("签到成功");
+		}else{
+			//之前有做过签到 需要比对日期了			
+			int betweenday;
+			try {
+				betweenday = daysBetween(dsl.getDaytime(),new Date() );
+			} catch (ParseException e) {
+				betweenday=-1 ;
+				e.printStackTrace();
+				
+			}
+			if(betweenday==1){
+				//---正常签到
+				
+				//(1) 记录签到日志
+				Daysigninlog ndsl = new Daysigninlog();			
+			    Calendar cal = Calendar.getInstance();
+			    int day = cal.get(Calendar.DATE);
+			    int month = cal.get(Calendar.MONTH) + 1;
+			    int year = cal.get(Calendar.YEAR);
+			    ndsl.setDay(day);
+			    ndsl.setMonth(month);
+			    ndsl.setYear(year);
+			    ndsl.setDaytime(new Date());
+			    ndsl.setUserId(userId);
+				accountService.saveDaysigninlog(ndsl);
+				//(2) 记录签到相关数据
+				Daysignin ds = accountService.findDaysignin(userId);				
+				if(ds == null){
+					//常态不会走到这里 2
+					ds = new Daysignin();
+					ds.setLastsignday(new Date());
+					ds.setSeveraldays(1);
+					ds.setMaxseveraldays(1);
+					ds.setTotaldays(1);
+					ds.setUserId(userId);
+					accountService.saveDaysignin(ds);				
+				}else{					
+					ds.setLastsignday(new Date());
+					int severaldays = ds.getSeveraldays()+1 ;
+					int maxseveraldays = ds.getMaxseveraldays();
+					if(maxseveraldays> severaldays ){					
+					}else{
+						ds.setMaxseveraldays(severaldays);
+					}
+					ds.setTotaldays(ds.getTotaldays()+1);			
+					ds.setSeveraldays(severaldays);			
+					accountService.saveDaysignin(ds);
+				}
+				gp.setRetCode(1);
+				gp.setRetInfo("签到成功");				
+				
+			}else if (betweenday==0){
+				//--- 一天内多次签到
+				gp.setRetCode(-1);
+				gp.setRetInfo("已经签过到了");	
+			}else if(betweenday==-1 ){
+				//--- 日期比对出现问题
+				gp.setRetCode(0);
+				gp.setRetInfo("出现问题 未能签到");
+				
+			}else{
+				//---已有多日未签到
+				//(1) 记录签到日志
+				Daysigninlog ndsl = new Daysigninlog();			
+			    Calendar cal = Calendar.getInstance();
+			    int day = cal.get(Calendar.DATE);
+			    int month = cal.get(Calendar.MONTH) + 1;
+			    int year = cal.get(Calendar.YEAR);
+			    ndsl.setDay(day);
+			    ndsl.setMonth(month);
+			    ndsl.setYear(year);
+			    ndsl.setDaytime(new Date());
+			    ndsl.setUserId(userId);
+				accountService.saveDaysigninlog(ndsl);
+				//(2)记录签到相关数据
+				Daysignin ds = accountService.findDaysignin(userId);				
+				if(ds == null){
+					//常态不会走到这里 3
+					ds = new Daysignin();
+					ds.setLastsignday(new Date());
+					ds.setSeveraldays(1);
+					ds.setMaxseveraldays(1);
+					ds.setTotaldays(1);
+					ds.setUserId(userId);
+					accountService.saveDaysignin(ds);				
+				}else{					
+					ds.setLastsignday(new Date());
+					int severaldays = 1 ; //联系签到天数变成1
+					ds.setTotaldays(ds.getTotaldays()+1);			
+					ds.setSeveraldays(severaldays);			
+					accountService.saveDaysignin(ds);
+				}
+				gp.setRetCode(1);
+				gp.setRetInfo("签到成功");	
+				
+			}
+		}
+		
+
+		return gp;
+	}
+	
+	/**  
+     * 计算两个日期之间相差的天数  
+     * @param smdate 较小的时间 
+     * @param bdate  较大的时间 
+     * @return 相差天数 
+     * @throws ParseException  
+     */    
+    public static int daysBetween(Date smdate,Date bdate) throws ParseException    
+    {    
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");  
+        smdate=sdf.parse(sdf.format(smdate));  
+        bdate=sdf.parse(sdf.format(bdate));  
+        Calendar cal = Calendar.getInstance();    
+        cal.setTime(smdate);    
+        long time1 = cal.getTimeInMillis();                 
+        cal.setTime(bdate);    
+        long time2 = cal.getTimeInMillis();         
+        long between_days=(time2-time1)/(1000*3600*24);  
+            
+       return Integer.parseInt(String.valueOf(between_days));           
+    }    
+
 	
 	/**
 	 *  通过用户名和加密的密码，获取用户的userId
@@ -150,7 +393,7 @@ public class UsertoolsRestController {
 		old_u.setUserstarss(user.getUserstarss());
 		
 		old_u.setName(user.getName());
-		old_u.setPhonenumber(user.getPhonenumber());  //更新的手机号需要是在接口验证过的 
+		old_u.setPhonenumber(user.getPhonenumber());  //更新的手机号需要是在接口验证过的  #二期修改
 		old_u.setPlainPassword(user.getPassword()); //新密码 为 密码原文  不是加密后的
 		old_u.setUniversity(user.getUniversity());
 		old_u.setUniversityId(user.getUniversityId());
@@ -711,10 +954,7 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
 	}
 	
 	
-	
-	
-	
-	
+		
 	
 	/**
 	 * 取出Shiro中的当前用户Id.

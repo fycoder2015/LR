@@ -22,6 +22,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.job.lr.entity.Daysignin;
+import com.job.lr.entity.Daysigninlog;
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Subject;
 import com.job.lr.entity.Task;
@@ -34,6 +36,8 @@ import com.job.lr.entity.UserPointsLog;
 import com.job.lr.entity.UserRole;
 import com.job.lr.entity.UserRoleRec;
 import com.job.lr.filter.Constants;
+import com.job.lr.repository.DaysigninDao;
+import com.job.lr.repository.DaysigninlogDao;
 import com.job.lr.repository.PhonenumberDao;
 import com.job.lr.repository.SubjectDao;
 import com.job.lr.repository.TaskDao;
@@ -80,6 +84,8 @@ public class AccountService {
 	private UniversityDao	universityDao ;
 	private UniversitySubjectRecDao	universitysubjectrecDao ;
 	private SubjectDao		subjectDao;
+	private DaysigninDao		daysigninDao;
+	private DaysigninlogDao		daysigninlogDao;
 	
 	private Clock clock = Clock.DEFAULT;
 	
@@ -87,6 +93,41 @@ public class AccountService {
 		UserPicoo ui = userheadimgDao.save(uhi) ;
 		return ui;
 	}
+	
+	public Daysigninlog findlastnearDaysigninlog(Long userId) {
+		Daysigninlog daysigninlog ;
+
+		List<Daysigninlog> ds = daysigninlogDao.findByUserIdOrderByIdDesc(userId) ;
+		if(null == ds || ds.size() ==0){
+			daysigninlog=null;
+		}else{
+			Iterator <Daysigninlog> dsi = ds.iterator(); 			
+			daysigninlog = dsi.next(); //只取最近的一个
+		}
+		return daysigninlog ;
+	}
+	
+	public Daysignin findDaysignin(Long userId) {
+		Daysignin daysignin ;
+
+		List<Daysignin> ds = daysigninDao.findByUserIdOrderByIdDesc(userId) ;
+		if(null == ds || ds.size() ==0){
+			daysignin=null;
+		}else{
+			Iterator <Daysignin> dsi = ds.iterator(); 			
+			daysignin = dsi.next(); //只取最近的一个
+		}
+		return daysignin ;
+	}
+	
+	public Daysignin saveDaysignin(Daysignin ds) {
+		return daysigninDao.save(ds);
+	}
+	
+	public Daysigninlog saveDaysigninlog(Daysigninlog ds) {
+		return daysigninlogDao.save(ds);
+	}
+
 	
 	public UserPicoo findUserPicoo(Long userHeadimgId) {
 		UserPicoo ui = userheadimgDao.findOne(userHeadimgId) ;
@@ -744,6 +785,22 @@ public class AccountService {
 	@Autowired
 	public void setSubjectDao(SubjectDao subjectDao) {
 		this.subjectDao = subjectDao;
+	}
+
+	public DaysigninDao getDaysigninDao() {
+		return daysigninDao;
+	}
+	@Autowired
+	public void setDaysigninDao(DaysigninDao daysigninDao) {
+		this.daysigninDao = daysigninDao;
+	}
+
+	public DaysigninlogDao getDaysigninlogDao() {
+		return daysigninlogDao;
+	}
+	@Autowired
+	public void setDaysigninlogDao(DaysigninlogDao daysigninlogDao) {
+		this.daysigninlogDao = daysigninlogDao;
 	}
 
 
