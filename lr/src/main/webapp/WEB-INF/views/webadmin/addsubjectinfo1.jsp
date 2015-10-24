@@ -19,36 +19,11 @@
 			<input type="hidden" name="universityId" value="${universityId}"/>
 				<table class="table table-hover table-striped">
 	    			<tr>
-		                 <td>学校（必填）:</td>
+		                 <td>学院（必填）:</td>
 		                 <td>
-		                 <input type="text"   name="university"  	 class="input-large required" minlength="3"/>
+		                 <input type="text"   name="subject"  	 class="input-large required" minlength="2"/>
 		                 </td>
-	                </tr>
-					<tr>
-		                 <td>所在城市（必填）:</td>
-		                 <td>
-		                 <input type="text"   name="city"  	 class="input-large required" minlength="2"/>	                 
-		                 </td>
-	                </tr>
-	                <tr>
-		                 <td>地点（必填）:</td>
-		                 <td>
-		                 <input type="text"   name="place"  	 class="input-large required" minlength="2"/>	                 
-		                 </td>
-	                </tr>
-	                <tr>
-		                 <td>地点经度:</td>
-		                 <td>
-		                 <input type="text"   name="longitude"    />	 
-		                 </td>
-	                </tr>
-	                <tr>
-		                 <td>地点纬度:</td>
-		                 <td>
-		                 <input type="text"   name="latitude"  />	 
-		                 </td>
-	                </tr>             
-	                			
+	                </tr>                			
 				</table>   
 				
 				<div class="col-md-3">   

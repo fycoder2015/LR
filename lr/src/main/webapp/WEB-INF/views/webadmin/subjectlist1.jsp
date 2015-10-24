@@ -12,6 +12,9 @@
 
 
 		<div class="col-md-3">
+		<c:if test="${not empty message}">
+		<div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>${message}</div><br>
+		</c:if>
 		<c:if test="${not empty subjectlists}">
 		            <tags:pagination page="${subjectlists}" paginationSize="5"/>
 		</c:if>            
@@ -28,25 +31,27 @@
 		              <tr>
 		                  <th>编号</th>
 		                  <th>校名</th>
-		                  <th>地址</th>
-		                  <th>操作</th>
+		                  <!--<th>地址</th>
+		                  <th>操作</th>  -->
 		              </tr>
 	              </thead>
 	              <tbody>
 	              	<tr>
 	                    <td>序号</td>
 	                    <td>学院名称</td>
-	                    <td>所在地区</td>
-	                    <td>查看详情</td>
+	                     <!--<td>所在地区</td>
+	                    <td>查看详情</td>  -->
 	                </tr>
 				
 					<c:forEach items="${subjectlists.content}" var="subject">
 	              	<tr>
 	                    <td>${subject.id}</td>
 	                    <td>${subject.subject}</td>
-	                    <td>${subject.subject}</td>
-	                    <td><a href="${ctx}/webadmin/showuniversityinfo?showuniversityId=">详情</a>
-	                    <!--  | <a href="/admin.php?m=Admin&c=category&a=delete&id=1" style="color:red;" 
+	             
+	                    
+	                    
+	                    <!--<td><a href="${ctx}/webadmin/showuniversityinfo?showuniversityId=">详情</a>
+	                      | <a href="/admin.php?m=Admin&c=category&a=delete&id=1" style="color:red;" 
 	                    	onclick="javascript:return del('您真的确定要删除吗？\n\n删除后将不能恢复!');">删除</a>
 	                     -->
 	                    </td>

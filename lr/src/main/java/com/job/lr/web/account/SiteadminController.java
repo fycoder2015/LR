@@ -300,6 +300,31 @@ public class SiteadminController {
 		return "redirect:/webadmin/universitylist";
 	}
 	
+	
+	
+	/**
+	 * 增加学院信息
+	 * 
+	 *   ${ctx}/webadmin/addSubject
+	 *  	universityId
+	 * */
+	@RequestMapping(value = "addSubject", method = RequestMethod.POST)
+	public String addSubject(@Valid @ModelAttribute("Subject") Subject s, @RequestParam(value="universityId" ) Long universityId,
+			RedirectAttributes redirectAttributes) {
+		
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){
+			accountService.addSubject(s, universityId);
+			redirectAttributes.addFlashAttribute("message", "增加学院成功");
+		}
+		String jumpurl = "redirect:/webadmin/subjectlist?universityId="+universityId ;
+		return jumpurl;
+		
+	}
+	
 	/**
 	 * 跳转到添加大学信息的页面
 	 *  /webadmin/gotoaddUniversity 

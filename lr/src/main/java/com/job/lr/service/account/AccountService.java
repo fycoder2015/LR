@@ -117,6 +117,17 @@ public class AccountService {
 		universityDao.save(entity);
 	}
 	
+	//新增学院
+	public void addSubject(Subject entity,Long universityId) {
+		Subject s = subjectDao.save(entity); //增加学院
+		UniversitySubjectRec usrc = new UniversitySubjectRec() ;//增加关系表
+		usrc.setSubjectId(s.getId());
+		usrc.setUniversityId(universityId);
+		usrc.setViewDate(new Date());
+		universitysubjectrecDao.save(usrc);//保存关系表
+
+	}
+	
 	public UserRole findUserRoleByUserRoleId(Long userroleId) {
 		UserRole ur  ;
 		boolean beexist = userroleDao.exists(userroleId) ;		
