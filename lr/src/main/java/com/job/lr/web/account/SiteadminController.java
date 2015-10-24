@@ -1,6 +1,5 @@
 package com.job.lr.web.account;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -21,12 +20,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.web.Servlets;
 
 import com.job.lr.entity.BountyTask;
+import com.job.lr.entity.Category;
 import com.job.lr.entity.Subject;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.University;
 import com.job.lr.entity.User;
 import com.job.lr.service.account.AccountService;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
+import com.job.lr.service.admin.CategoryService;
 import com.job.lr.service.bounty.BountyTaskService;
 import com.job.lr.service.task.TaskService;
 
@@ -51,6 +52,9 @@ public class SiteadminController {
 	
 	@Autowired
 	private BountyTaskService bountyService;
+	
+	@Autowired
+	private CategoryService cateService;
 
 	/**
 	 * 网站管理员登录页面
@@ -550,6 +554,86 @@ public class SiteadminController {
 		bounty.setAuditFlag(1);
 		this.bountyService.saveBountyTask(bounty);
 		return "redirect:/webadmin/listBounty";
+	}
+	
+	
+	
+	@RequestMapping(value = "listTaskCate", method = RequestMethod.GET)
+	public String listCate(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = "20") int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+		Page<Category> categories = cateService.pageAllTaskCate(pageNumber, pageSize);
+		
+		model.addAttribute("categories", categories);
+		model.addAttribute("sortType", sortType);
+		model.addAttribute("action","addClass");
+		return "webadmin/listClass";
+	}
+	
+	@RequestMapping(value = "listBountyCate", method = RequestMethod.GET)
+	public String listBountyCate(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = "20") int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+		Page<Category> categories = cateService.pageAllBountyCate(pageNumber, pageSize);
+		
+		model.addAttribute("categories", categories);
+		model.addAttribute("sortType", sortType);
+		model.addAttribute("action","addBountyClass");
+		return "webadmin/listClass";
+	}
+	
+	
+	@RequestMapping(value = "addClass", method = RequestMethod.GET)
+	public String addCateForm(Model model,ServletRequest request) {
+		
+		model.addAttribute("action","saveClass");
+		model.addAttribute("groupId", 1);
+		return "webadmin/cateForm";
+	}
+	
+	@RequestMapping(value = "addBountyClass", method = RequestMethod.GET)
+	public String addBountyCateForm(Model model,ServletRequest request) {
+		
+		model.addAttribute("action","saveClass");
+		model.addAttribute("groupId", 2);
+		return "webadmin/cateForm";
+	}
+	
+	@RequestMapping(value = "saveClass", method = RequestMethod.POST)
+	public String addCate(@Valid Category cate,Model model,ServletRequest request) {
+		
+		this.cateService.save(cate);
+		
+		if (cate.getGroupId().equals(1))
+			return "redirect:/webadmin/listTaskCate";
+		else
+			return "redirect:/webadmin/listBountyCate";
+	}
+	
+	@RequestMapping(value = "cateDetail", method = RequestMethod.GET)
+	public String cateDetail(@RequestParam(value = "cateId" ) Long cateId,Model model,ServletRequest request) {
+		
+		Category cate = this.cateService.findOne(cateId);
+		model.addAttribute("cate",cate);
+		model.addAttribute("groupId", cate.getGroupId());
+		model.addAttribute("action","saveClass");
+		
+		return "webadmin/cateForm";
+	}
+	
+	
+	@RequestMapping(value = "deleteCate", method = RequestMethod.GET)
+	public String addCate(@RequestParam(value = "cateId" ) Long cateId,
+			@RequestParam(value = "groupId" ) Long groupId,Model model,ServletRequest request) {
+		
+		this.cateService.delete(cateId);
+		
+		if (groupId<2)
+			return "redirect:/webadmin/listTaskCate";
+		else
+			return "redirect:/webadmin/listBountyCate";
 	}
 	
 	
