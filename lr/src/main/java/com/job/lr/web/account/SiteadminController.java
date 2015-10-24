@@ -284,7 +284,7 @@ public class SiteadminController {
 	 * */
 	@RequestMapping(value = "addUniversity", method = RequestMethod.POST)
 	public String addUniversity(@Valid @ModelAttribute("university") University u, RedirectAttributes redirectAttributes) {
-		System.out.println("111111111111111111111111111111");
+		//System.out.println("111111111111111111111111111111");
 		Long userId = getCurrentUserId();	
 		User admin = accountService.findUserByUserId(userId);
 		//检验是否是 管理员

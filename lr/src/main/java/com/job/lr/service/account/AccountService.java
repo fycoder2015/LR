@@ -567,9 +567,12 @@ public class AccountService {
 		if(null == usrl || usrl.size() ==0){
 			ps = null ;
 		}else{
-			Iterator <UniversitySubjectRec> usrli = usrl.iterator();  
-			usrc = usrli.next();
-			subjectIds.add(usrc.getSubjectId()) ;
+			Iterator <UniversitySubjectRec> usrli = usrl.iterator(); 			
+			while (usrli.hasNext()) {
+				usrc = usrli.next();
+				subjectIds.add(usrc.getSubjectId()) ;
+			}
+		
 		}
 		ListLongComparator llc = new ListLongComparator();
 		Collections.sort(subjectIds,llc); 
