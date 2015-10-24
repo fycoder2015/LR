@@ -2,6 +2,7 @@
 package com.job.lr.service.account;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -22,8 +23,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.Phonenumber;
+import com.job.lr.entity.Subject;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.University;
+import com.job.lr.entity.UniversitySubjectRec;
 import com.job.lr.entity.User;
 
 import com.job.lr.entity.UserPicoo;
@@ -539,6 +542,38 @@ public class AccountService {
 		Integer  stsint =-1 ;//-1 为失效状态 ，不做显示
 		
 		return universityDao.findByStsintNotOrderByIdDesc(stsint, pageRequest); 
+	}	
+	/**
+	 * 查询大学下学院的列表
+	 * */
+	public Page<Subject> gogetSubjectlists( int pageNumber, int pageSize,String sortType ,Long universityId) {
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortType);
+		List <UniversitySubjectRec> usrl =universitysubjectrecDao.findByUniversityIdOrderByIdDesc(universityId);
+		
+		UniversitySubjectRec usrc = new UniversitySubjectRec();
+		List <Long> subjectIds= new ArrayList<Long>();
+		Page<Subject> ps ;
+		if(null == usrl || usrl.size() ==0){
+			ps = null ;
+		}else{
+			Iterator <UniversitySubjectRec> usrli = usrl.iterator();  
+			usrc = usrli.next();
+			subjectIds.add(usrc.getSubjectId()) ;
+		}
+		ListLongComparator llc = new ListLongComparator();
+		Collections.sort(subjectIds,llc); 
+		//打印排序后的subjectIds
+		System.out.println("in AccountServer() 中的 getSubjectlists()， 打印排序后的subjectIds List");
+		for(int i=0;i<subjectIds.size();i++){
+		     System.out.print(subjectIds.get(i)+",");
+		}	
+		if(null == subjectIds || subjectIds.size() ==0){
+			ps= null;
+		}else{
+			ps = subjectDao.findByIdInOrderByIdDesc(subjectIds, pageRequest);
+			//Integer  stsint =-1 ;//-1 为失效状态 ，不做显示	
+		}
+		return ps; 
 	}	
 	
 	

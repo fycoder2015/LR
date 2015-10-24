@@ -5,16 +5,20 @@
 
 <html>
 <head>
-	<title>大学列表</title>
+	<title>学院列表</title>
 </head>
 
 <body>
 
 
 		<div class="col-md-3">
-		            <tags:pagination page="${universitys}" paginationSize="5"/>&nbsp;&nbsp;&nbsp;
-		            	<a href="${ctx}/webadmin/gotoaddUniversity" class="btn btn-success">
-	            		添加学校
+		<c:if test="${not empty subjectlists}">
+		            <tags:pagination page="${subjectlists}" paginationSize="5"/>
+		</c:if>            
+		            &nbsp;&nbsp;&nbsp;
+		            
+		            	<a href="${ctx}/webadmin/gotoaddSubject?universityId=${universityId}" class="btn btn-success">
+	            		添加学院
 	            		</a>
 		</div>
 
@@ -31,18 +35,17 @@
 	              <tbody>
 	              	<tr>
 	                    <td>序号</td>
-	                    <td>大学名称</td>
+	                    <td>学院名称</td>
 	                    <td>所在地区</td>
 	                    <td>查看详情</td>
 	                </tr>
 				
-					<c:forEach items="${universitys.content}" var="university">
+					<c:forEach items="${subjectlists.content}" var="subject">
 	              	<tr>
-	                    <td>${university.id}</td>
-	                    <td>${university.university}</td>
-	                    <td>${university.place}</td>
-	                    <td><a href="${ctx}/webadmin/showuniversityinfo?showuniversityId=${university.id}">详情</a>|
-	                    <a href="${ctx}/webadmin/subjectlist?universityId=${university.id}">查看学院</a>
+	                    <td>${subject.id}</td>
+	                    <td>${subject.subject}</td>
+	                    <td>${subject.subject}</td>
+	                    <td><a href="${ctx}/webadmin/showuniversityinfo?showuniversityId=">详情</a>
 	                    <!--  | <a href="/admin.php?m=Admin&c=category&a=delete&id=1" style="color:red;" 
 	                    	onclick="javascript:return del('您真的确定要删除吗？\n\n删除后将不能恢复!');">删除</a>
 	                     -->

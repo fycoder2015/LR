@@ -31,17 +31,17 @@ public class User extends IdEntity {
 	private String roles;// 角色列表在数据库中实际以逗号分隔字符串存储，因此返回不能修改的List.
 	//private Long rolelong;// 角色数据 	
 	private String phonenumber;
-	@JsonIgnore  //不在json的返回值中显示
+	//@JsonIgnore  //不在json的返回值中显示
 	private String captchacode;
 	
 	private String university;
-	@JsonIgnore  //不在json的返回值中显示
+	//@JsonIgnore  //不在json的返回值中显示
 	private Long universityId;
 	private String subject;
-	@JsonIgnore  //不在json的返回值中显示
+	//@JsonIgnore  //不在json的返回值中显示
 	private Long subjectId;
 	private String years;
-	@JsonIgnore  //不在json的返回值中显示
+	//@JsonIgnore  //不在json的返回值中显示
 	private Long yearsId;	
 	
 	

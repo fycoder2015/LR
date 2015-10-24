@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.web.Servlets;
 
 import com.job.lr.entity.Phonenumber;
+import com.job.lr.entity.Subject;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.University;
 import com.job.lr.entity.User;
@@ -170,7 +171,43 @@ public class SiteadminController {
 	}
 	
 	
+	/**
+	 * 学院列表
+	 * 
+	 * 	http://localhost:8080/lr/webadmin/subjectlist 
+	 * 
+	 * 	${ctx}/webadmin/subjectlist?universityId=
+	 * 成功 跳转
+	 * 
+	 * 		
+	 * */
 	
+	@RequestMapping(value = "subjectlist", method = RequestMethod.GET)
+	public String subjectlist(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = AdminPAGE_SIZE) int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, 
+			@RequestParam(value = "universityId") Long universityId,
+			Model model,
+			ServletRequest request) {
+
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){	
+			
+			model.addAttribute("universityId", universityId);
+			Page<Subject> subjectlist = accountService.gogetSubjectlists(pageNumber, pageSize, sortType, universityId);		
+			if(subjectlist == null){
+				
+			}else{
+				model.addAttribute("subjectlists", subjectlist);
+				model.addAttribute("sortType", sortType);	
+			}
+		}
+		
+		return "webadmin/subjectlist1";
+	}
 	/**
 	 * 显示用户详情
 	 * 	/webadmin/showuserinfo?showuserId=${user.id}
@@ -272,6 +309,20 @@ public class SiteadminController {
 	public String gotoaddUniversity( ) {
 
 		return "webadmin/adduniversityinfo1";
+	}
+	
+	
+	
+	/**
+	 * 跳转到添加专业信息的页面
+	 *  ${ctx}/webadmin/gotoaddSubject?universityId=${universityId}
+	 *  
+	 * */
+	@RequestMapping(value = "gotoaddSubject", method = RequestMethod.GET)
+	public String gotoaddSubject( @RequestParam(value = "universityId" ) Long universityId,Model model,
+			ServletRequest request) {
+		model.addAttribute("universityId", universityId);
+		return "webadmin/addsubjectinfo1";
 	}
 	
 //	@RequestMapping(method = RequestMethod.GET)
