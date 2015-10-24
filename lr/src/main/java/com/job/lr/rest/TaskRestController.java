@@ -98,6 +98,12 @@ public class TaskRestController {
 		return taskService.closeTask(id);
 	}
 	
+	/**
+	 * 兼职任务PV、UV统计接口
+	 * @param taskId
+	 * @param userId
+	 * @return
+	 */
 	@RequestMapping(value = "/pvUvRec/{taskId}_{userId}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public GeneralResponse pvUvRec(@PathVariable("taskId") Long taskId,
 			@PathVariable("userId") Long userId) {

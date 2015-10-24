@@ -55,6 +55,11 @@ public class TaskService {
 	public List<Task> getAllTask() {
 		return (List<Task>) taskDao.findAll();
 	}
+	
+	public Page<Task> pageAllTask(int pageNumber,int pageSize) {
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, "auto");
+		return taskDao.findAll(pageRequest);
+	}
 
 	public Page<Task> getUserTask(Long userId, Map<String, Object> searchParams, int pageNumber, int pageSize,
 			String sortType) {

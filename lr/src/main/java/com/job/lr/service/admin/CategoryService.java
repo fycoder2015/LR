@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.job.lr.entity.Category;
 import com.job.lr.repository.CategoryDao;
 import com.job.lr.service.task.BaseService;
 
@@ -17,5 +18,10 @@ public class CategoryService extends BaseService {
 	/*public void getAllCategory() {
 		this.categoryDao.f
 	}*/
-
+	
+	public void create(Category category) {
+		categoryDao.save(category);
+	}
+	
+	
 }

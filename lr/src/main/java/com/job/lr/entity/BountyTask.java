@@ -54,6 +54,8 @@ public class BountyTask extends IdEntity {
 	
 	//现金酬谢金额
 	private Integer bounty;
+	
+	private Integer auditFlag=0;
 
 	@NotBlank
 	public String getTitle() {
@@ -151,6 +153,15 @@ public class BountyTask extends IdEntity {
 
 	public void setBounty(Integer bounty) {
 		this.bounty = bounty;
+	}
+
+	
+	public Integer getAuditFlag() {
+		return auditFlag;
+	}
+
+	public void setAuditFlag(Integer auditFlag) {
+		this.auditFlag = auditFlag;
 	}
 
 	@Override

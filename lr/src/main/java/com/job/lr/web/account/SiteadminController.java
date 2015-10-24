@@ -1,6 +1,6 @@
 package com.job.lr.web.account;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -17,17 +17,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.web.Servlets;
 
-import com.job.lr.entity.Phonenumber;
+import com.job.lr.entity.BountyTask;
 import com.job.lr.entity.Subject;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.University;
 import com.job.lr.entity.User;
 import com.job.lr.service.account.AccountService;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
+import com.job.lr.service.bounty.BountyTaskService;
 import com.job.lr.service.task.TaskService;
 
 /**
@@ -48,6 +48,9 @@ public class SiteadminController {
 	
 	@Autowired
 	private TaskService taskService;
+	
+	@Autowired
+	private BountyTaskService bountyService;
 
 	/**
 	 * 网站管理员登录页面
@@ -425,6 +428,130 @@ public class SiteadminController {
 		model.addAttribute("universityId", universityId);
 		return "webadmin/addsubjectinfo1";
 	}
+	
+	/**
+	 * 兼职任务列表
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortType
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "listTask", method = RequestMethod.GET)
+	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = "20") int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+		
+		
+		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
+		
+		Page<Task> tasks = taskService.pageAllTask(pageNumber, pageSize);
+
+		model.addAttribute("tasks", tasks);
+		model.addAttribute("sortType", sortType);
+		// 将搜索条件编码成字符串，用于排序，分页的URL
+		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
+
+		return "webadmin/listTask";
+	}
+	
+	/**
+	 * 根据Id显示Task对象详情
+	 * @param taskId
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "taskDetail", method = RequestMethod.GET)
+	public String taskDetail( @RequestParam(value = "taskId" ) Long taskId,Model model,
+			ServletRequest request) {
+		Task task = this.taskService.getTask(taskId);
+		model.addAttribute("task", task);
+		return "webadmin/taskDetail";
+	}
+	
+	/**
+	 * 通过对Task对象内容的审核
+	 * @param taskId
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "auditTask", method = RequestMethod.GET)
+	public String auditTask( @RequestParam(value = "taskId" ) Long taskId,Model model,
+			ServletRequest request) {
+		Task task = this.taskService.getTask(taskId);
+		task.setAuditFlag(1);
+		taskService.saveTask(task);
+//		model.addAttribute("task", task);
+		return "redirect:/webadmin/listTask";
+	}
+	
+	/**
+	 * 赏金任务审核列表
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortType
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "listBounty", method = RequestMethod.GET)
+	public String listBounty(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = "20") int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+		
+		
+		Map<String, Object> searchParams = Servlets.getParametersStartingWith(request, "search_");
+
+		Page<BountyTask> bountys = bountyService.getPagedBountyAll(pageNumber);
+
+		model.addAttribute("bountys", bountys);
+		model.addAttribute("sortType", sortType);
+//		model.addAttribute("sortTypes", sortTypes);
+		// 将搜索条件编码成字符串，用于排序，分页的URL
+		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
+
+		return "webadmin/listBounty";
+	}
+	
+	
+	/**
+	 * 根据Id显示Bounty对象详情
+	 * @param bountyId
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "bountyDetail", method = RequestMethod.GET)
+	public String bountyDetail( @RequestParam(value = "bountyId" ) Long bountyId,Model model,
+			ServletRequest request) {
+//		
+		BountyTask bounty = this.bountyService.getBountTask(bountyId);
+		model.addAttribute("bounty", bounty);
+		return "webadmin/bountyDetail";
+	}
+	
+	
+	/**
+	 * 通过对BountyTask对象内容的审核
+	 * @param bountyId
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "auditBounty", method = RequestMethod.GET)
+	public String auditBounty( @RequestParam(value = "bountyId" ) Long bountyId,Model model,
+			ServletRequest request) {
+		BountyTask bounty = this.bountyService.getBountTask(bountyId);
+		bounty.setAuditFlag(1);
+		this.bountyService.saveBountyTask(bounty);
+		return "redirect:/webadmin/listBounty";
+	}
+	
 	
 //	@RequestMapping(method = RequestMethod.GET)
 //	public String registerForm() {
