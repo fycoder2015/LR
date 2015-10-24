@@ -9,11 +9,11 @@ import javax.persistence.Table;
 @Table(name = "lr_category")
 public class Category extends IdEntity {
 	
-	private String category_name;
+	private String categoryName;
 	
 	private String sts="A";
 	
-	private Integer cateLevel;
+	private Integer cateLevel=1;
 	
 	private String alias;
 	
@@ -21,12 +21,23 @@ public class Category extends IdEntity {
 	
 	private Category ancesCate;
 
-	public String getCategory_name() {
-		return category_name;
+	private Integer groupId;
+	
+	
+	public Integer getGroupId() {
+		return groupId;
 	}
 
-	public void setCategory_name(String category_name) {
-		this.category_name = category_name;
+	public void setGroupId(Integer groupId) {
+		this.groupId = groupId;
+	}
+
+	public String getCategoryName() {
+		return categoryName;
+	}
+
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 	public String getSts() {
