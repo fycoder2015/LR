@@ -2,6 +2,7 @@
 package com.job.lr.service.account;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -22,8 +23,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.Phonenumber;
+import com.job.lr.entity.Subject;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.University;
+import com.job.lr.entity.UniversitySubjectRec;
 import com.job.lr.entity.User;
 
 import com.job.lr.entity.UserPicoo;
@@ -110,9 +113,66 @@ public class AccountService {
 		return universityDao.findOne(universityId);
 	}
 	
+	public Subject findSubjectById(Long subjectId) {
+		return subjectDao.findOne(subjectId);
+	}
+	
 	public void saveUniversity(University entity) {
 		universityDao.save(entity);
 	}
+	
+	public void updateSubject(Subject entity) {
+		subjectDao.save(entity);
+	}
+	
+	//新增学院
+	public void addSubject(Subject entity,Long universityId) {
+		Subject s = subjectDao.save(entity); //增加学院
+		UniversitySubjectRec usrc = new UniversitySubjectRec() ;//增加关系表
+		usrc.setSubjectId(s.getId());
+		usrc.setUniversityId(universityId);
+		usrc.setViewDate(new Date());
+		universitysubjectrecDao.save(usrc);//保存关系表
+
+	}
+	
+	 
+	/***
+	 * 删除学院
+	 * 	学院下有人的话 不能删除
+	 * 
+	 * */
+	public String delSubject(Long subjectId ,Long universityId) {
+		String returnstr= "";
+		String succedstr = "删除成功";
+		String failstr = "该学院下面有用户，不能删除";
+		
+		List <User> ul =userDao.findBySubjectId(subjectId);
+		
+		if(null == ul || ul.size() ==0){
+			//可以删  删subject表
+			subjectDao.delete(subjectId);
+			//删除关系表 UniversitySubjectRec 
+			List<UniversitySubjectRec>  urc =universitysubjectrecDao.findByUniversityIdAndSubjectIdOrderByIdDesc(universityId, subjectId);
+			if(null == urc || urc.size() ==0){}else{
+				UniversitySubjectRec usrc = new UniversitySubjectRec() ;
+				Iterator <UniversitySubjectRec> usrli = urc.iterator(); 			
+				while (usrli.hasNext()) {
+					usrc = usrli.next();
+					universitysubjectrecDao.delete(usrc);					
+				}
+			}
+			returnstr =succedstr;
+			
+		}else{
+			//存在用户 不能删
+			returnstr =failstr;
+		}
+
+		return returnstr;
+
+	}
+	
 	
 	public UserRole findUserRoleByUserRoleId(Long userroleId) {
 		UserRole ur  ;
@@ -539,6 +599,41 @@ public class AccountService {
 		Integer  stsint =-1 ;//-1 为失效状态 ，不做显示
 		
 		return universityDao.findByStsintNotOrderByIdDesc(stsint, pageRequest); 
+	}	
+	/**
+	 * 查询大学下学院的列表
+	 * */
+	public Page<Subject> gogetSubjectlists( int pageNumber, int pageSize,String sortType ,Long universityId) {
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortType);
+		List <UniversitySubjectRec> usrl =universitysubjectrecDao.findByUniversityIdOrderByIdDesc(universityId);
+		
+		UniversitySubjectRec usrc = new UniversitySubjectRec();
+		List <Long> subjectIds= new ArrayList<Long>();
+		Page<Subject> ps ;
+		if(null == usrl || usrl.size() ==0){
+			ps = null ;
+		}else{
+			Iterator <UniversitySubjectRec> usrli = usrl.iterator(); 			
+			while (usrli.hasNext()) {
+				usrc = usrli.next();
+				subjectIds.add(usrc.getSubjectId()) ;
+			}
+		
+		}
+		ListLongComparator llc = new ListLongComparator();
+		Collections.sort(subjectIds,llc); 
+		//打印排序后的subjectIds
+		System.out.println("in AccountServer() 中的 getSubjectlists()， 打印排序后的subjectIds List");
+		for(int i=0;i<subjectIds.size();i++){
+		     System.out.print(subjectIds.get(i)+",");
+		}	
+		if(null == subjectIds || subjectIds.size() ==0){
+			ps= null;
+		}else{
+			ps = subjectDao.findByIdInOrderByIdDesc(subjectIds, pageRequest);
+			//Integer  stsint =-1 ;//-1 为失效状态 ，不做显示	
+		}
+		return ps; 
 	}	
 	
 	

@@ -28,4 +28,6 @@ public interface UserDao extends PagingAndSortingRepository<User, Long>, JpaSpec
 
 	Page <User> findByRolesNotLikeOrderByIdDesc(String rolseadmin, Pageable pageRequest);
 	
+	List <User> findBySubjectId(Long subjectId );
+	
 }

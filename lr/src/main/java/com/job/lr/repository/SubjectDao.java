@@ -1,6 +1,8 @@
 
 package com.job.lr.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -18,4 +20,5 @@ public interface SubjectDao extends PagingAndSortingRepository<Subject, Long>, J
 	//@Modifying
 	//@Query("delete from Task task where task.user.id=?1")
 	//void deleteByUserId(Long id);
+	Page <Subject> findByIdInOrderByIdDesc(List <Long> subjectIds , Pageable pageRequest);
 }
