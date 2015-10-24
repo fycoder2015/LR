@@ -278,6 +278,82 @@ public class SiteadminController {
 	}
 	
 	/**
+	 * 更新学院信息
+	 * /webadmin/updateSubject 
+	 * 		subject
+	 * 		universityId
+	 *   
+	 * */
+	@RequestMapping(value = "updateSubject", method = RequestMethod.POST)
+	public String updateUniversity(@Valid @ModelAttribute("subject") Subject subject,
+			@RequestParam(value = "universityId") Long universityId,
+			RedirectAttributes redirectAttributes) {
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){			
+			accountService.updateSubject(subject);
+			redirectAttributes.addFlashAttribute("message", "更新学院成功");
+		}
+		String jumpurl = "redirect:/webadmin/subjectlist?universityId="+universityId ;
+		return jumpurl;
+	}
+	
+	/**
+	 * 更新专业信息
+	 * /webadmin/toeditsubjectinfo?subjectId=${subject.id}&universityId=${universityId}"
+	 *  
+	 * */
+	@RequestMapping(value = "toeditsubjectinfo", method = RequestMethod.GET)
+	public String toeditsubjectinfo(@RequestParam(value = "subjectId" ) Long subjectId,
+			@RequestParam(value = "universityId" ) Long universityId,
+			Model model,
+			ServletRequest request) {	
+			
+			Long userId = getCurrentUserId();	
+			User admin = accountService.findUserByUserId(userId);
+			//检验是否是 管理员
+			boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+			if(bradmin){			
+				Subject s = accountService.findSubjectById(subjectId);
+				model.addAttribute("subject", s);
+			}else{
+				model.addAttribute("subject", null);
+			}
+			model.addAttribute("universityId", universityId);
+			return "webadmin/showsubjectinfo1";
+			
+	}
+	
+	
+	
+	/**
+	 *  删除专业信息
+	 * delsubjectinfo?subjectId=${subject.id}&universityId=${universityId}
+	 *  
+	 * */
+	@RequestMapping(value = "delsubjectinfo", method = RequestMethod.GET)
+	public String delsubjectinfo(@RequestParam(value = "subjectId" ) Long subjectId,
+			@RequestParam(value = "universityId" ) Long universityId,
+			Model model,ServletRequest request,RedirectAttributes redirectAttributes) {	
+			String message = "" ;
+			Long userId = getCurrentUserId();	
+			User admin = accountService.findUserByUserId(userId);
+			//检验是否是 管理员
+			boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+			if(bradmin){				
+				message=accountService.delSubject(subjectId, universityId);				
+			}else{	
+				message="权限不够" ;
+			}
+			redirectAttributes.addFlashAttribute("message", message);
+			String jumpurl = "redirect:/webadmin/subjectlist?universityId="+universityId ;
+			return jumpurl;
+		
+	}
+	
+	/**
 	 * 增加大学信息
 	 * /webadmin/addUniversity 
 	 *  
@@ -366,7 +442,9 @@ public class SiteadminController {
 //		} else {
 //			return "false";
 //		}
-//	}
+//	&universityId=${universityId}}
+	
+	
 	
 	/**
 	 * 验证权限是否是 admin

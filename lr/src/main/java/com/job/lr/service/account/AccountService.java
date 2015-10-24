@@ -113,8 +113,16 @@ public class AccountService {
 		return universityDao.findOne(universityId);
 	}
 	
+	public Subject findSubjectById(Long subjectId) {
+		return subjectDao.findOne(subjectId);
+	}
+	
 	public void saveUniversity(University entity) {
 		universityDao.save(entity);
+	}
+	
+	public void updateSubject(Subject entity) {
+		subjectDao.save(entity);
 	}
 	
 	//新增学院
@@ -127,6 +135,44 @@ public class AccountService {
 		universitysubjectrecDao.save(usrc);//保存关系表
 
 	}
+	
+	 
+	/***
+	 * 删除学院
+	 * 	学院下有人的话 不能删除
+	 * 
+	 * */
+	public String delSubject(Long subjectId ,Long universityId) {
+		String returnstr= "";
+		String succedstr = "删除成功";
+		String failstr = "该学院下面有用户，不能删除";
+		
+		List <User> ul =userDao.findBySubjectId(subjectId);
+		
+		if(null == ul || ul.size() ==0){
+			//可以删  删subject表
+			subjectDao.delete(subjectId);
+			//删除关系表 UniversitySubjectRec 
+			List<UniversitySubjectRec>  urc =universitysubjectrecDao.findByUniversityIdAndSubjectIdOrderByIdDesc(universityId, subjectId);
+			if(null == urc || urc.size() ==0){}else{
+				UniversitySubjectRec usrc = new UniversitySubjectRec() ;
+				Iterator <UniversitySubjectRec> usrli = urc.iterator(); 			
+				while (usrli.hasNext()) {
+					usrc = usrli.next();
+					universitysubjectrecDao.delete(usrc);					
+				}
+			}
+			returnstr =succedstr;
+			
+		}else{
+			//存在用户 不能删
+			returnstr =failstr;
+		}
+
+		return returnstr;
+
+	}
+	
 	
 	public UserRole findUserRoleByUserRoleId(Long userroleId) {
 		UserRole ur  ;
