@@ -66,7 +66,7 @@ public class UsertoolsRestController {
 	
 	@Autowired
 	private UserPhoneTools userPhoneTools;
-	
+
 	/**
 	 *  通过用户名和加密的密码，获取用户签到信息
 	 * 
@@ -771,7 +771,7 @@ http://localhost:8080/lr/api/v1/usertools/goaddUserPoint?username=7add6c21f9934c
 		GeneralResponse gp = new GeneralResponse();		
 		int errcode = -1 ;
 		int successcode = 1;		
-		
+		//System.out.println("0000000000000000000000000000000000");
 		Long userId = getCurrentUserId();
 		User u = accountService.findUserByUserId(userId);
 		if (u.getUserroleId() == null ){

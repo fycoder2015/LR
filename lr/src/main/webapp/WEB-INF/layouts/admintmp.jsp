@@ -48,7 +48,7 @@
 					    <li><a href="/admin.php?m=Admin&c=post&a=index"><i class="fa fa-edit"></i> 用户统计</a></li>
 					    <li><a href="/admin.php?m=Admin&c=index&a=index"><i class="fa fa-dashboard"></i> <strong> 系统管理 <b class="caret"></b></strong></a></li>
 					    <li><a href="${ctx}/webadmin/universitylist"><i class="fa fa-reorder"></i> 校区管理</a></li>
-					    <li><a href="/admin.php?m=Admin&c=post&a=index"><i class="fa fa-edit"></i> 企业管理</a></li>
+					    <li><a href="${ctx}/webadmin/enuserlist"><i class="fa fa-edit"></i> 企业管理</a></li>
 					</ul>
 	    		</div><!-- col-md-2 end -->	
 	    		 

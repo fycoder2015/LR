@@ -58,9 +58,14 @@ public class LoginController {
 			if(u!=null){
 				String password_en = accountService.entryptPasswordByString(password);
 				String password_db = u.getPassword();
+				
+				String rolestr = u.getRoles();
+				String enterpriserolestr = "enterpriseuser";
+				
 				System.out.println(password_db);
 				System.out.println(password_en);
-				if(password_en.equals(password_db)){
+				
+				if(password_en.equals(password_db)&&((enterpriserolestr).equals(rolestr))){//满足 1.密码匹配  2.用户角色是企业用户 并行
 					//可以登录用户 设置session  为了后续的过滤
 					request.getSession().setAttribute("username", username);
 					request.getSession().setAttribute("digest", password_db);				

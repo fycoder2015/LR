@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -53,6 +56,12 @@ public class User extends IdEntity {
 	private String tempToken;//临时Token 用于找回密码
 	@JsonIgnore  //不在json的返回值中显示
 	private Date   tempTokenDate; //临时Token 的产生日期  后期进行时间比对  #二期
+	
+	
+	//一对一 与Enterprise
+	private Enterprise enterprise;
+	private Integer enterprisesign; //企业标示符  enterprisesign=1 是企业 。
+	
 	
 	/** 与正在使用的 角色一对一，UserRole 中的  useing=1，
 		以直接调用正在使用的UserRole **/	
@@ -315,6 +324,28 @@ public class User extends IdEntity {
 
 	public void setUserstarss(Integer userstarss) {
 		this.userstarss = userstarss;
+	}
+	
+	
+	//@ManyToOne
+	@OneToOne
+	@JoinColumn(name = "enterprise_id")
+	public Enterprise getEnterprise() {
+		return enterprise;
+	}
+
+	public void setEnterprise(Enterprise enterprise) {
+		this.enterprise = enterprise;
+	}
+
+	
+	
+	public Integer getEnterprisesign() {
+		return enterprisesign;
+	}
+
+	public void setEnterprisesign(Integer enterprisesign) {
+		this.enterprisesign = enterprisesign;
 	}
 
 	@Override

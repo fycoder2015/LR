@@ -1,5 +1,6 @@
 package com.job.lr.web.account;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -23,6 +24,7 @@ import org.springside.modules.web.Servlets;
 
 import com.job.lr.entity.BountyTask;
 import com.job.lr.entity.Category;
+import com.job.lr.entity.Enterprise;
 import com.job.lr.entity.Subject;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.University;
@@ -148,6 +150,45 @@ public class SiteadminController {
 		model.addAttribute("searchParams", Servlets.encodeParameterStringWithPrefix(searchParams, "search_"));
 		return "webadmin/userlist1";
 	}
+	
+	
+	
+	/**
+	 * 企业用户列表
+	 * 
+	 * 	http://localhost:8080/lr/webadmin/enuserlist 
+	 * 
+	 * 	/webadmin/enuserlist
+	 * 成功 跳转
+	 * 
+	 * 		
+	 * */	
+	@RequestMapping(value = "enuserlist", method = RequestMethod.GET)
+	public String enuserlist(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = AdminPAGE_SIZE) int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+
+		Long userId = getCurrentUserId();		
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){
+			int enterprisesign = 1 ; //企业用户的标记
+			Page<User> users = accountService.getEnUserlists( enterprisesign ,pageNumber, pageSize, sortType);		
+			model.addAttribute("users", users);
+			model.addAttribute("sortType", sortType);
+
+		}
+		return "webadmin/enuserlist1";
+		
+	}
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 大学列表
@@ -386,6 +427,46 @@ public class SiteadminController {
 	}
 	
 	
+	/**
+	 * 增加企业用户和信息
+	 * /webadmin/addEnuser 
+	 *  
+	 *  额外加的entAddress,entManager, phoneCall存到enterprise里
+	 *  
+	 *  注意：
+	 *  User中的 ，企业用户不要 添加 phonenumber 属性
+	 * */
+	@RequestMapping(value = "addEnuser", method = RequestMethod.POST)
+	public String addEnuser(@Valid @ModelAttribute("user") User u, 
+			@RequestParam(value="entAddress" ) String entAddress,
+			@RequestParam(value="entManager" ) String entManager,
+			@RequestParam(value="phoneCall" ) String phoneCall,
+			RedirectAttributes redirectAttributes) {
+ 
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){
+			 
+			int  enterprisesign =1 ; //企业用户
+			String roles ="enterpriseuser";
+			u.setPhonenumber("");
+			u.setEnterprisesign(enterprisesign);
+			u.setRoles(roles);
+			Enterprise e = new Enterprise();
+			e.setEntAddress(entAddress);
+			e.setEntManager(entManager);
+			e.setEntName(u.getName());
+			e.setPhoneCall(phoneCall);
+			e.setRegDate(new Date());
+			u.setEnterprise(e);
+			accountService.addEnterprise(e);
+			accountService.addEnuser(u); 
+			redirectAttributes.addFlashAttribute("message", "增加企业用户成功");
+		}
+		return "redirect:/webadmin/enuserlist";
+	}
 	
 	/**
 	 * 增加学院信息
@@ -421,7 +502,16 @@ public class SiteadminController {
 		return "webadmin/adduniversityinfo1";
 	}
 	
-	
+	/**
+	 * 跳转到添加企业用户信息的页面
+	 *  "${ctx}/webadmin/gotoaddEnuser"
+	 *  
+	 * */
+	@RequestMapping(value = "gotoaddEnuser", method = RequestMethod.GET)
+	public String gotoaddEnuser( ) {
+
+		return "webadmin/addenuserinfo1";
+	}
 	
 	/**
 	 * 跳转到添加专业信息的页面
