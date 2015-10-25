@@ -9,10 +9,6 @@
 </head>
 
 <body>
-
-
-
-
 		<div class="col-md-3">
 		<c:if test="${not empty message}">
 		<div id="message" class="alert alert-success"><button data-dismiss="alert" class="close">×</button>${message}</div><br>
@@ -61,8 +57,5 @@
 		 		</tbody>
 	          </table>
 	    </div><!-- col-md-10 end-->
-
-
-
 </body>
 </html>

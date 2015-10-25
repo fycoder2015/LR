@@ -66,11 +66,8 @@
 	            	<a href="javascript :;" onClick="javascript :history.back(-1);" class="btn btn-success">
 	            		返回
 	            	</a>
-	        	</div>
-        	
-        	</form>  
-        	
-        	
+	        	</div>        	
+        	</form>         	
 	    </div><!-- col-md-10 end-->
    
 
