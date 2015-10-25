@@ -725,6 +725,10 @@ public class AccountService {
 		return ps; 
 	}	
 	
+	public void saveUser(User user) {
+		this.userDao.save(user);
+	}
+	
 	
 	/**
 	 * 创建分页请求.
