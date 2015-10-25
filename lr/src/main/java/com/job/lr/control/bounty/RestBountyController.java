@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springside.modules.web.MediaTypes;
 
 import com.job.lr.entity.BountyTask;
+import com.job.lr.entity.Category;
 import com.job.lr.entity.GeneralResponse;
+import com.job.lr.service.admin.CategoryService;
 import com.job.lr.service.bounty.BountyTaskService;
 
 @RestController
@@ -26,6 +28,9 @@ public class RestBountyController {
 
 	@Autowired
 	BountyTaskService bountyService;
+	
+	@Autowired
+	CategoryService cateService;
 
 	@SuppressWarnings("unused")
 	@Autowired
@@ -97,6 +102,16 @@ public class RestBountyController {
 	public Page<BountyTask> pageByUser (@PathVariable("userId") Long userId,
 			@PathVariable("pageNum") int pageNum){
 		return bountyService.getUserBountyTask(userId, pageNum);
+	}
+	
+	/**
+	 * 获取赏金任务的分类列表
+	 * @return
+	 */
+	@RequestMapping(value = "/getBountyCategory",method = RequestMethod.GET,
+			produces = MediaTypes.JSON_UTF_8) 
+	public Page<Category> getBountyCategory(){
+		return this.cateService.pageAllBountyCate(1, 500);
 	}
 
 }
