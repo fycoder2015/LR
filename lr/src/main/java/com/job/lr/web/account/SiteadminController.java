@@ -438,6 +438,7 @@ public class SiteadminController {
 	 * */
 	@RequestMapping(value = "addEnuser", method = RequestMethod.POST)
 	public String addEnuser(@Valid @ModelAttribute("user") User u, 
+			//@RequestParam(value="plainPassword" ) String plainPassword,
 			@RequestParam(value="entAddress" ) String entAddress,
 			@RequestParam(value="entManager" ) String entManager,
 			@RequestParam(value="phoneCall" ) String phoneCall,
@@ -454,6 +455,8 @@ public class SiteadminController {
 			u.setPhonenumber("");
 			u.setEnterprisesign(enterprisesign);
 			u.setRoles(roles);
+			//System.out.println("plainPassword:"+plainPassword);
+			//u.setPlainPassword(plainPassword);
 			Enterprise e = new Enterprise();
 			e.setEntAddress(entAddress);
 			e.setEntManager(entManager);
