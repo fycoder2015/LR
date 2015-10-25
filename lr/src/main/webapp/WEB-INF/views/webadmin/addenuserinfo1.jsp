@@ -24,13 +24,13 @@
 	    			<tr>
 		                 <td>登录名（loginName）:</td>
 		                 <td>
-		                 <input type="text"   name="loginName"  	 class="input-large required" minlength="3"/>
+		                 <input type="text"   name="loginName"  class="input-large required" minlength="3"/>
 		                 </td>
 	                </tr>
            		    <tr>
 		                 <td>企业名称:</td>
 		                 <td>
-		                 <input type="text"   name="name"  	 class="input-large required" minlength="3"/>
+		                 <input type="text"   name="name"  	class="input-large required" minlength="3"/>
 		                 </td>
 	                </tr>
            		    <tr>

@@ -11,6 +11,7 @@ import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
+import org.hibernate.metamodel.source.annotations.attribute.type.EnumeratedTypeResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -228,7 +229,29 @@ public class AccountService {
 		return returnstr;
 
 	}
-	
+	/***
+	 * 删除企业用户
+	 * 	企业用户发布任务 不能删除， 
+	 * 
+	 * 	#二期
+	 * */
+	public String delEnuserinfo(Long enuserId ) {
+		String returnstr= "";
+		String succedstr = "删除成功";
+		String failstr = "该企业下面有任务，不能删除";
+		User u = userDao.findOne(enuserId);
+		/**
+		 *	注意： 
+		 *		此处只是删除User表中对应的内容
+		 * 		关联的Enterprise中的内容不做删除，怕影响兼职部分的发布信息
+		 * */
+		userDao.delete(u); //直接删用户   企业表关联的Enterprise中关联的内容不删除，不能级联删除
+		returnstr =succedstr;
+		
+		//Enterprise e = enterpriseDao.findOne(u.getEnterprise().getId()) ;
+		return returnstr;
+		
+	}
 	
 	public UserRole findUserRoleByUserRoleId(Long userroleId) {
 		UserRole ur  ;
