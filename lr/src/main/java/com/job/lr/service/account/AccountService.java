@@ -181,8 +181,11 @@ public class AccountService {
 	}
 	
 	//新增企业用户
-	public void addEnuser(User u) {
-		userDao.save(u);
+	public void addEnuser(User user) {
+		if (StringUtils.isNotBlank(user.getPlainPassword())) {
+			entryptPassword(user);
+		}
+		userDao.save(user);
 	}
 	
 	//新增企业对象

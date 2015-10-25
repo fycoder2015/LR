@@ -25,6 +25,8 @@ import com.job.lr.service.account.AccountService;
 @Controller
 @RequestMapping(value = "/login")
 public class LoginController {
+	private static  String  EnuserRoleStr = "enterpriseuser";
+	
 	@Autowired
 	private AccountService accountService;
 
@@ -57,15 +59,13 @@ public class LoginController {
 			User u = accountService.findUserByLoginName(username);
 			if(u!=null){
 				String password_en = accountService.entryptPasswordByString(password);
-				String password_db = u.getPassword();
-				
-				String rolestr = u.getRoles();
-				String enterpriserolestr = "enterpriseuser";
-				
-				System.out.println(password_db);
-				System.out.println(password_en);
-				
-				if(password_en.equals(password_db)&&((enterpriserolestr).equals(rolestr))){//满足 1.密码匹配  2.用户角色是企业用户 并行
+				String password_db = u.getPassword();				
+				System.out.println("password_db:"+password_db);
+				System.out.println("password_en:"+password_en);
+				//检验是否是企业用户
+				boolean brenuser = checkUserRoleIsEnuser(u.getRoles());
+				System.out.println("brenuser:"+brenuser);
+				if((password_en.equals(password_db))&&(brenuser)){//满足 1.密码匹配  2.用户角色是企业用户 并行
 					//可以登录用户 设置session  为了后续的过滤
 					request.getSession().setAttribute("username", username);
 					request.getSession().setAttribute("digest", password_db);				
@@ -81,6 +81,27 @@ public class LoginController {
 
 	}
 	
+	/**
+	 * 验证权限是否是Enuser 企业用户
+	 * 
+	 * @return true 是
+	 * 		   false 不是管理员
+	 * 
+	 * */
+	private Boolean checkUserRoleIsEnuser(String  rolestr) {	
+		 	   
+	    String[] splitstr=rolestr.split(",");
+	    boolean behaveenuserrole = false ;
+	    for(int j=0 ;j<splitstr.length ;j++){
+	    	//System.out.println("----------"+splitstr[j]);
+	    	if (splitstr[j].equals(EnuserRoleStr)){
+	    		behaveenuserrole = true;
+	    		break;
+	    	}
+	    }
+	    //System.out.println("----------"+behaveenuserrole);
+	    return behaveenuserrole;
+	}
 	
 	@RequestMapping(value = "fromForm",method = RequestMethod.POST)
 	public String loginForm(HttpServletRequest request,HttpServletResponse response) {
