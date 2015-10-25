@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.job.lr.entity.Daysignin;
 import com.job.lr.entity.Daysigninlog;
+import com.job.lr.entity.Enterprise;
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Subject;
 import com.job.lr.entity.Task;
@@ -38,6 +39,7 @@ import com.job.lr.entity.UserRoleRec;
 import com.job.lr.filter.Constants;
 import com.job.lr.repository.DaysigninDao;
 import com.job.lr.repository.DaysigninlogDao;
+import com.job.lr.repository.EnterpriseDao;
 import com.job.lr.repository.PhonenumberDao;
 import com.job.lr.repository.SubjectDao;
 import com.job.lr.repository.TaskDao;
@@ -86,7 +88,8 @@ public class AccountService {
 	private SubjectDao		subjectDao;
 	private DaysigninDao		daysigninDao;
 	private DaysigninlogDao		daysigninlogDao;
-	
+	private EnterpriseDao		enterpriseDao;
+
 	private Clock clock = Clock.DEFAULT;
 	
 	public UserPicoo saveUserPicoo(UserPicoo uhi) {
@@ -177,6 +180,15 @@ public class AccountService {
 
 	}
 	
+	//新增企业用户
+	public void addEnuser(User u) {
+		userDao.save(u);
+	}
+	
+	//新增企业对象
+	public void addEnterprise(Enterprise e) {
+		enterpriseDao.save(e);
+	}
 	 
 	/***
 	 * 删除学院
@@ -632,6 +644,16 @@ public class AccountService {
 	
 	
 	/**
+	 * 管理员查询企业用户列表
+	 * */
+	public Page<User> getEnUserlists( int ensign ,int pageNumber, int pageSize,	String sortType) {
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortType);		 
+		int enterprisesign =ensign ; //企业标记
+		return userDao.findByEnterprisesignOrderByIdDesc(enterprisesign, pageRequest) ;//查找enterprisesign字段为1的企业用户
+	}	
+	
+	
+	/**
 	 * 查询大学列表
 	 * */
 	public Page<University> getUniversitylists( int pageNumber, int pageSize,String sortType) {
@@ -801,6 +823,14 @@ public class AccountService {
 	@Autowired
 	public void setDaysigninlogDao(DaysigninlogDao daysigninlogDao) {
 		this.daysigninlogDao = daysigninlogDao;
+	}
+
+	public EnterpriseDao getEnterpriseDao() {
+		return enterpriseDao;
+	}
+	@Autowired
+	public void setEnterpriseDao(EnterpriseDao enterpriseDao) {
+		this.enterpriseDao = enterpriseDao;
 	}
 
 
