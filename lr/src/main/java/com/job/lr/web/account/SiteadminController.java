@@ -13,10 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springside.modules.web.MediaTypes;
 import org.springside.modules.web.Servlets;
 
 import com.job.lr.entity.BountyTask;
@@ -584,6 +586,13 @@ public class SiteadminController {
 		return "webadmin/listClass";
 	}
 	
+	@RequestMapping(value = "listRestBountyCate/{pageNum}_{pageSize}", method = RequestMethod.GET ,produces = MediaTypes.JSON_UTF_8)
+	public Page<Category> listRestBountyCate(@PathVariable("pageNum") int pageNum,
+			@PathVariable("pageSize") int pageSize) {
+		Page<Category> categories =  cateService.pageAllBountyCate(pageNum, pageSize);
+		return categories;
+	}
+	
 	
 	@RequestMapping(value = "addClass", method = RequestMethod.GET)
 	public String addCateForm(Model model,ServletRequest request) {
@@ -635,6 +644,8 @@ public class SiteadminController {
 		else
 			return "redirect:/webadmin/listBountyCate";
 	}
+	
+	
 	
 	
 //	@RequestMapping(method = RequestMethod.GET)

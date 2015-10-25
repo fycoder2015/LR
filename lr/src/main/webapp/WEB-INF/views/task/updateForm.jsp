@@ -50,8 +50,11 @@
                             <div class="jzDivsright">
                                 <select class="jzs" name="jobClass">
                                     <option>点击按钮选择行业分类</option>
-                                    <option value="IT" <c:if test="${task.jobClass == \"IT\"}">selected</c:if>>IT</option>
-                                    <option value="餐饮" <c:if test="${task.jobClass == \"餐饮\"}">selected</c:if>>餐饮</option>
+                                    <c:forEach items="${categories.content}" var="cate">
+                                    	<option value="${cate.categoryName}" <c:if test="${task.jobClass.equals(cate.categoryName)}">selected</c:if>>${cate.categoryName}</option>
+                                    </c:forEach>
+                                    <%-- <option value="IT" <c:if test="${task.jobClass == \"IT\"}">selected</c:if>>IT</option>
+                                    <option value="餐饮" <c:if test="${task.jobClass == \"餐饮\"}">selected</c:if>>餐饮</option> --%>
                                 </select>
                             </div>
                         </div>

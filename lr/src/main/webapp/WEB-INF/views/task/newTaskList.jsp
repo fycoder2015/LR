@@ -14,7 +14,7 @@
 <div class="jz"  style="height:1100px;">
     <div class="jzleft">
         <div class="jzleftDiv">
-    <div class="jzleftDivs" onclick="news(1)"><a style="color: #fff;" href="/index.php?m=&c=Company&a=index">发布兼职</a> </div>
+    <div class="jzleftDivs" onclick="news(1)"><a style="color: #fff;" href="${ctx}/task/create">发布兼职</a> </div>
     <div class="jzleftDivs" onclick="news(1)"><a style="color: #fff;" href="${ctx}/task">兼职列表</a> </div>
     <%--<div class="jzleftDivs" onclick="news(2)">兼职订单</div> --%>
     <div class="jzleftDivs" onclick="news(3)"><a style="color: #fff;" href="/index.php?m=&c=Company&a=info">企业信息</a></div>
