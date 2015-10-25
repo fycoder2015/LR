@@ -30,6 +30,7 @@ import com.job.lr.entity.Category;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.TaskComment;
 import com.job.lr.entity.User;
+import com.job.lr.service.account.AccountService;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 import com.job.lr.service.admin.CategoryService;
 import com.job.lr.service.task.TaskCommentService;
@@ -67,6 +68,9 @@ public class TaskController {
 	
 	@Autowired
 	private CategoryService cateService;
+	
+	@Autowired
+	private AccountService accountService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
@@ -287,6 +291,37 @@ public class TaskController {
 
 		return "redirect:/task/";
 	}
+	
+	@RequestMapping(value = "enterpriseForm" ,method = RequestMethod.GET )
+	public String enterpriseForm(Model model) {
+		Long userId = getCurrentUserId();
+		User user = accountService.getUser(userId);
+		model.addAttribute("user", user);
+		model.addAttribute("action","updateEnt");
+		return "task/enterpriseForm";
+	}
+	
+	@RequestMapping(value = "updateEnt" ,method = RequestMethod.POST)
+	public String updateEnt(@RequestParam("entManager") String entManager,
+			@RequestParam("entName") String entName,@RequestParam("entAddress") String entAddress,
+			@RequestParam("phoneCall") String phoneCall,Model model) {
+		
+		Long userId = getCurrentUserId();
+		User user = accountService.getUser(userId);
+		
+		user.getEnterprise().setEntManager(entManager);
+		user.getEnterprise().setEntAddress(entAddress);
+		user.getEnterprise().setEntName(entName);
+		user.getEnterprise().setPhoneCall(phoneCall);
+		
+		accountService.saveUser(user);
+		
+		model.addAttribute("user", user);
+		model.addAttribute("updateEnt","action");
+		return "redirect:/task";
+	}
+	
+	
 
 	/**
 	 * 所有RequestMapping方法调用前的Model准备方法, 实现Struts2 Preparable二次部分绑定的效果,先根据form的id从数据库查出Task对象,再把Form提交的内容绑定到该对象上。
@@ -318,10 +353,6 @@ public class TaskController {
 		return "task/newTaskForm";
 	}
 	
-	
-	
-	
-
 	/**
 	 * 取出Shiro中的当前用户Id.
 	 */
