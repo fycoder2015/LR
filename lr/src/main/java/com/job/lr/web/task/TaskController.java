@@ -26,10 +26,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springside.modules.web.Servlets;
 
 import com.google.common.collect.Maps;
+import com.job.lr.entity.Category;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.TaskComment;
 import com.job.lr.entity.User;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
+import com.job.lr.service.admin.CategoryService;
 import com.job.lr.service.task.TaskCommentService;
 import com.job.lr.service.task.TaskService;
 
@@ -62,6 +64,9 @@ public class TaskController {
 	
 	@Autowired
 	private TaskCommentService commentService;
+	
+	@Autowired
+	private CategoryService cateService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
@@ -113,9 +118,13 @@ public class TaskController {
 
 	@RequestMapping(value = "create", method = RequestMethod.GET)
 	public String createForm(Model model) {
+		
+		Page<Category> categories = this.cateService.pageAllTaskCate(1, 500);
+		
+		model.addAttribute("categories", categories);
 		model.addAttribute("task", new Task());
 		model.addAttribute("action", "create");
-//		return "task/taskForm";
+		
 		return "task/newTaskForm";
 	}
 	
@@ -184,6 +193,9 @@ public class TaskController {
 
 	@RequestMapping(value = "update/{id}", method = RequestMethod.GET)
 	public String updateForm(@PathVariable("id") Long id, Model model) {
+		
+		Page<Category> categories = this.cateService.pageAllTaskCate(1, 500);
+		model.addAttribute("categories", categories);
 		model.addAttribute("task", taskService.getTask(id));
 		model.addAttribute("action", "update");
 		

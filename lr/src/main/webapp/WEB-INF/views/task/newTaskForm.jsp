@@ -49,8 +49,9 @@
                             <div class="jzDivsright">
                                 <select class="jzs" name="jobClass">
                                     <option>点击按钮选择行业分类</option>
-                                    <option value="IT">IT</option>
-                                    <option value="餐饮">餐饮</option>
+                                    <c:forEach items="${categories.content}" var="cate">
+                                    	<option value="${cate.categoryName}">${cate.categoryName}</option>
+                                    </c:forEach>
                                 </select>
                             </div>
                         </div>
