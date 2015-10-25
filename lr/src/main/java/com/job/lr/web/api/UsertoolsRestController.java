@@ -385,23 +385,51 @@ public class UsertoolsRestController {
 		//User old_u =accountService.findUserByUsernamePasswd(loginName,password);
 		
 		GeneralResponse gp = new GeneralResponse();	
-		
-		old_u.setUserage(user.getUserage()); ;
-		old_u.setSexynum(user.getSexynum());
-		old_u.setSexy(user.getSexy());
-		old_u.setUsersign(user.getUsersign());
-		old_u.setUserstarss(user.getUserstarss());
-		
-		old_u.setName(user.getName());
-		old_u.setPhonenumber(user.getPhonenumber());  //更新的手机号需要是在接口验证过的  #二期修改
-		old_u.setPlainPassword(user.getPassword()); //新密码 为 密码原文  不是加密后的
-		old_u.setUniversity(user.getUniversity());
-		old_u.setUniversityId(user.getUniversityId());
-		old_u.setSubject(user.getSubject());
-		old_u.setSubjectId(user.getSubjectId());
-		old_u.setYears(user.getYears());
-		old_u.setYearsId(user.getYearsId());
-		old_u.setUserpicooId(user.getUserpicooId() );
+		if(user.getUserage() == null){}else{
+			old_u.setUserage(user.getUserage()); 
+		}
+		if(user.getSexynum() == null){}else{
+			old_u.setSexynum(user.getSexynum());
+		}
+		if(user.getSexy() == null){}else{
+			old_u.setSexy(user.getSexy());
+		}
+		if(user.getUsersign() == null){}else{
+			old_u.setUsersign(user.getUsersign());
+		}
+		if(user.getUserstarss() == null){}else{
+			old_u.setUserstarss(user.getUserstarss());
+		}
+		if(user.getName() == null){}else{
+			old_u.setName(user.getName());
+		}
+		if(user.getPhonenumber() == null){}else{
+			old_u.setPhonenumber(user.getPhonenumber());  //更新的手机号需要是在接口验证过的  #二期修改
+		}
+		if(user.getPassword() == null){}else{
+			old_u.setPlainPassword(user.getPassword()); //新密码 为 密码原文  不是加密后的
+		}
+		if(user.getUniversity() == null){}else{
+			old_u.setUniversity(user.getUniversity());
+		}
+		if(user.getUniversityId() == null){}else{
+			old_u.setUniversityId(user.getUniversityId());
+		}
+		if(user.getSubject() == null){}else{
+			old_u.setSubject(user.getSubject());
+		}
+		if(user.getSubjectId() == null){}else{
+			old_u.setSubjectId(user.getSubjectId());
+		}
+		if(user.getYears() == null){}else{
+			old_u.setYears(user.getYears());
+		}
+		if(user.getYearsId() == null){}else{
+			old_u.setYearsId(user.getYearsId());
+		}
+		if(user.getUserpicooId() == null){}else{
+			old_u.setUserpicooId(user.getUserpicooId() );
+		}
 		accountService.updateUser(old_u);
 		
 		gp.setRetCode(1);

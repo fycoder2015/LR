@@ -265,7 +265,7 @@ public class SiteadminController {
 	 * 
 	 * */
 	@RequestMapping(value = "showuserinfo", method = RequestMethod.GET)
-	public String userlist(@RequestParam(value = "showuserId" ) Long showuserId,Model model,
+	public String showuserInfo(@RequestParam(value = "showuserId" ) Long showuserId,Model model,
 			ServletRequest request) {	
 		
 		Long userId = getCurrentUserId();	
@@ -280,6 +280,29 @@ public class SiteadminController {
 		}
 		return "webadmin/showuserinfo1";
 	}
+	/**
+	 * 显示企业用户详情
+	 * ${ctx}/webadmin/showenuserinfo?enuserId=${user.id}
+	 * 
+	 * */
+	@RequestMapping(value = "showenuserinfo", method = RequestMethod.GET)
+	public String showenuserInfo(@RequestParam(value = "enuserId" ) Long enuserId,Model model,
+			ServletRequest request) {	
+		
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){
+			User showenenuser = accountService.findUserByUserId(enuserId);
+			model.addAttribute("showenuser", showenenuser);
+		}else{
+			model.addAttribute("showenuser", null);
+		}
+		return "webadmin/showenuserinfo1";
+		
+	}
+	
 	
 	/**
 	 * 显示学校详情
@@ -376,8 +399,28 @@ public class SiteadminController {
 			
 	}
 	
-	
-	
+	/**
+	 * 删除企业用户
+	 *  ${ctx}/webadmin/delenuserinfo?enuserId=${user.id}
+	 * */
+	@RequestMapping(value = "delenuserinfo", method = RequestMethod.GET)
+	public String delEnuserInfo(@RequestParam(value = "enuserId" ) Long enuserId,			
+			Model model,ServletRequest request,RedirectAttributes redirectAttributes) {	
+			String message = "" ;
+			Long userId = getCurrentUserId();	
+			User admin = accountService.findUserByUserId(userId);
+			//检验是否是 管理员
+			boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+			if(bradmin){				
+				message=accountService.delEnuserinfo(enuserId);			
+			}else{	
+				message="权限不够" ;
+			}
+			redirectAttributes.addFlashAttribute("message", message);
+			String jumpurl = "redirect:/webadmin/enuserlist";
+			return jumpurl;
+		
+	}
 	/**
 	 *  删除专业信息
 	 * delsubjectinfo?subjectId=${subject.id}&universityId=${universityId}
@@ -453,6 +496,7 @@ public class SiteadminController {
 			int  enterprisesign =1 ; //企业用户
 			String roles ="enterpriseuser";
 			u.setPhonenumber("");
+			u.setRegisterDate(new Date());
 			u.setEnterprisesign(enterprisesign);
 			u.setRoles(roles);
 			//System.out.println("plainPassword:"+plainPassword);
