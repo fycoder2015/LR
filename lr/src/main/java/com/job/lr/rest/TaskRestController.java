@@ -26,10 +26,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springside.modules.beanvalidator.BeanValidators;
 import org.springside.modules.web.MediaTypes;
 
+import com.job.lr.entity.Category;
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.User;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
+import com.job.lr.service.admin.CategoryService;
 import com.job.lr.service.task.TaskService;
 
 /**
@@ -48,6 +50,9 @@ public class TaskRestController {
 	
 //	@Autowired
 //	private TaskViewRecService viewRecService;
+	
+	@Autowired
+	private CategoryService cateService;
 
 	@Autowired
 	private Validator validator;
@@ -179,6 +184,30 @@ public class TaskRestController {
 	}
 	
 	/**
+	 * 根据工作类别查询通过审核的接口
+	 * @param pageNum
+	 * @param pageSize
+	 * @param jobClass
+	 * @return
+	 */
+	@RequestMapping(value = "/pageByClass/{pageNum}_{pageSize}_{jobClass}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public Page<Task> pageByClass(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize,
+			@PathVariable("jobClass") String jobClass) {
+		return taskService.pageTaskByClass(jobClass, pageNum, pageSize);
+	}
+	
+	/**
+	 * 获取所有兼职任务分类
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping(value = "/getCategory/{pageNum}_{pageSize}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public Page<Category> getCategory(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize) {
+		return cateService.pageAllTaskCate(pageNum, pageSize);
+	}
+	
+	/**
 	 * 取出Shiro中的当前用户Id.
 	 */
 	private Long getCurrentUserId() {
@@ -209,4 +238,5 @@ public class TaskRestController {
 	public void delete(@PathVariable("id") Long id) {
 		taskService.deleteTask(id);
 	}
+
 }

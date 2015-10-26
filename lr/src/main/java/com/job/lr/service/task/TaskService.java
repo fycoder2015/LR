@@ -114,6 +114,19 @@ public class TaskService {
 	}
 	
 	/**
+	 *  根据任务分类查询兼职任务信息
+	 * @param jobClass
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Task> pageTaskByClass(String jobClass, int pageNum, int pageSize) {
+		
+		PageRequest pageRequest = buildPageRequest(pageNum, pageSize, "auto");
+		return this.taskDao.pageByClass(jobClass, pageRequest);
+	}
+	
+	/**
 	 * 把任务的状态置为“关闭”
 	 * @param id
 	 */
