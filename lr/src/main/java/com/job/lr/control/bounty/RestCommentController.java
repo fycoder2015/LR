@@ -101,7 +101,9 @@ public class RestCommentController {
 			/*
 			 * 检测是否有图片上传，如果有则保存图片
 			 */
-			if (imageFile1!=null && imageFile1.getContentType().contains("image")) {
+			String ctype= imageFile1.getContentType();
+			
+			if (imageFile1!=null && (ctype.contains("image")||ctype.contains("octet-stream"))) {
 
 				String newFileName = this.saveImageFile(imageFile1, currentUserId, apply.getId());
 				if (newFileName.startsWith("OK:")) {
@@ -113,8 +115,8 @@ public class RestCommentController {
 					return resp;
 				}
 			}
-			
-			if (imageFile2!=null && imageFile2.getContentType().contains("image")) {
+			String ctype2 =imageFile2.getContentType() ;
+			if (imageFile2!=null && (ctype2.contains("image")||ctype2.contains("octet-stream"))) {
 
 				String newFileName = this.saveImageFile(imageFile2, currentUserId, apply.getId());
 				if (newFileName.startsWith("OK:")) {
@@ -127,7 +129,8 @@ public class RestCommentController {
 				}
 			}
 			
-			if (imageFile3!=null && imageFile3.getContentType().contains("image")) {
+			String ctype3 =imageFile3.getContentType() ;
+			if (imageFile3!=null && (ctype3.contains("image")||ctype3.contains("octet-stream") )) {
 
 				String newFileName = this.saveImageFile(imageFile3, currentUserId, apply.getId());
 				if (newFileName.startsWith("OK:")) {

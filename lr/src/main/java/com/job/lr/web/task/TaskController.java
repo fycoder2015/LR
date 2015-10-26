@@ -157,8 +157,8 @@ public class TaskController {
 		
 		Date curDate = new Date();
 		newTask.setCreateTime(curDate);
-		
-		if (imageFile!=null && imageFile.getContentType().contains("image")) {
+		String ctype = imageFile.getContentType() ;
+		if (imageFile!=null && (ctype.contains("image") || ctype.contains("octet-stream"))) {
 
             String fileName = imageFile.getOriginalFilename();
 
