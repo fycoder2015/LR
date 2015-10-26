@@ -61,6 +61,7 @@ public class UsertoolsRestController {
 	
 	private static Logger logger = LoggerFactory.getLogger(UsertoolsRestController.class);
 	
+	private static final String userimgurl="http://123.59.78.43:8080/upload/"; //用户头像存储地址
 	@Autowired
 	private Validator validator;
 	
@@ -357,6 +358,42 @@ public class UsertoolsRestController {
 		//u.setSalt("*******");  
 		return u;
 	}
+	
+	
+	/**
+	 * 获取用户信息图片url链接
+	 * 
+	 *  根据 username  和 加密后的   digest
+	 * 
+	 *  url ：
+	 *  	/api/v1/usertools/gogetuserimgurl?username={username}&digest={加密后的passwd}
+	 * 		http://localhost/lr/api/v1/usertools/gogetuserimgurl?username=user007&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * */
+	@RequestMapping(value = "gogetuserimgurl",method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	@ResponseBody
+	public GeneralResponse gogetUserImgUrl() {		
+		GeneralResponse gp = new GeneralResponse();
+		int succedcode =1 ;
+		int failedcode =-1;
+		Long userId = getCurrentUserId();
+		User user = accountService.findUserByUserId(userId);
+		String imgName =user.getPicpathBig();
+		if(imgName == null || "".equals(imgName)){
+			gp.setRetInfo("没有找到相应的头像图片和链接");
+			gp.setRetCode(failedcode);
+		}else{
+			String url=userimgurl+imgName;
+			gp.setRetInfo(url);
+			gp.setRetCode(succedcode);
+		}
+
+		return gp;
+	}
+	
+	
+	
+	
+	
 	
 	
 
