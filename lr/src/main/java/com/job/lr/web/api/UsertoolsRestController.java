@@ -893,20 +893,24 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
 	@RequestMapping(value = "uploaduserpic",method = RequestMethod.POST, produces = MediaTypes.JSON_UTF_8)
 	@ResponseBody
 	public GeneralResponse uploaduserpic(@RequestParam(value = "imageFile") MultipartFile imageFile ) {		
+		System.out.println("---------------上传图片-------------------");
 		//上传图片		
 		Long userId = getCurrentUserId();
 		
 		GeneralResponse gp = new GeneralResponse();	
+		System.out.println("imageFile.getContentType(): "+ imageFile.getContentType());
 		//保存图片
+		String  ctype = imageFile.getContentType() ;
 		Date curDate = new Date();			
-		if (imageFile!=null && imageFile.getContentType().contains("image")) {
+		if (imageFile!=null &&( ctype.contains("image")||ctype.contains("octet-stream") )) {
+			
             String fileName = imageFile.getOriginalFilename();
             String suffix = fileName.substring(fileName.indexOf("."));	            
     		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");	    		
     		String newFileName = userId+"_"+format.format(curDate)+suffix;
     		System.out.println(newFileName);	    	   
     		String destDir = System.getenv("IMAGE_DIR");
-    		destDir="C:/uploadpic_here";
+    		//destDir="C:/uploadpic_here";
     		//System.out.println("destDir:"+destDir);
     		if (destDir == null|| destDir.equals("")) {
     			//redirectAttributes.addFlashAttribute("message", "未能获取文件保存位置，请联系系统管理员。");	    			
@@ -965,8 +969,10 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
 	        	    	ui.setPicpath(path);
 	        	    	ui.setPicindate(curDate);
 	        	    	ui.setPicorder(first);
-	        	    	ui.setUseing(useing);
-	        	    	accountService.saveUserPicoo(ui);
+	        	    	ui.setUseing(useing);	    	    	
+	        	    	accountService.saveUserPicoo(ui);	        	    	
+	        	    	u.setPicpathBig(newFileName);
+		    	    	accountService.updateUser(u);
 	    			}    	    		
 	    		}
 	    		gp.setRetCode(1);
