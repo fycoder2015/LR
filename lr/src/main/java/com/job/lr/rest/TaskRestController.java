@@ -179,6 +179,19 @@ public class TaskRestController {
 	}
 	
 	/**
+	 * 根据工作类别查询通过审核的接口
+	 * @param pageNum
+	 * @param pageSize
+	 * @param jobClass
+	 * @return
+	 */
+	@RequestMapping(value = "/pageByClass/{pageNum}_{pageSize}_{jobClass}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public Page<Task> pageByClass(@PathVariable("pageNum") int pageNum,@PathVariable("pageSize") int pageSize,
+			@PathVariable("jobClass") String jobClass) {
+		return taskService.pageTaskByClass(jobClass, pageNum, pageSize);
+	}
+	
+	/**
 	 * 取出Shiro中的当前用户Id.
 	 */
 	private Long getCurrentUserId() {
@@ -209,4 +222,5 @@ public class TaskRestController {
 	public void delete(@PathVariable("id") Long id) {
 		taskService.deleteTask(id);
 	}
+
 }
