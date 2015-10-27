@@ -32,6 +32,7 @@ import org.springside.modules.web.MediaTypes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.job.lr.entity.Daysignin;
 import com.job.lr.entity.Daysigninlog;
+import com.job.lr.entity.Feedback;
 import com.job.lr.entity.GeneralResponse;
 import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.Task;
@@ -44,6 +45,7 @@ import com.job.lr.repository.UserPointsLogDao;
 import com.job.lr.rest.RestException;
 import com.job.lr.service.account.AccountService;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
+import com.job.lr.service.admin.FeedbackService;
 import com.job.lr.tools.UserPhoneTools;
 
 /**
@@ -67,6 +69,10 @@ public class UsertoolsRestController {
 	
 	@Autowired
 	private UserPhoneTools userPhoneTools;
+	
+	
+	@Autowired
+	private FeedbackService feedbackService;
 
 	/**
 	 *  通过用户名和加密的密码，获取用户签到信息
@@ -1025,7 +1031,45 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
 	}
 	
 	
+	/**
+	 *  通过用户名和加密的密码，更新反馈信息
+	 * 
+	 *  根据 username  和 加密后的   digest
+	 * 
+	 *  url ：Post 
+	 *  	/api/v1/usertools/createfeedback?username={username}&digest={加密后的passwd}
+	 * 		http://localhost/lr/api/v1/usertools/createfeedback?username=user007&digest=e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a
+	 * */
+											
+	@RequestMapping(value = "createfeedback", method = RequestMethod.POST) //, consumes = MediaTypes.JSON
+	public GeneralResponse updateUser(@Valid Feedback feedback ) {
+		// System.out.println("-----------------in  updateUser() --------------------");
+		// 调用JSR303 Bean Validator进行校验, 异常将由RestExceptionHandler统一处理.
+		BeanValidators.validateWithException(validator, feedback);
+		GeneralResponse gp = new GeneralResponse();	
+		Long userId = getCurrentUserId();		
+		//User user = accountService.findUserByUserId(userId);
 		
+		String contents = feedback.getContents()  ;
+		String useremail = feedback.getUseremail() ;
+		String userphonenum=feedback.getUserphonenum();
+		if(contents== null ||"".equals(contents)){
+			gp.setRetCode(-1);
+			gp.setRetInfo("反馈内容为空，请您填写内容后再提交");
+		}else{
+			//邮箱和手机号 有一样不为空
+			if(!(useremail==null|| "".equals(useremail)) || ( !(userphonenum==null||"".equals(userphonenum) ))){
+				feedback.setUserId(userId);
+				feedbackService.save(feedback);
+				gp.setRetCode(1);
+				gp.setRetInfo("反馈内容已提交。谢谢您的关注。");
+			}else{
+				gp.setRetCode(0);
+				gp.setRetInfo("请留下您的联系方式，方便我们与您联系。");
+			}
+		}
+		return gp ;
+	}
 	
 	/**
 	 * 取出Shiro中的当前用户Id.
@@ -1071,6 +1115,14 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
 			gp.setRetInfo(u.getLoginName());
 		}
 		return gp;
+	}
+
+	public FeedbackService getFeedbackService() {
+		return feedbackService;
+	}
+
+	public void setFeedbackService(FeedbackService feedbackService) {
+		this.feedbackService = feedbackService;
 	}
 	
 }

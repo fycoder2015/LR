@@ -16,6 +16,7 @@ import com.job.lr.entity.Phonenumber;
 import com.job.lr.entity.User;
 import com.job.lr.filter.Constants;
 import com.job.lr.service.account.AccountService;
+import com.job.lr.service.admin.FeedbackService;
 import com.job.sendSms.SDKSendTemplateSMS;
 
 @Component
@@ -26,6 +27,9 @@ public class UserPhoneTools {
 	
 	@Autowired
 	private AccountService  accountService;
+	
+	@Autowired
+	private FeedbackService feedbackService;
 
 
 	/**
@@ -549,5 +553,15 @@ public class UserPhoneTools {
 	public void setAccountService(AccountService accountService) {
 		this.accountService = accountService;
 	}
+
+	public FeedbackService getFeedbackService() {
+		return feedbackService;
+	}
+
+	public void setFeedbackService(FeedbackService feedbackService) {
+		this.feedbackService = feedbackService;
+	}
+	
+	
 
 }
