@@ -491,8 +491,18 @@ public class SiteadminController {
 		User admin = accountService.findUserByUserId(userId);
 		//检验是否是 管理员
 		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
-		if(bradmin){
-			 
+		
+		
+		//判断企业用户的用户名是否唯一
+		String loginName = u.getLoginName() ; //新注册的企业用户
+		User uuuu = accountService.findUserByLoginName(loginName);
+		boolean nosame = false;
+		if(uuuu == null){ //没找到相应的用户 login为唯一值
+			nosame = true;
+		}
+		
+		if(bradmin && nosame){
+
 			int  enterprisesign =1 ; //企业用户
 			String roles ="enterpriseuser";
 			u.setPhonenumber("");
@@ -511,6 +521,8 @@ public class SiteadminController {
 			accountService.addEnterprise(e);
 			accountService.addEnuser(u); 
 			redirectAttributes.addFlashAttribute("message", "增加企业用户成功");
+		}else{
+			redirectAttributes.addFlashAttribute("message", "企业用户loginName重复，请重新设置一个唯一值。");
 		}
 		return "redirect:/webadmin/enuserlist";
 	}
