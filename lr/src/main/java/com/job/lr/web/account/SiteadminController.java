@@ -125,6 +125,25 @@ public class SiteadminController {
 	}
 	
 	/**
+	 * 页面跳转
+	 * 
+	 * 		/webadmin/toadminshowjsp
+	 * */
+	@RequestMapping(value = "toadminshowjsp", method = RequestMethod.GET)
+	public String toadminshowjsp(Model model,ServletRequest request) {	
+		Long userId = getCurrentUserId();		
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){
+			return "/webadmin/adminshow";
+		}else{
+			return "/logout";
+		}
+	} 
+	
+	
+	/**
 	 * 网站用户列表
 	 * 
 	 * 	http://localhost:8080/lr/webadmin/userlist 
