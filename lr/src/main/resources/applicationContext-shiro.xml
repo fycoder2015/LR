@@ -63,7 +63,7 @@
 				/api/v1/usertools/gogetuserId = anon
 				/logout = logout
 				/static/** = anon
-				
+				/jsp/**= anon
 				/register/** = anon
 				/api/v1/usertools/checkPhonenum/** = anon  <!-- 查询手机号码是否已占用 -->
 				/api/v1/usertools/gogetUsernameByPhonenum/** = anon
