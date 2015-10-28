@@ -41,10 +41,10 @@
                 <!-- 网站导航 -->
                 <div class="nav">
                     <ul id="nav">
-                        <li class="one on"><a title="返回首页" style="color:#FFF;background:#ff8829;" href="/index.php?m=&c=Index&a=index">网站首页</a></li>
-                        <li class="one"><a href="/index.php?m=&c=Page&a=contact" title="联系我们" target="">联系我们</a></li>
-                        <li class="one"><a href="/index.php?m=&c=Company&a=index" title="发布兼职" target="">发布兼职</a></li>
-                        <li class="one"><a href="/index.php?m=&c=Page&a=join" title="加入我们" target="">加入我们</a></li>
+                        <li class="one on"><a title="返回首页" style="color:#FFF;background:#ff8829;"<%--  href="/index.php?m=&c=Index&a=index"  --%>>网站首页</a></li>
+                        <li class="one"><a href="#" title="联系我们" target="">联系我们</a></li>
+                        <li class="one"><a href="#" title="发布兼职" target="">发布兼职</a></li>
+                        <li class="one"><a href="#" title="加入我们" target="">加入我们</a></li>
                     </ul>
                 </div>
                 <!-- 导航结束 -->

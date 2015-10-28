@@ -94,6 +94,18 @@ public class TaskRestController {
 	}
 	
 	/**
+	 * 分页查询所有通过审核且处于开放状态的兼职任务
+	 * @param userId
+	 * @param pageNum
+	 * @return
+	 */
+	@RequestMapping(value = "/getAuditedTask/{pageNum}_{pageSize}", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public Page<Task> getAuditedTask(@PathVariable("pageNum") int pageNum,
+			@PathVariable("pageSize") int pageSize) {
+		return taskService.getAuditedTask(pageNum, pageSize);
+	}
+	
+	/**
 	 * 根据任务ID关闭任务
 	 * @param id
 	 * @return
