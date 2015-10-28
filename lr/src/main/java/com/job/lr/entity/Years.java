@@ -21,8 +21,9 @@ public class Years extends IdEntity {
 	
 	private String year;
 	@JsonIgnore  //不在json的返回值中显示
-	private String sts;
-
+	private String sts; //正常，   停用
+	@JsonIgnore  //不在json的返回值中显示
+	private Integer stsint; //1 正常  ;    0 停用 
 
 	public String getSts() {
 		return sts;
@@ -38,6 +39,14 @@ public class Years extends IdEntity {
 
 	public void setYear(String year) {
 		this.year = year;
+	}
+
+	public Integer getStsint() {
+		return stsint;
+	}
+
+	public void setStsint(Integer stsint) {
+		this.stsint = stsint;
 	}
 	
 	
