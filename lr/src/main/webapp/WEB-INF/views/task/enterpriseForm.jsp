@@ -12,6 +12,7 @@
  -->
 <!-- 中间内容开始  -->
 <div class="jz"  style="height:1100px;">
+
     <div class="jzleft">
         <div class="jzleftDiv">
     <div class="jzleftDivs" onclick="news(1)"><a style="color: #fff;" href="${ctx}/task/create">发布兼职</a> </div>
@@ -23,12 +24,14 @@
     </div>
     <div class="jzright">
         <div class="dd">
+        <%--
             <div class="ddDivtop">
                 <div class="ddDiv1">正在招（10）</div>
                 <div class="ddDiv2">待审核（4）</div>
                 <div class="ddDiv3">已下架（1）</div>
                 <div class="ddDiv4">已通过（3）</div>
             </div>
+             --%>
             <div class="ddDivfoot">
                 
                 <form id="inputForm" action="${ctx}/task/${action}" method="post" class="form-horizontal">

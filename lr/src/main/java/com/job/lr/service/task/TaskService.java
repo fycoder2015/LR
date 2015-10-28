@@ -186,6 +186,18 @@ public class TaskService {
 		
 		taskDao.save(task);
 	}
+	
+	/**
+	 * 分页查询所有通过审核的兼职任务信息（审核通过，且为开放状态）
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	public Page<Task> getAuditedTask(int pageNum, int pageSize) {
+		
+		PageRequest pageRequest = buildPageRequest(pageNum, pageSize, "auto");
+		return taskDao.pageAuditedTask(pageRequest);
+	}
 
 	/**
 	 * 创建分页请求.
@@ -221,7 +233,7 @@ public class TaskService {
 		Specification<Task> spec = DynamicSpecifications.bySearchFilter(filters.values(), Task.class);
 		return spec;
 	}
-
+	
 	@Autowired
 	public void setTaskDao(TaskDao taskDao) {
 		this.taskDao = taskDao;

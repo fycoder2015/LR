@@ -20,6 +20,9 @@ public interface TaskDao extends PagingAndSortingRepository<Task, Long>, JpaSpec
 	@Query("from Task")
 	Page<Task> pageAll(Pageable pageRequest);
 	
-	@Query("from Task t where t.auditFlag='1' and t.jobClass=?1")
+	@Query("from Task t where t.auditFlag='1' and t.jobClass=?1 and t.jobSts='开放'")
 	Page<Task> pageByClass(String jobClass, Pageable pageRequest);
+	
+	@Query("from Task t where t.auditFlag='1' and t.jobSts='开放'")
+	Page<Task> pageAuditedTask(Pageable pageRequest);
 }

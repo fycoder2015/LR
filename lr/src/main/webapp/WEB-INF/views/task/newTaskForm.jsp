@@ -23,12 +23,14 @@
     </div>
     <div class="jzright">
         <div class="dd">
+        <%--
             <div class="ddDivtop">
                 <div class="ddDiv1">正在招（10）</div>
                 <div class="ddDiv2">待审核（4）</div>
                 <div class="ddDiv3">已下架（1）</div>
                 <div class="ddDiv4">已通过（3）</div>
             </div>
+             --%>
             <div class="ddDivfoot">
                 <!-- 发布兼职开始  -->
                 <form id="inputForm" action="${ctx}/task/${action}" method="post" class="form-horizontal" enctype="multipart/form-data">

@@ -44,9 +44,9 @@
                     <div class="log3">
                         <input type="submit" value="登录" class="bt1">
                     </div>
-                    <div class="log4">
+                    <%--<div class="log4">
                         <a href="/index.php?m=&c=Login&a=register" style="color:#ff8829;">点击注册</a> | <!--<a href="" style="color:#6e6e6e; text-decoration:underline;">忘记密码？</a>   -->
-                    </div>
+                    </div> --%>
                 </div>
             </form>
         </div>

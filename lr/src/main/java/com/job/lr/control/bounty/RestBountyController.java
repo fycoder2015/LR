@@ -113,5 +113,17 @@ public class RestBountyController {
 	public Page<Category> getBountyCategory(){
 		return this.cateService.pageAllBountyCate(1, 500);
 	}
-
+	
+	/**
+	 * 获取所有所有已经通过审核的赏金任务分页
+	 * @param pageNum
+	 * @param pageSize
+	 * @return
+	 */
+	@RequestMapping(value = "/getAuditedBounty/{pageNum}_{pageSize}",method = RequestMethod.GET,
+			produces = MediaTypes.JSON_UTF_8) 
+	public Page<BountyTask> getAuditedBounty(@PathVariable("pageNum") int pageNum,
+			@PathVariable("pageSize") int pageSize){
+		return this.bountyService.getAuditedBounty(pageNum, pageSize);
+	}
 }

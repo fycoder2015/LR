@@ -89,6 +89,11 @@ public class BountyTaskService extends BaseService {
 		PageRequest pageRequest = buildPageRequest(pageNum, 20, "auto");
 		return bountyTaskDao.findByPayTypeGender(paymentType, gender, pageRequest);
 	}
+	
+	public Page<BountyTask> getAuditedBounty(int pageNum,int pageSize) {
+		PageRequest pageRequest = buildPageRequest(pageNum,pageSize,"auto");
+		return bountyTaskDao.pageAuditedBounty(pageRequest);
+	}
 
 	@Autowired
 	public void setBountyTaskDao(BountyTaskDao bountyTaskDao) {
