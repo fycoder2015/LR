@@ -32,7 +32,7 @@
             <div class="ddDivfoot">
                 
                 <form id="inputForm" action="${ctx}/task/${action}" method="post" class="form-horizontal">
-                <input type="hidden" value="${user.id}">
+                <input type="hidden" name="id" value="${user.id}">
                 <div class="jzrightDiv" id="1" style="display:block;">
                     <div class="jzDiv">
                         <div class="jzDivs">

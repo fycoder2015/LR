@@ -573,6 +573,13 @@ public class AccountService {
 		phonenumberDao.save(p);			
 	}
 	
+	
+	public void saveEnterprise(Enterprise en) {
+		
+		enterpriseDao.save(en);
+	}
+	
+	
 	/**
 	 * startdate 起始时间
 	 * enddate	   终止时间  new Date()
