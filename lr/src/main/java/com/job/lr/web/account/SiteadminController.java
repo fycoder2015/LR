@@ -29,6 +29,8 @@ import com.job.lr.entity.Subject;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.University;
 import com.job.lr.entity.User;
+import com.job.lr.entity.Years;
+import com.job.lr.repository.UniversityDao;
 import com.job.lr.service.account.AccountService;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 import com.job.lr.service.admin.CategoryService;
@@ -152,7 +154,29 @@ public class SiteadminController {
 	}
 	
 	
-	
+	/**
+	 * 入学年份列表
+	 * ${ctx}/webadmin/yearslist
+	 * 
+	 * 
+	 * */
+	@RequestMapping(value = "yearslist", method = RequestMethod.GET)
+	public String yearslist(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
+			@RequestParam(value = "page.size", defaultValue = AdminPAGE_SIZE) int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+		
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){			
+			Page<Years> yearslist = accountService.getYearslists(pageNumber, pageSize, sortType);					
+			model.addAttribute("yearslist", yearslist);
+			model.addAttribute("sortType", sortType);		
+		}
+		return "webadmin/yearslist1";
+	}
 	/**
 	 * 企业用户列表
 	 * 
@@ -280,6 +304,11 @@ public class SiteadminController {
 		}
 		return "webadmin/showuserinfo1";
 	}
+	
+	
+	
+	
+	
 	/**
 	 * 显示企业用户详情
 	 * ${ctx}/webadmin/showenuserinfo?enuserId=${user.id}
@@ -327,6 +356,31 @@ public class SiteadminController {
 		return "webadmin/showuniversityinfo1";
 	}
 	
+	/**
+	 * /webadmin/toedityearsinfo?yearsId=${year.id}
+	 * 
+	 * 
+	 * 
+	 * */
+	@RequestMapping(value = "toedityearsinfo", method = RequestMethod.GET)
+	public String toedityearsinfo(@RequestParam(value = "yearsId" ) Long yearsId,Model model,
+		ServletRequest request) {	
+		
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){			
+			Years y = accountService.findYearsById(yearsId);
+			model.addAttribute("years", y);
+		}else{
+			model.addAttribute("years", null);
+		}
+		
+		return "webadmin/showyearsinfo1";
+		
+	}
+	
 	
 	/**
 	 * 更新大学信息
@@ -358,7 +412,7 @@ public class SiteadminController {
 	 *   
 	 * */
 	@RequestMapping(value = "updateSubject", method = RequestMethod.POST)
-	public String updateUniversity(@Valid @ModelAttribute("subject") Subject subject,
+	public String updateSubject(@Valid @ModelAttribute("subject") Subject subject,
 			@RequestParam(value = "universityId") Long universityId,
 			RedirectAttributes redirectAttributes) {
 		Long userId = getCurrentUserId();	
@@ -372,6 +426,28 @@ public class SiteadminController {
 		String jumpurl = "redirect:/webadmin/subjectlist?universityId="+universityId ;
 		return jumpurl;
 	}
+	/**
+	 * ${ctx}/webadmin/updateYears
+	 * 
+	 * 管理员修改 年份
+	 * 
+	 * */
+	@RequestMapping(value = "updateYears", method = RequestMethod.POST)
+	public String updateYears(@Valid @ModelAttribute("years") Years years,
+			RedirectAttributes redirectAttributes) {
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){			
+			int yearsStsint = 1 ; //正常
+			accountService.updateYears(years ,yearsStsint);
+			redirectAttributes.addFlashAttribute("message", "更新入学年份成功");
+		}
+		String jumpurl = "redirect:/webadmin/yearslist" ;
+		return jumpurl;
+	}
+	
 	
 	/**
 	 * 更新专业信息
@@ -447,6 +523,31 @@ public class SiteadminController {
 	}
 	
 	/**
+	 * 删除年份  
+	 * 		停用 将years对象的 stsinit 置为 0 ;
+	 * ${ctx}/webadmin/delyearsIdinfo?yearsId=${year.id}
+	 * 
+	 * */
+	@RequestMapping(value = "delyearsIdinfo", method = RequestMethod.GET)
+	public String delyearsIdinfo(@RequestParam(value = "yearsId" ) Long yearsId,			
+			Model model,ServletRequest request,RedirectAttributes redirectAttributes) {	
+			String message = "" ;
+			Long userId = getCurrentUserId();	
+			User admin = accountService.findUserByUserId(userId);
+			//检验是否是 管理员
+			boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+			if(bradmin){				
+				message=accountService.delYears(yearsId);				
+			}else{	
+				message="权限不够" ;
+			}
+			redirectAttributes.addFlashAttribute("message", message);
+			String jumpurl = "redirect:/webadmin/yearslist";
+			return jumpurl;
+		
+	}
+	
+	/**
 	 * 增加大学信息
 	 * /webadmin/addUniversity 
 	 *  
@@ -490,8 +591,7 @@ public class SiteadminController {
 		Long userId = getCurrentUserId();	
 		User admin = accountService.findUserByUserId(userId);
 		//检验是否是 管理员
-		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
-		
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());		
 		
 		//判断企业用户的用户名是否唯一
 		String loginName = u.getLoginName() ; //新注册的企业用户
@@ -551,6 +651,33 @@ public class SiteadminController {
 	}
 	
 	/**
+	 * 增加入学年份信息
+	 * 
+	 *   ${ctx}/webadmin/addYears
+	 *   
+	 *  	universityId
+	 * */
+	@RequestMapping(value = "addYears", method = RequestMethod.POST)
+	public String addYears(@Valid @ModelAttribute("years") Years y,
+			RedirectAttributes redirectAttributes) {
+		
+		Long userId = getCurrentUserId();	
+		User admin = accountService.findUserByUserId(userId);
+		//检验是否是 管理员
+		boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+		if(bradmin){
+			int  beused = 1 ;//正常 1 
+			int  stsint = beused ; 
+			accountService.updateYears(y, stsint);			
+			redirectAttributes.addFlashAttribute("message", "增加入学年份成功");
+		}
+		String jumpurl = "redirect:/webadmin/yearslist";
+		return jumpurl;
+		
+	}
+	
+	
+	/**
 	 * 跳转到添加大学信息的页面
 	 *  /webadmin/gotoaddUniversity 
 	 *  
@@ -560,6 +687,19 @@ public class SiteadminController {
 
 		return "webadmin/adduniversityinfo1";
 	}
+	
+	
+	
+	/**
+	 * ${ctx}/webadmin/gotoaddYears
+	 * 
+	 * */
+	@RequestMapping(value = "gotoaddYears", method = RequestMethod.GET)
+	public String gotoaddYears( ) {
+
+		return "webadmin/addyearsinfo1";
+	}
+	
 	
 	/**
 	 * 跳转到添加企业用户信息的页面
