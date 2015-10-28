@@ -27,6 +27,7 @@ import org.springside.modules.web.Servlets;
 
 import com.google.common.collect.Maps;
 import com.job.lr.entity.Category;
+import com.job.lr.entity.Enterprise;
 import com.job.lr.entity.Task;
 import com.job.lr.entity.TaskComment;
 import com.job.lr.entity.User;
@@ -296,6 +297,7 @@ public class TaskController {
 	public String enterpriseForm(Model model) {
 		Long userId = getCurrentUserId();
 		User user = accountService.getUser(userId);
+		
 		model.addAttribute("user", user);
 		model.addAttribute("action","updateEnt");
 		return "task/enterpriseForm";
@@ -305,20 +307,29 @@ public class TaskController {
 	public String updateEnt(@RequestParam("entManager") String entManager,
 			@RequestParam("entName") String entName,@RequestParam("entAddress") String entAddress,
 			@RequestParam("phoneCall") String phoneCall,Model model) {
-		
+		System.out.println("ruuhuhuhuhuh");
 		Long userId = getCurrentUserId();
 		User user = accountService.getUser(userId);
-		
-		user.getEnterprise().setEntManager(entManager);
-		user.getEnterprise().setEntAddress(entAddress);
-		user.getEnterprise().setEntName(entName);
-		user.getEnterprise().setPhoneCall(phoneCall);
+		if(user.getEnterprise() == null ){
+			Enterprise e = new  Enterprise();
+			e.setEntManager(entManager);
+			e.setEntAddress(entAddress);
+			e.setEntName(entName);
+			e.setPhoneCall(phoneCall);
+			e.setRegDate(new Date());
+			accountService.saveEnterprise(e);
+			user.setEnterprise(e);			
+		}else{		
+			user.getEnterprise().setEntManager(entManager);
+			user.getEnterprise().setEntAddress(entAddress);
+			user.getEnterprise().setEntName(entName);
+			user.getEnterprise().setPhoneCall(phoneCall);			
+		}
 		
 		accountService.saveUser(user);
-		
 		model.addAttribute("user", user);
 		model.addAttribute("updateEnt","action");
-		return "redirect:/task";
+		return "redirect:/task/enterpriseForm";
 	}
 	
 	
