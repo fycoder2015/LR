@@ -21,9 +21,14 @@
 	                    	<i class="fa fa-user"></i> 你好,admin <b class="caret"></b>
 	                    </a>                    
 	                    <ul class="dropdown-menu">
-	                        <li><a href="#"><i class="fa fa-gear"></i> 设置</a></li>
+	                        <li><!--  <a href="#"><i class="fa fa-gear"></i> 设置</a>--></li>
 	                        <li class="divider"></li>
-	                        <li><a href="/admin.php?m=Admin&c=login&a=logout"><i class="fa fa-power-off"></i> 退出</a></li>
+	                        <li>
+	                        <a href="${ctx}/logout"><i class="fa fa-power-off"></i>退出</a>
+	                        <!-- 
+	                        <a href="/admin.php?m=Admin&c=login&a=logout"><i class="fa fa-power-off"></i> 退出</a> 
+	                        -->
+	                        </li>
 	                    </ul>                    
                     </shiro:hasRole>         
 

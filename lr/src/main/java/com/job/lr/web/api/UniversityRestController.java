@@ -151,7 +151,7 @@ public class UniversityRestController {
 	 */
 	@RequestMapping(value = "/gogetYears", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public List<Years> gogetYears() {
-		return universityService.getAllYears() ;		
+		return universityService.getAllBeUsedYears() ;	
 	}
 	
 	/**

@@ -37,6 +37,7 @@ import com.job.lr.entity.UserPicoo;
 import com.job.lr.entity.UserPointsLog;
 import com.job.lr.entity.UserRole;
 import com.job.lr.entity.UserRoleRec;
+import com.job.lr.entity.Years;
 import com.job.lr.filter.Constants;
 import com.job.lr.repository.DaysigninDao;
 import com.job.lr.repository.DaysigninlogDao;
@@ -51,6 +52,7 @@ import com.job.lr.repository.UserHeadimgDao;
 import com.job.lr.repository.UserPointsLogDao;
 import com.job.lr.repository.UserRoleDao;
 import com.job.lr.repository.UserRoleRecDao;
+import com.job.lr.repository.YearsDao;
 import com.job.lr.service.ServiceException;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 
@@ -90,6 +92,7 @@ public class AccountService {
 	private DaysigninDao		daysigninDao;
 	private DaysigninlogDao		daysigninlogDao;
 	private EnterpriseDao		enterpriseDao;
+	private YearsDao		yearsDao;
 
 	private Clock clock = Clock.DEFAULT;
 	
@@ -169,7 +172,24 @@ public class AccountService {
 	public void updateSubject(Subject entity) {
 		subjectDao.save(entity);
 	}
-	
+	public void updateYears(Years entity ,int  stsint) {
+		boolean baupdate = false;
+		if(stsint==1 ){ //正常			 
+			entity.setSts("正常");
+			baupdate=true;
+		}else if(stsint==0 ) {//停用			
+			entity.setSts("停用");
+			baupdate=true;
+		}else{
+			//erro baupdate=false;
+		}
+		
+		if(baupdate){
+			entity.setStsint(stsint);
+			yearsDao.save(entity);
+		}
+		
+	}
 	//新增学院
 	public void addSubject(Subject entity,Long universityId) {
 		Subject s = subjectDao.save(entity); //增加学院
@@ -193,7 +213,7 @@ public class AccountService {
 	public void addEnterprise(Enterprise e) {
 		enterpriseDao.save(e);
 	}
-	 
+	
 	/***
 	 * 删除学院
 	 * 	学院下有人的话 不能删除
@@ -229,6 +249,34 @@ public class AccountService {
 		return returnstr;
 
 	}
+	 
+	/***
+	 * 删除入学年份
+	 * 	 停用
+	 * 
+	 * */
+	public String delYears(Long yearsId) {
+		String returnstr= "";
+		String succedstr = "删除成功";	
+		String errostr = "删除失败";	
+		Years y =yearsDao.findOne(yearsId);
+		
+		if(null == y){
+			returnstr =errostr;
+		}else{
+			int stsint =0 ;  //停用 0
+			y.setStsint(stsint);
+			y.setSts("停用");
+			yearsDao.save(y);
+			returnstr =succedstr;
+			
+		}
+
+		return returnstr;
+
+	}
+	
+	
 	/***
 	 * 删除企业用户
 	 * 	企业用户发布任务 不能删除， 
@@ -653,6 +701,9 @@ public class AccountService {
 		return  enPasswd ;
 	}
 	
+	public Years findYearsById(Long yearsId) {
+		return yearsDao.findOne(yearsId);
+	}
 	
 	/**
 	 * 管理员查询用户列表
@@ -689,6 +740,20 @@ public class AccountService {
 		
 		return universityDao.findByStsintNotOrderByIdDesc(stsint, pageRequest); 
 	}	
+	
+	
+	/**
+	 * 查询入学年份列表
+	 * */
+	public Page<Years> getYearslists( int pageNumber, int pageSize,String sortType) {
+		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortType);	
+		int beused= 1 ; 
+		int stopuse = 0 ;
+		int stsint=beused ;//1 正常  ;    0 停用 
+		return yearsDao.findByStsintOrderByIdDesc(stsint, pageRequest)  ; 
+	}	
+	
+	
 	/**
 	 * 查询大学下学院的列表
 	 * */
@@ -861,6 +926,14 @@ public class AccountService {
 	@Autowired
 	public void setEnterpriseDao(EnterpriseDao enterpriseDao) {
 		this.enterpriseDao = enterpriseDao;
+	}
+
+	public YearsDao getYearsDao() {
+		return yearsDao;
+	}
+	@Autowired
+	public void setYearsDao(YearsDao yearsDao) {
+		this.yearsDao = yearsDao;
 	}
 
 

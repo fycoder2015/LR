@@ -68,6 +68,12 @@ public class UniversityService {
 		return (List<Years>) yearsDao.findAll();
 	}
 	
+	public List<Years> getAllBeUsedYears() {
+		int  stsint =1 ;
+		return (List<Years>) yearsDao.findByStsintOrderByIdDesc(stsint);
+		
+	}
+	
 
 	/**
 	 * Getter Setter ()
