@@ -209,10 +209,14 @@ public class StatelessAuthcFilter extends AccessControlFilter {
         //-----------此处新加    短信登录 start -------------------
         //使用短信登录令牌登录
         String smslogintoken = request.getParameter("smslogintoken");	 
-    	User smsuser = accountService.findUserBySmslogintoken(smslogintoken);
-    	if(smsuser!= null){
-    		username = smsuser.getLoginName();
-    		clientDigest = smsuser.getPassword();
+        if(smslogintoken == null|| "".equals(smslogintoken)){
+        	
+        }else{
+	    	User smsuser = accountService.findUserBySmslogintoken(smslogintoken);
+	    	if(smsuser!= null){
+	    		username = smsuser.getLoginName();
+	    		clientDigest = smsuser.getPassword();
+	    	}
     	}
     	//-----------此处新加    短信登录   end  -------------------
     	
