@@ -743,9 +743,9 @@ public class AccountService {
 	public Page<University> getUniversitylists( int pageNumber, int pageSize,String sortType) {
 		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortType);
 		
-		Integer  stsint =-1 ;//-1 为失效状态 ，不做显示
+		Integer  stsint =1 ;//-1 为失效状态 ，不做显示  ;1 显示
 		
-		return universityDao.findByStsintNotOrderByIdDesc(stsint, pageRequest); 
+		return universityDao.findByStsintOrderByIdDesc(stsint, pageRequest); 
 	}	
 	
 	

@@ -48,11 +48,13 @@ public class UniversityService {
 	
 	
 	public List<University> getAllUniversity() {
-		return (List<University>) universityDao.findAll();
+		int stsint =1 ;
+		return universityDao.findByStsintOrderByIdDesc(stsint);
 	}
 	
 	public List<University> getAllUniversityByCity(String city) {
-		return (List<University>) universityDao.findByCity(city);
+		int stsint =1 ;
+		return (List<University>) universityDao.findByCityAndStsintOrderByIdDesc(city,stsint);
 		
 	}
 	
