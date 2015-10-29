@@ -153,6 +153,10 @@ public class AccountService {
 		return userDao.findByLoginName(loginName);
 	}
 	
+	public User findUserBySmslogintoken(String smslogintoken) {
+		return userDao.findBySmstoken(smslogintoken); 
+	}
+	
 	public User findUserByUserId(Long userId) {
 		return userDao.findOne(userId);
 	}
@@ -160,6 +164,25 @@ public class AccountService {
 	public University findUniversityById(Long universityId) {
 		return universityDao.findOne(universityId);
 	}
+	
+	/**
+	 * true 删除成功
+	 * 
+	 * false 删除失败
+	 * */	
+	public String delUniversity(Long universityId) {
+		University u = universityDao.findOne(universityId) ;
+		String message  = "删除失败" ;
+		if ( u == null){			
+		}else{
+			u.setSts("停用");
+			u.setStsint(-1);
+			universityDao.save(u);
+			message ="学校删除成功" ;
+		}
+		return message;
+	}
+	
 	
 	public Subject findSubjectById(Long subjectId) {
 		return subjectDao.findOne(subjectId);
@@ -497,6 +520,28 @@ public class AccountService {
 		return p ;
 	}
 	
+	
+	/**
+	 * 在已激活的手机号中查找 
+	 * 返回对象不同
+	 * */
+	public Phonenumber findUserPhoneByPhonenumberIsActivity(String phonenumber ){
+		Phonenumber  p ;
+		int be_actived =  1;
+		int phonestatus = be_actived ;
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumberAndPhonestatusOrderByIdDesc(phonenumber, phonestatus);
+		if(null == lp || lp.size() ==0){
+			p = null;
+		}else{
+			Iterator <Phonenumber> lpi = lp.iterator();  
+			p = lpi.next();
+		}
+		return p ;
+	}
+	
+	
+	
+	
 	/**
 	 * 在已激活的手机号中查找  找回密码 中使用
 	 * 返回对象不同
@@ -743,9 +788,9 @@ public class AccountService {
 	public Page<University> getUniversitylists( int pageNumber, int pageSize,String sortType) {
 		PageRequest pageRequest = buildPageRequest(pageNumber, pageSize, sortType);
 		
-		Integer  stsint =-1 ;//-1 为失效状态 ，不做显示
+		Integer  stsint =1 ;//-1 为失效状态 ，不做显示  ;1 显示
 		
-		return universityDao.findByStsintNotOrderByIdDesc(stsint, pageRequest); 
+		return universityDao.findByStsintOrderByIdDesc(stsint, pageRequest); 
 	}	
 	
 	

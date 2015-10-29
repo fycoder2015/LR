@@ -566,6 +566,38 @@ public class SiteadminController {
 		
 	}
 	
+	
+	/**
+	 * 删除大学  
+	 * 		停用 将University对象的 stsinit 置为 -1 ;
+	 * ${ctx}/webadmin/delUniversity
+	 * 
+	 * */
+	@RequestMapping(value = "delUniversity", method = RequestMethod.GET)
+	public String delUniversity(@RequestParam(value = "universityId" ) Long universityId,			
+			Model model,ServletRequest request,RedirectAttributes redirectAttributes) {	
+			String message = "" ; 
+			Long userId = getCurrentUserId();	
+			User admin = accountService.findUserByUserId(userId);
+			//检验是否是 管理员
+			boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
+			if(bradmin){				
+				message =accountService.delUniversity(universityId);	
+				
+			}else{	
+				message="权限不够" ;
+			}
+			redirectAttributes.addFlashAttribute("message", message);
+			String jumpurl = "redirect:/webadmin/universitylist";
+			return jumpurl;
+		
+	}
+	
+	
+	
+	
+	
+	
 	/**
 	 * 增加大学信息
 	 * /webadmin/addUniversity 
@@ -582,7 +614,7 @@ public class SiteadminController {
 			//显示大学
 			int  beshow =1 ;
 			u.setStsint(beshow);//stsint -1 为失效 ，不做显示 ; 显示 默认为1   (必填) 
-			
+			u.setSts("正常");
 			accountService.saveUniversity(u);
 			redirectAttributes.addFlashAttribute("message", "增加任务成功");
 		}

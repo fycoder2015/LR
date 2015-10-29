@@ -17,7 +17,12 @@ public interface UniversityDao extends PagingAndSortingRepository<University, Lo
 
 	List <University> findByCity(String city);
 	//Page <University> findAllOrderByIdDesc( Pageable pageRequest);
-	
+	@Deprecated
 	Page <University> findByStsintNotOrderByIdDesc(Integer stsint , Pageable pageRequest);
- 
+	@Deprecated
+	List <University> findByStsintNotOrderByIdDesc(Integer stsint);
+	//查找装填值为1的内容，1为做显示
+	Page <University> findByStsintOrderByIdDesc(Integer stsint , Pageable pageRequest);
+	List <University> findByStsintOrderByIdDesc(Integer stsint);
+	List <University> findByCityAndStsintOrderByIdDesc(String city,Integer stsint);
 }

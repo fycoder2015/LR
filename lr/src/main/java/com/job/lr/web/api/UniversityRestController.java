@@ -73,6 +73,7 @@ public class UniversityRestController {
 	//@RequestMapping(method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	@RequestMapping(value = "/gogetUniversity", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
 	public List<University> gogetUniversity() {
+		
 		return universityService.getAllUniversity() ;		
 	}
 

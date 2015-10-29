@@ -76,6 +76,10 @@ public class User extends IdEntity {
 	以直接调用正在使用的UserPicoo**/	
 	private Long userpicooId; // UserPicoo 的 Id 
 	
+	private String smstoken;//短信登录的令牌
+	private Date   smsTokenDate; //短信登录的令牌Token 的产生日期   
+	private Integer smstokenshowtimes; //不超过5次
+	
 	public User() {
 	}
 
@@ -346,6 +350,37 @@ public class User extends IdEntity {
 
 	public void setEnterprisesign(Integer enterprisesign) {
 		this.enterprisesign = enterprisesign;
+	}
+	
+	
+	
+	
+
+	public String getSmstoken() {
+		return smstoken;
+	}
+
+	public void setSmstoken(String smstoken) {
+		this.smstoken = smstoken;
+	}
+	
+	
+	
+
+	public Date getSmsTokenDate() {
+		return smsTokenDate;
+	}
+
+	public void setSmsTokenDate(Date smsTokenDate) {
+		this.smsTokenDate = smsTokenDate;
+	}
+	
+	public Integer getSmstokenshowtimes() {
+		return smstokenshowtimes;
+	}
+
+	public void setSmstokenshowtimes(Integer smstokenshowtimes) {
+		this.smstokenshowtimes = smstokenshowtimes;
 	}
 
 	@Override
