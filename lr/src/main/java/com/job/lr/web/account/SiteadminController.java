@@ -576,18 +576,19 @@ public class SiteadminController {
 	@RequestMapping(value = "delUniversity", method = RequestMethod.GET)
 	public String delUniversity(@RequestParam(value = "universityId" ) Long universityId,			
 			Model model,ServletRequest request,RedirectAttributes redirectAttributes) {	
-			String message = "" ;123
+			String message = "" ; 
 			Long userId = getCurrentUserId();	
 			User admin = accountService.findUserByUserId(userId);
 			//检验是否是 管理员
 			boolean bradmin = checkUserRoleIsAdmin(admin.getRoles());
 			if(bradmin){				
-				message=accountService.delYears(yearsId);				
+				message =accountService.delUniversity(universityId);	
+				
 			}else{	
 				message="权限不够" ;
 			}
 			redirectAttributes.addFlashAttribute("message", message);
-			String jumpurl = "redirect:/webadmin/yearslist";
+			String jumpurl = "redirect:/webadmin/universitylist";
 			return jumpurl;
 		
 	}

@@ -161,6 +161,25 @@ public class AccountService {
 		return universityDao.findOne(universityId);
 	}
 	
+	/**
+	 * true 删除成功
+	 * 
+	 * false 删除失败
+	 * */	
+	public String delUniversity(Long universityId) {
+		University u = universityDao.findOne(universityId) ;
+		String message  = "删除失败" ;
+		if ( u == null){			
+		}else{
+			u.setSts("停用");
+			u.setStsint(-1);
+			universityDao.save(u);
+			message ="学校删除成功" ;
+		}
+		return message;
+	}
+	
+	
 	public Subject findSubjectById(Long subjectId) {
 		return subjectDao.findOne(subjectId);
 	}

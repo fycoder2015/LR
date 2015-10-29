@@ -43,9 +43,9 @@
 	                    <td>${university.place}</td>
 	                    <td><a href="${ctx}/webadmin/showuniversityinfo?showuniversityId=${university.id}">详情</a>|
 	                    <a href="${ctx}/webadmin/subjectlist?universityId=${university.id}">查看学院</a>
-	                    <!--  | <a href="/admin.php?m=Admin&c=category&a=delete&id=1" style="color:red;" 
+	                    | <a href="${ctx}/webadmin/delUniversity?universityId=${university.id}" style="color:red;" 
 	                    	onclick="javascript:return del('您真的确定要删除吗？\n\n删除后将不能恢复!');">删除</a>
-	                     -->
+	                    
 	                    </td>
 	                 </tr>
 					</c:forEach>			
