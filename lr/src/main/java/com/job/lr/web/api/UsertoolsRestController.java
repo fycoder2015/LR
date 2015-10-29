@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -447,7 +448,7 @@ public class UsertoolsRestController {
 			old_u.setName(user.getName());
 		}
 		if(user.getPhonenumber() == null){}else{
-			old_u.setPhonenumber(user.getPhonenumber());  //更新的手机号需要是在接口验证过的  #二期修改
+			//old_u.setPhonenumber(user.getPhonenumber());  //更新的手机号需要是在接口验证过的  #二期修改
 		}
 		if(user.getPassword() == null){}else{
 			old_u.setPlainPassword(user.getPassword()); //新密码 为 密码原文  不是加密后的
@@ -892,7 +893,7 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
 	@RequestMapping(value = "goaddUserCredit",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
 	@ResponseBody
 	public GeneralResponse goaddUserCredit(@RequestParam("username") String loginName ,@RequestParam("digest") String password,@RequestParam("ucredit") Integer usercredit) {
-		System.out.println("0000000000000000000000000000000");
+		//System.out.println("0000000000000000000000000000000");
 		GeneralResponse gp = new GeneralResponse();		
 		int errcode = -1 ;
 		int successcode = 1;		
@@ -1070,6 +1071,14 @@ http://localhost/lr/api/v1/usertools/goaddUserCredit?username=7add6c21f9934cdaac
 		}
 		return gp ;
 	}
+	
+	
+
+
+	
+	
+	
+	
 	
 	/**
 	 * 取出Shiro中的当前用户Id.

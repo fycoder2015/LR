@@ -502,6 +502,34 @@ public class AccountService {
 		return p ;
 	}
 	
+	
+	/**
+	 * 在 Phonenumber中找相应的phonenumber对象
+	 * */
+	public List <Phonenumber>  findPhonesInPhonenumber(String phonenumber ){
+		
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumberOrderByIdDesc(phonenumber);
+
+		return lp ;
+	}
+	
+	
+	/**
+	 * 通过phone 和 captchacode 验证码找phone
+	 * 返回对象不同
+	 * */
+	public Phonenumber findUserPhoneInPhonenumberByPhoneAndCode(String phonenumber ,String captchacode ){
+		Phonenumber  p ;
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumberAndCaptchacodeOrderByIdDesc(phonenumber, captchacode);
+		if(null == lp || lp.size() ==0){
+			p = null;
+		}else{
+			Iterator <Phonenumber> lpi = lp.iterator();  
+			p = lpi.next();
+		}
+		return p ;
+	}
+	
 	/**
 	 * 在已激活的手机号中查找 
 	 * 返回对象不同
@@ -617,6 +645,16 @@ public class AccountService {
 		
 		phonenumberDao.save(p);			
 	}
+	
+	public void checkPhonenumber(Phonenumber p ){			
+		//p.setCaptchacode(p);		
+		//p.setRegisterDate(new Date());
+		
+		phonenumberDao.save(p);			
+	}
+	
+	
+
 	
 	
 	public void saveEnterprise(Enterprise en) {

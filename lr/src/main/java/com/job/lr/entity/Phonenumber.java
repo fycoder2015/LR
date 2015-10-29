@@ -22,7 +22,9 @@ public class Phonenumber extends IdEntity {
 	private String phonenumber; //唯一
 	private String captchacode;
 	private Integer phonestatus;  //0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
-	private Date registerDate;	
+	private Date registerDate;
+	@JsonIgnore  //不在json的返回值中显示
+	private String phonetempToken; //返回令牌
 
 	public String getPhonenumber() {
 		return phonenumber;
@@ -62,6 +64,16 @@ public class Phonenumber extends IdEntity {
 
 	public void setRegisterDate(Date registerDate) {
 		this.registerDate = registerDate;
+	}	
+
+
+
+	public String getPhonetempToken() {
+		return phonetempToken;
+	}
+
+	public void setPhonetempToken(String phonetempToken) {
+		this.phonetempToken = phonetempToken;
 	}
 
 	@Override

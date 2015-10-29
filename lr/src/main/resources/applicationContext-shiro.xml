@@ -69,7 +69,8 @@
 				/api/v1/usertools/gogetUsernameByPhonenum/** = anon
 				/api/v1/usertools/changeUserPassword/** = anon
 				/api/v1/usertools/gogetUsernameByPhonenumPasswd/** = anon
-				/api/v1/phoneCollect/** = anon
+				/api/v1/phoneCollect/checkPhonenumberInChangePhone = statelessAuthc,roles[user]
+				/api/v1/phoneCollect/** = anon				
 				/api/v1/university/** = anon
 				
 				<!--  
@@ -79,7 +80,7 @@
 				
 				/api/** = anon
 				-->
-
+				
 				/api/** = statelessAuthc,roles[user]
 				<!--
 				/api/** = statelessAuthc,roles[user]	  
