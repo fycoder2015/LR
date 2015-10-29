@@ -48,6 +48,94 @@ public class PhoneRestController {
 	@Autowired
 	private UserPhoneTools userPhoneTools;
 	
+	
+	
+	
+	/**
+	 * 短信登录时，根据 手机号和 验证码
+	 *   核查phonenumber的验证码是否正确  是否匹配
+	 *   需要验证生成验证码的时间是否超时
+	 *	   生成新的登录凭证，更新之前的登录凭证
+	 * @param 
+	 * 		phonenumber
+	 * 		captchacode
+	 * @return 
+	 * 		{@value}  url: /api/v1/phoneCollect/checkPhonenumberInSmsLogin
+	 * 		 
+	 * 
+	 *  短信登录时，核实手机和验证码是否匹配
+	 * url ：
+	 * 	http://localhost/lr/api/v1/phoneCollect/checkPhonenumberInSmsLogin?phonenumber=13662127862&captchacode=3361
+	 * 
+	 * 0  验证码超时：
+	 *   	需要重新获取验证码 
+	 *   	调用这个  http://localhost/lr/api/v1/phoneCollect/genCaptchacodeByPhoneInSmsLogin?phonenumber={phonemum}
+	 *    		http://localhost/lr/api/v1/phoneCollect/genCaptchacodeByPhoneInSmsLogin?phonenumber=13662127862
+	 *   	即本类下的  genCaptchacodeByPhoneInSmsLogin()方法
+	 *   
+	 */   
+	@RequestMapping(value = "/checkPhonenumberInSmsLogin", method = RequestMethod.GET)
+	@ResponseBody
+	public GeneralResponse  checkPhonenumberInSmsLogin(@RequestParam("phonenumber") String phonenum,@RequestParam("captchacode") String captchacode ) {
+		GeneralResponse gp = new GeneralResponse();
+		int returncode =  0 ;
+		int errcode = -1 ;
+		String errmsg = "比对不成功";
+		int successcode = 1 ;
+		//String successmsg = "比对OK_";
+		int overtimecode = 0 ;
+		String overtimemsg = "验证码超时，需要重新获取验证码" ;
+		int err2code = -2 ;
+		String err2msg="未知错误";
+		int err3code = -3 ;
+		String err3msg="错误：没有找到手机号对应的用户";		
+		
+		returncode = userPhoneTools.checkPhoneInFindPasswd(phonenum,captchacode) ;
+		
+		if (returncode == errcode){
+			gp.setRetCode(errcode);
+			gp.setRetInfo(errmsg);			
+		}else if(returncode == successcode){
+			/**
+			 * 1.生成短信登录令牌
+			 * 2.找到手机号对应的User， 存储入短信登录令牌
+			 * 3.返回短信登录令牌，临时验证码存在RetInfo中，显示。 
+			 * 
+			 * */
+			String uuid = UUID.randomUUID().toString(); 
+			String smsToken1 = uuid.substring(0,8)+uuid.substring(9,13)+uuid.substring(14,18)+uuid.substring(19,23)+uuid.substring(24); 
+			String uuid2 = UUID.randomUUID().toString(); 
+			String smsToken2 = uuid2.substring(0,8)+uuid2.substring(9,13)+uuid2.substring(14,18)+uuid2.substring(19,23)+uuid2.substring(24); 
+			String smsToken =smsToken1+smsToken2 ;
+			User u = accountService.findUserByPhonenumber(phonenum);
+		    if(u == null){
+		    	//未找到用户
+		    	gp.setRetCode(err3code);
+				gp.setRetInfo(err3msg);
+		    }else{
+			    //u.setTempToken(tempToken);
+		    	//u.setTempTokenDate(new Date());
+			    u.setSmstoken(smsToken);
+			    u.setSmsTokenDate(new Date());			    
+			    Integer tokenshowtimes = u.getSmstokenshowtimes() ;
+			    accountService.updateUser(u);		    
+			    //successmsg =smsToken;			    
+			    gp.setRetCode(successcode);				
+				gp.setRetInfo(smsToken);	//返回消息放置单一令牌	
+		    }
+		}else if(returncode == overtimecode){
+			gp.setRetCode(overtimecode);
+			gp.setRetInfo(overtimemsg);
+		}else{
+			gp.setRetCode(err2code);
+			gp.setRetInfo(err2msg);
+		}
+		
+		return gp;
+	}	
+	
+	
+	
 	/**
 	 * 找回密时，根据 手机号和 验证码
 	 *   核查phonenumber的验证码是否正确  是否匹配
@@ -123,6 +211,10 @@ public class PhoneRestController {
 		
 		return gp;
 	}
+	
+	
+	
+	
 	
 	/**
 	 * 注册时，根据 手机号和 验证码
@@ -240,6 +332,61 @@ public class PhoneRestController {
 		return gp;
 		
 	}
+	
+	
+	/**
+	 * 	短信登录时，根据手机号码 生成 验证码
+	 * 		 验证码的修改时间为 Constants.SMS_Gap_Time*分钟  
+	 * 
+	 *  ---- 短信接入
+	 *  
+	 *     向已激活的手机号，  发送手机验证码，每次请求都会发送
+	 * 
+	 *  @param
+	 *  	phonenumber  
+	 *  
+	 *  @return 
+	 *  returnCode -1 不存在相应的用户手机号
+	 *  			   1  短信发送成功
+	 *  			   0  短信发送失败
+	 *  {@value}  url: 
+	 * 	http://localhost/lr/api/v1/phoneCollect/genCaptchacodeByPhoneInSmslogin?phonenumber={phonemum}
+	 * 
+	 * 
+	 * */
+	@RequestMapping(value = "/genCaptchacodeByPhoneInSmslogin", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	@ResponseBody
+	public GeneralResponse  genCaptchacodeByPhoneInSmslogin (@RequestParam("phonenumber") String phonenum) {
+		
+		GeneralResponse gp = new GeneralResponse();
+		int errcode = -1 ;
+		String errmsg = "不存在相应的用户手机号";
+		int successcode = 1 ;
+		String successmsg = "已向对应手机号发送短信验证码，短信发送成功";
+		int senderr = 0;
+		String senderrmsg="向对应手机号发送验证码短信失败";
+		int err2code = -2 ;
+		String err2msg="未知错误";
+		
+		int returncode = userPhoneTools.genCaptchacodeByPhoneInSmslogin(phonenum) ;
+		if (returncode == errcode){
+			gp.setRetCode(errcode);
+			gp.setRetInfo(errmsg);			
+		}else if(returncode == successcode){
+			gp.setRetCode(successcode);
+			gp.setRetInfo(successmsg);	
+		}else if(returncode == senderr){
+			gp.setRetCode(senderr);
+			gp.setRetInfo(senderrmsg);
+		}else{
+			gp.setRetCode(err2code);
+			gp.setRetInfo(err2msg);
+		}
+		
+		return gp;
+		
+	}
+	
 		
 	
 	/**

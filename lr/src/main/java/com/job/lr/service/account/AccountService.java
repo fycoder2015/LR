@@ -153,6 +153,10 @@ public class AccountService {
 		return userDao.findByLoginName(loginName);
 	}
 	
+	public User findUserBySmslogintoken(String smslogintoken) {
+		return userDao.findBySmstoken(smslogintoken); 
+	}
+	
 	public User findUserByUserId(Long userId) {
 		return userDao.findOne(userId);
 	}
@@ -515,6 +519,28 @@ public class AccountService {
 		}
 		return p ;
 	}
+	
+	
+	/**
+	 * 在已激活的手机号中查找 
+	 * 返回对象不同
+	 * */
+	public Phonenumber findUserPhoneByPhonenumberIsActivity(String phonenumber ){
+		Phonenumber  p ;
+		int be_actived =  1;
+		int phonestatus = be_actived ;
+		List <Phonenumber> lp =phonenumberDao.findByPhonenumberAndPhonestatusOrderByIdDesc(phonenumber, phonestatus);
+		if(null == lp || lp.size() ==0){
+			p = null;
+		}else{
+			Iterator <Phonenumber> lpi = lp.iterator();  
+			p = lpi.next();
+		}
+		return p ;
+	}
+	
+	
+	
 	
 	/**
 	 * 在已激活的手机号中查找  找回密码 中使用

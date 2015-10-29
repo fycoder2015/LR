@@ -18,6 +18,8 @@ public interface UserDao extends PagingAndSortingRepository<User, Long>, JpaSpec
 
 	User findByLoginName(String loginName);
 	
+	User findBySmstoken(String smstoken);
+	
 	List <User> findByLoginNameAndPasswordOrderByIdDesc (String loginName ,String password);
 	
 	List <User> findByPhonenumberOrderByIdDesc (String Phonenumber );

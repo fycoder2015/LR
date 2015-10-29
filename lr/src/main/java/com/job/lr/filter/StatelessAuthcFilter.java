@@ -102,7 +102,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
     	
     	String urlparam_token = ""; //链接中传递的参数1
     	String urlparam_username_passwd = ""; //链接中传递的参数2
-    	String urlparam_writesess_flag = ""; //链接中传递的参数3  23写入session
+    	String urlparam_writesess_flag = ""; //链接中传递的参数3  23写入session    	
     	int urlparam_jump_flag = 2 ;//0 不去跳转     2 跳转
     	
         //----1、客户端生成的消息摘要   seceretstr 等同于密钥
@@ -204,6 +204,20 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 	        //change org.apache.shiro.web.filter.authc.AuthenticatingFilter  liuy add
 	        //AuthenticationToken token = createToken(request, response);     
 	        //System.out.println("StatelessAuthcFilter onAccessDenied ok");
+        
+        
+        //-----------此处新加    短信登录 start -------------------
+        //使用短信登录令牌登录
+        String smslogintoken = request.getParameter("smslogintoken");	 
+    	User smsuser = accountService.findUserBySmslogintoken(smslogintoken);
+    	if(smsuser!= null){
+    		username = smsuser.getLoginName();
+    		clientDigest = smsuser.getPassword();
+    	}
+    	//-----------此处新加    短信登录   end  -------------------
+    	
+    	
+    	
         /**
          * 根据用户名、密码 （  1.url直接传上来的  
          * 				2.通过token查询出来的   <fromuserToken 为判断标志> ）
