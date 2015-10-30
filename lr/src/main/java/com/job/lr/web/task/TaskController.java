@@ -124,14 +124,30 @@ public class TaskController {
 	@RequestMapping(value = "create", method = RequestMethod.GET)
 	public String createForm(Model model) {
 		
-		Page<Category> categories = this.cateService.pageAllTaskCate(1, 500);
-		
+		Page<Category> categories = this.cateService.pageAllTaskCate(1, 500);		
 		model.addAttribute("categories", categories);
 		model.addAttribute("task", new Task());
-		model.addAttribute("action", "create");
-		
+		model.addAttribute("action", "create");		
 		return "task/newTaskForm";
 	}
+	
+	
+	/**
+	 *   对应映射地址  /task/logoutt
+	 * 
+	 * 
+	 * */
+	@RequestMapping(value = "logoutt", method = RequestMethod.GET)
+	public String logoutt(HttpServletRequest request) {
+		
+		request.getSession().setAttribute("username", "");
+		request.getSession().setAttribute("password", "");
+		request.getSession().setAttribute("digest", "");
+		
+		return "redirect:/login/enadminlogin";
+		
+	}
+	
 	
 	/**
 	 * 增加图片上传  jpg后缀

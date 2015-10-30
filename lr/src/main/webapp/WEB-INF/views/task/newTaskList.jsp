@@ -18,7 +18,7 @@
     <div class="jzleftDivs" onclick="news(1)"><a style="color: #fff;" href="${ctx}/task">兼职列表</a> </div>
     <%--<div class="jzleftDivs" onclick="news(2)">兼职订单</div> --%>
     <div class="jzleftDivs" onclick="news(3)"><a style="color: #fff;" href="${ctx}/task/enterpriseForm">企业信息</a></div>
-    <div class="jzleftDivs1" onclick="news(3)"><a style="color: #fff;" href="${ctx}/logout">退出系统</a></div>
+    <div class="jzleftDivs1" onclick="news(3)"><a style="color: #fff;" href="${ctx}/task/logoutt">退出系统</a></div>
 </div>
     </div>
     <div class="jzright">

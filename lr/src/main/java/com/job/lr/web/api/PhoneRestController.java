@@ -2,12 +2,14 @@ package com.job.lr.web.api;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import com.job.lr.entity.User;
 import com.job.lr.filter.Constants;
 import com.job.lr.rest.TaskRestController;
 import com.job.lr.service.account.AccountService;
+import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 import com.job.lr.service.task.TaskService;
 import com.job.lr.tools.UserPhoneTools;
 import com.job.sendSms.SDKSendTemplateSMS;
@@ -279,6 +282,165 @@ public class PhoneRestController {
 	}
 	
 
+	/**
+	 * 更改手机号时，根据 手机号和 验证码      ---- 确认新手机号
+	 *   核查phonenumber的验证码是否正确  是否匹配
+	 *   需要验证生成验证码的时间是否超时
+	 *   验证手机号是否激活
+	 *   
+	 *   满足 可以更改手机号
+	 *   
+	 *   
+	 *   比对Phonenumber中的对象
+	 * @param 
+	 * 		phonenumber
+	 * 		captchacode
+	 * 
+	 * 		username={username}&digest={加密后的passwd}
+	 * 
+	 * @return 
+	 * 		{@value}  url: /api/v1/phoneCollect/checkPhonenumberInChangePhone
+	 * 
+	 * 核实手机和验证码是否匹配 ？
+	 * url ：
+	 * 	http://localhost/lr/api/v1/phoneCollect/checkPhonenumberInChangePhone?username={username}&digest={加密后的passwd}&phonenumber=13662127862&captchacode=3361
+	 * 
+	 * 返回 ：
+	 * GP
+	 */
+	@RequestMapping(value = "/checkPhonenumberInChangePhone", method = RequestMethod.GET, produces = MediaTypes.JSON_UTF_8)
+	public GeneralResponse  checkPhonenumberInChangePhone(ServletRequest request) { 
+		System.out.println("in PhoneRestController() checkPhonenumberInChangePhone方法 ");
+		//1 匹配	0 不匹配
+		int returncode = 0 ;
+		//String phonetempToken  ="";
+		String phonenumber = request.getParameter("phonenumber");
+		String captchacode = request.getParameter("captchacode");
+		if("".equals(phonenumber)||"".equals(captchacode) ||phonenumber==null||captchacode==null ){			
+		}else{
+			phonenumber =phonenumber.trim();
+			captchacode =captchacode.trim();
+			Phonenumber p = accountService.findUserPhoneInPhonenumberByPhoneAndCode(phonenumber, captchacode);
+			if(p== null){
+				returncode = 0 ; //没有相关对象 ，不做比对 返回不匹配  
+			}else{
+				Date startDate = p.getRegisterDate() ;
+				int no_outtime= accountService.compareTimes( startDate ,new Date(), Constants.SMS_Gap_Time) ;
+				if (no_outtime == 1){
+					//未超时
+					if(p.getPhonestatus() == 0){//未激活状态 (应为新手机号)  再作比对
+						//phonestatus; 0 ,未激活  not_activated ； 1，已激活 ； 2，解绑  <暂时不用>
+						 returncode = accountService.checkUserPhone(phonenumber, captchacode); //对新的手机号 作比对
+						 //if(returncode == 1){
+							 //匹配
+							 //String uuid = UUID.randomUUID().toString(); 
+							 //phonetempToken = uuid.substring(0,8)+uuid.substring(9,13)+uuid.substring(14,18)+uuid.substring(19,23)+uuid.substring(24); 
+							 //p.setPhonetempToken(phonetempToken);  
+							 //accountService.updatePhonenumber(p);							 
+						 //}
+					}else{
+						returncode = 0 ; //不做比对，表示验证码不匹配
+					}
+				}else{
+					//超时
+					returncode = 0 ; //不做比对，表示验证码不匹配
+					//重新生成新的验证码 和 生成时间
+					accountService.updatePhonenumber(p);
+				}
+				
+			}
+			
+		}
+		
+		GeneralResponse gp = new GeneralResponse();
+		gp.setRetCode(returncode);
+		if(returncode == 0){
+			//0 不匹配
+			gp.setRetInfo("验证码不匹配");
+		}else if(returncode == 1){
+			//1  匹配			
+			gp.setRetInfo("符合条件，可以更改手机号");
+		}else{
+			gp.setRetInfo("phone未知错误 1001");
+		}		
+		
+		
+		//----------------------------------
+		/**
+		 * 调整用户的手机号 
+		 * 	1. 解绑旧手机号  (Phonenumber 对象)
+		 * 	2. 绑定新手机      (Phonenumber 对象)
+		 * 	3. 修改用户手机号 (User 对象)
+		 * 
+		 * */
+		
+		if(returncode == 1){
+			Long userId = getCurrentUserId();
+			User u = accountService.findUserByUserId(userId);
+			
+			String newphone =  phonenumber ;			
+			
+			/** 1. 解绑旧手机 start **/
+			String oldphone =  u.getPhonenumber();
+			int no_activated = 0 ;
+			int phonestatus = no_activated ;  //0 ,未激活  not_activated ； 1，已激活 
+			ChangePhoneStsInPhonenumber(oldphone , phonestatus);
+			/** 1. 解绑旧手机 end  **/  
+			
+			
+			/** 2. 绑定新手机start **/
+			int activated = 1 ;
+			phonestatus = activated ;  //0 ,未激活  not_activated ； 1，已激活 
+			ChangePhoneStsInPhonenumber(newphone , phonestatus);
+			/** 2. 绑定新手机end   **/
+			
+			
+			/** 3. 更改用户中的手机信息 start **/
+			u.setPhonenumber(newphone);
+			accountService.saveUser(u);
+			/** 3. 更改用户中的手机信息    end  **/			
+			
+			
+			gp.setRetInfo("验证符合条件，已更改用户手机号");
+			
+		}		
+		return gp;
+
+	}
+	
+	/**
+	 * 在Phonenumber中 改变   某手机号 Phonenumber的 状态   
+	 * 	绑定  0
+	 * 和
+	 * 	解绑  1
+	 * 
+	 * 返回 1  ok  
+	 * 	-1  erro
+	 */
+	public int ChangePhoneStsInPhonenumber(String phonenumber , int phonests) {
+		int returnint = -1 ;
+		List <Phonenumber> lp = accountService.findPhonesInPhonenumber(phonenumber) ;
+		if(lp== null|| lp.size() == 0){
+			
+		}else{
+			Iterator <Phonenumber> lpi = lp.iterator();  
+			Phonenumber p ;			 
+			int phonestatus = phonests ;  //0 ,未激活  not_activated ； 1，已激活 			
+			while(lpi.hasNext()){
+				p =lpi.next() ;
+				p.setPhonestatus(phonestatus); 
+				accountService.updatePhonenumber(p);
+			}
+			returnint = 1 ;
+		}
+		
+		return returnint ;
+	}
+	
+	
+	
+	
+	
 	
 	/**
 	 * 	找回密码时，根据手机号码 生成 验证码
@@ -553,6 +715,18 @@ public class PhoneRestController {
 //	      return sb.toString();   
 //	      //return "5123";
 //	}
+	
+	/**
+	 * 取出Shiro中的当前用户Id.
+	 */
+	public Long getCurrentUserId() {
+		ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
+		if (user== null){
+			return 0L;
+		}else{
+			return user.id;
+		}	
+	}
 	
 	
 	public AccountService getAccountService() {

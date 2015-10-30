@@ -48,7 +48,7 @@ import com.job.lr.service.task.TaskService;
 public class SiteadminController {
 	
 	private static  String  adminRoleStr = "admin";
-	private static final String AdminPAGE_SIZE = "4";
+	private static final String AdminPAGE_SIZE = "10";
 	
 	@Autowired
 	private AccountService accountService;
@@ -89,7 +89,7 @@ public class SiteadminController {
 	public String loginForm(HttpServletRequest request,HttpServletResponse response) {
 		String username = (request.getParameter("username")).trim();
 		String password = (request.getParameter("password")).trim();
-		if(username==null||"".equals(username) ||password==null||"".equals(password)){			
+		if((username==null||"".equals(username))&&(password==null||"".equals(password))){			
 			return "redirect:/webadmin/webadminlogin";
 		}else{
 			User u = accountService.findUserByLoginName(username);
@@ -108,9 +108,10 @@ public class SiteadminController {
 			    	}
 			    }
 			    //用户名密码匹配，同时含有admin角色
-				if(password_en.equals(password_db) || behaveadminrole==1){
+				if(password_en.equals(password_db) && behaveadminrole==1){
 					//可以登录用户 设置session  为了后续的过滤
 					request.getSession().setAttribute("username", username);
+					request.getSession().setAttribute("password", password);
 					request.getSession().setAttribute("digest", password_db);				
 					return "/webadmin/adminshow";
 				}else{
@@ -123,6 +124,22 @@ public class SiteadminController {
 		}
 
 	}
+	
+	/**
+	 * 退出登录
+	 * 
+	 * /webadmin/loginOut
+	 * */
+	@RequestMapping(value = "loginOut",method = RequestMethod.GET)
+	public String loginOut(HttpServletRequest request,HttpServletResponse response) {
+		//System.out.println("退出网站管理员登录");
+		request.getSession().setAttribute("username", "");
+		request.getSession().setAttribute("digest", "");	
+		request.getSession().setAttribute("password", "");	
+		return "redirect:/webadmin/webadminlogin";
+	}
+	
+	
 	
 	/**
 	 * 页面跳转

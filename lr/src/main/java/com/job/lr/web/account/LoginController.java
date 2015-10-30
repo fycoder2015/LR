@@ -39,23 +39,72 @@ public class LoginController {
 	 * 企业用户登录页面
 	 * */
 	@RequestMapping(value = "enadminlogin" ,method = RequestMethod.GET)
-	public String enadminlogin() {
-		return "account/enadminlogin";
+	public String enadminlogin(HttpServletRequest request,HttpServletResponse response) {		
+		String username = (String) request.getSession().getAttribute("username") ;
+		String password = (String) request.getSession().getAttribute("password") ;
+		boolean beOk = false ;
+		
+		if((username==null||"".equals(username)) &&(password==null||"".equals(password))){
+			username = request.getParameter("username");
+			password = request.getParameter("password");	
+			if((username==null||"".equals(username)) &&(password==null||"".equals(password))){
+				return "account/enadminlogin";
+			}else{
+				beOk  =  true ;
+			}			
+		}else{
+			beOk  =  true ;
+		}
+		
+		
+		if(beOk){
+			User u = accountService.findUserByLoginName(username);
+			if(u!=null){
+				String password_en = accountService.entryptPasswordByString(password);
+				String password_db = u.getPassword();	
+				//检验是否是企业用户
+				boolean brenuser = checkUserRoleIsEnuser(u.getRoles());			
+				if((password_en.equals(password_db))&&(brenuser)){//满足 1.密码匹配  2.用户角色是企业用户 并行								
+					return "redirect:/task/create";
+				}else{
+					return "account/enadminlogin";
+				}	
+			}else{
+				return "account/enadminlogin";
+			}
+		}else{
+			
+			return "account/enadminlogin";
+		}		
+		
+		//return "account/enadminlogin";
 	}
 	
 
 	
 	/**
 	 * 企业用户登录
-	 * ${ctx}/task/tolisttask
+	 * ${ctx}/task/create
 	 * **/
 	@RequestMapping(value = "enfromForm",method = RequestMethod.POST)
 	public String enloginForm(HttpServletRequest request,HttpServletResponse response) {
 		String username = (request.getParameter("username")).trim();
 		String password = (request.getParameter("password")).trim();
-		if(username==null||"".equals(username) ||password==null||"".equals(password)){			
-			return "redirect:/login/enadminlogin";
+		boolean  beOk = false; 
+		
+		if(username==null||"".equals(username) ||password==null||"".equals(password)){	
+			username = (String) request.getSession().getAttribute("username") ;
+			password = (String) request.getSession().getAttribute("password") ;
+			if(username==null||"".equals(username) ||password==null||"".equals(password)){	
+				return "redirect:/login/enadminlogin";
+			}else{
+				beOk= true ;
+			}			
 		}else{
+			beOk= true ;
+		}
+		
+		if(beOk){
 			User u = accountService.findUserByLoginName(username);
 			if(u!=null){
 				String password_en = accountService.entryptPasswordByString(password);
@@ -68,8 +117,9 @@ public class LoginController {
 				if((password_en.equals(password_db))&&(brenuser)){//满足 1.密码匹配  2.用户角色是企业用户 并行
 					//可以登录用户 设置session  为了后续的过滤
 					request.getSession().setAttribute("username", username);
+					request.getSession().setAttribute("password", password);	
 					request.getSession().setAttribute("digest", password_db);				
-					return "redirect:/task/tolisttask";
+					return "redirect:/task/create";
 				}else{
 					return "redirect:/login/enadminlogin";
 				}
@@ -77,6 +127,8 @@ public class LoginController {
 				//未查出用户
 				return "redirect:/login/enadminlogin";
 			}
+		}else{
+			return "redirect:/login/enadminlogin";
 		}
 
 	}

@@ -24,8 +24,8 @@
 	                        <li><!--  <a href="#"><i class="fa fa-gear"></i> 设置</a>--></li>
 	                        <li class="divider"></li>
 	                        <li>
-	                        <a href="${ctx}/logout"><i class="fa fa-power-off"></i>退出</a>
-	                        <!-- 
+	                        <a href="${ctx}/webadmin/loginOut"><i class="fa fa-power-off"></i>退出</a>
+	                        <!-- logout
 	                        <a href="/admin.php?m=Admin&c=login&a=logout"><i class="fa fa-power-off"></i> 退出</a> 
 	                        -->
 	                        </li>

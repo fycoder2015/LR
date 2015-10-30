@@ -69,7 +69,19 @@
 				/api/v1/usertools/gogetUsernameByPhonenum/** = anon
 				/api/v1/usertools/changeUserPassword/** = anon
 				/api/v1/usertools/gogetUsernameByPhonenumPasswd/** = anon
-				/api/v1/phoneCollect/** = anon
+				
+				/api/v1/phoneCollect/checkPhonenumberInChangePhone = statelessAuthc,roles[user]
+				/api/v1/phoneCollect/** = anon	
+					
+						
+				/api/v1/task/pageByClass/** = anon
+				/api/v1/task/getCategory/** = anon
+				/api/v1/task/getAuditedTask/** = anon
+				/rest/bounty/getPageByPaymentType/** = anon
+				/rest/bounty/getBountyCategory/** = anon
+				/rest/bounty/getAuditedBounty/** = anon
+				
+					
 				/api/v1/university/** = anon
 				
 				<!--  
@@ -79,7 +91,7 @@
 				
 				/api/** = anon
 				-->
-
+				
 				/api/** = statelessAuthc,roles[user]
 				<!--
 				/api/** = statelessAuthc,roles[user]	  
