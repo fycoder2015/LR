@@ -175,7 +175,7 @@ public class TaskController {
 		Date curDate = new Date();
 		newTask.setCreateTime(curDate);
 		String ctype = imageFile.getContentType() ;
-		if (imageFile!=null && (ctype.contains("image") || ctype.contains("octet-stream"))) {
+		if (imageFile!=null && (!imageFile.getOriginalFilename().equals("")) && (ctype.contains("image") || ctype.contains("octet-stream"))) {
 
             String fileName = imageFile.getOriginalFilename();
 
