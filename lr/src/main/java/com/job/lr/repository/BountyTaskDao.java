@@ -24,16 +24,16 @@ public interface BountyTaskDao extends PagingAndSortingRepository<BountyTask, Lo
 	@Query("delete from BountyTask bounty where bounty.id=?1")
 	void deleteById(Long id);
 	
-	@Query("from BountyTask t where t.auditFlag=1 and t.paymentType=?1")
+	@Query("from BountyTask t where t.auditFlag=1 and t.paymentType=?1 and closeDate > current_timestamp()")
 	Page<BountyTask> findByPaymentWay(String paymentType, Pageable pageRequest);
 	
-	@Query("from BountyTask t where t.auditFlag=1 and t.gender=?1")
+	@Query("from BountyTask t where t.auditFlag=1 and t.gender=?1 and closeDate > current_timestamp()")
 	Page<BountyTask> findByGender(String gender, Pageable pageRequest);
 	
-	@Query("from BountyTask t where t.auditFlag=1 and t.paymentType=?1 and t.gender=?2")
+	@Query("from BountyTask t where t.auditFlag=1 and t.paymentType=?1 and t.gender=?2 and closeDate > current_timestamp()")
 	Page<BountyTask> findByPayTypeGender(String paymentType, String gender, Pageable pageRequest);
 	
-	@Query("from BountyTask t where t.auditFlag=1")
+	@Query("from BountyTask t where t.auditFlag=1 and closeDate > current_timestamp()")
 	Page<BountyTask> pageAuditedBounty(Pageable pageRequest);
 	
 }
