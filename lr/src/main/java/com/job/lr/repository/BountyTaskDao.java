@@ -11,6 +11,9 @@ import com.job.lr.entity.BountyTask;
 
 public interface BountyTaskDao extends PagingAndSortingRepository<BountyTask, Long>, JpaSpecificationExecutor<BountyTask> {
 
+//	Page<BountyTask> findAllByUserId(Long id, Pageable pageRequest);
+	
+	@Query("from BountyTask t where t.auditFlag=1 and t.user.id=?1")
 	Page<BountyTask> findByUserId(Long id, Pageable pageRequest);
 
 	@Modifying
