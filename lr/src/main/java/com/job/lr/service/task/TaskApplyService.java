@@ -182,6 +182,38 @@ public class TaskApplyService extends BaseService {
 		return resp;
 	}
 	
+	/**
+	 * 拒绝申请
+	 * @param applyId
+	 * @return
+	 */
+	public GeneralResponse refuseApply(Long applyId) {
+		
+		GeneralResponse resp = new GeneralResponse();
+		
+		Long currentUserId =((ShiroUser) SecurityUtils.getSubject().getPrincipal()).id;
+		
+		TaskApplyRecord apply = this.taskApplyDao.findOne(applyId);
+		
+		if (apply==null) {
+			resp.setRetCode(-1);
+			resp.setRetInfo("申请记录不存在");
+		}
+		else {
+			Task task = this.taskDao.findOne(apply.getTaskId());
+			if (!task.getUser().getId().equals(currentUserId)) {
+				resp.setRetCode(-1);
+				resp.setRetInfo("当前用户与发布任务的用户不一致，无权进行确认结算操作");
+				return resp;
+			}
+			
+			apply.setSts("R");
+			taskApplyDao.save(apply);
+		}
+		return resp;
+	}
+	
+	
 	
 	/**
 	 * 结束兼职任务流程，将兼职申请状态置为“已完成”
