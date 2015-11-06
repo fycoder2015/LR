@@ -102,7 +102,9 @@ public class StatelessAuthcFilter extends AccessControlFilter {
     	
     	String urlparam_token = ""; //链接中传递的参数1
     	String urlparam_username_passwd = ""; //链接中传递的参数2
-    	String urlparam_writesess_flag = ""; //链接中传递的参数3  23写入session    	
+    	String urlparam_writesess_flag = ""; //链接中传递的参数3  23写入session   
+    	
+
     	int urlparam_jump_flag = 2 ;//0 不去跳转     2 跳转
     	
         //----1、客户端生成的消息摘要   seceretstr 等同于密钥
@@ -130,6 +132,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
     	HttpServletRequest httpreq = (HttpServletRequest) request;
     	HttpServletResponse httpresp = (HttpServletResponse) response;
     	String urlgetparm = httpreq.getQueryString(); //类似username=xxx&passwd= 
+
     	
         //----2.1 测试session中是否有参数
         if(clientDigest == null ||username==null||"".equals(clientDigest)||  "".equals(username)){        
@@ -172,7 +175,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 			            		//时间超限 不允登陆
 			            		username ="";
 			            		clientDigest="";
-			             		onLoginFail(response); //6、登录失败
+			             		onLoginFail(request,response); //6、登录失败
 			    	            return false;
 			            	}
 		        		}
@@ -182,7 +185,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
         		//token 查询不到，有问题 ，直接退出
         		username ="";
         		clientDigest="";
-         		onLoginFail(response); //6、登录失败
+         		onLoginFail(request,response); //6、登录失败
 	            return false;
         	}
         }
@@ -231,7 +234,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
          * 
          * */
         if ("".equals(username)|| username ==null||"".equals(clientDigest)||clientDigest==null ){
-        	onLoginFail(response); //6、登录失败
+        	onLoginFail(request,response); //6、登录失败
         	return false;
         }else{
 	        //----6、登录成功 传递登陆的 token
@@ -240,7 +243,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 	        	User user = accountService.findUserByLoginName(username);
 	        	//判断用户是否为空
 	        	if( user == null){
-	                onLoginFail(response); //6、登录失败
+	                onLoginFail(request,response); //6、登录失败
 	                return false;
 		        }else{
 		        	//存在相应的用户 
@@ -268,7 +271,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 				        		 urlgetparm=""; 			            	 
 				            	 username ="";
 				            	 clientDigest="";
-				             	 onLoginFail(response); //6.注销登录
+				             	 onLoginFail(request,response); //6.注销登录
 				             	 httpresp.sendRedirect(httpreq.getContextPath());//获取现在的页面跳转action,重定向到此处
 				    	         return false;			    	         
 		        			}else if (writesess.equals("23") ){
@@ -329,13 +332,13 @@ public class StatelessAuthcFilter extends AccessControlFilter {
 			            	}
 			            } catch (Exception e) {
 			                e.printStackTrace();
-			                onLoginFail(response); //6、登录失败
+			                onLoginFail(request,response); //6、登录失败
 			                return false;
 			            }
 			            return true;
 		        	}else{ 
 		        		//用户的密码不正确
-		        		onLoginFail(response); //6、登录失败
+		        		onLoginFail(request,response); //6、登录失败
 			            return false;
 		        	}
 		        	
@@ -348,22 +351,46 @@ public class StatelessAuthcFilter extends AccessControlFilter {
     
     
     
-
-    //登录失败时默认返回401状态码
-    private void onLoginFail(ServletResponse response) throws IOException {
-    	System.out.println("in StatelessAuthcFilter 的 onLoginFail()");
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
-        httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-		GeneralResponse gp = new GeneralResponse();
-		gp.setRetCode(0);
-		gp.setRetInfo("请使用post方法传参");
-		
-		String returnCode = "{"
-				+ "\"retCode\" : 0,"
-				+ "\"retInfo\" : \"Login Error\""
-				+ "}";
-		//System.out.println(returnCode);
-        httpResponse.getWriter().write(returnCode);
+    /**
+     * 登录失败的返回页面
+     * 
+     * ---- 登录失败时默认返回401状态码
+     * 
+     * */
+    private void onLoginFail(ServletRequest request ,ServletResponse response) throws IOException {
+    	//System.out.println("in StatelessAuthcFilter 的 onLoginFail()");
+    	HttpServletRequest  httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;    	
+    	String httpurl= httpRequest.getRequestURI(); //获取形如  /CarsiLogCenter_new/idpstat.jsp 的链接
+    	
+    	String urlstring = "task";
+   		String urlstring2 = "webadmin";    	
+    	boolean ishave = httpurl.contains(urlstring);
+    	boolean ishave2 = httpurl.contains(urlstring2);
+    	int flag = 0 ;
+    	if(ishave){	flag =1 ;}
+    	if(ishave2){ flag =2 ;}
+    	
+    	//ishave = true;
+    	if(flag==1){
+    		httpResponse.sendRedirect("login/enadminlogin") ;
+    		return; 
+    	}else if(flag==2){
+    		httpResponse.sendRedirect("webadmin/webadminlogin") ;
+    		return; 
+    	}else{
+            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    		GeneralResponse gp = new GeneralResponse();
+    		gp.setRetCode(0);
+    		gp.setRetInfo("请使用post方法传参");
+    		
+    		String returnCode = "{"
+    				+ "\"retCode\" : 0,"
+    				+ "\"retInfo\" : \"Login Error\""
+    				+ "}";
+    		//System.out.println(returnCode);
+            httpResponse.getWriter().write(returnCode);
+    	}
     }    
 
     
