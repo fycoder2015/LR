@@ -359,7 +359,7 @@ public class StatelessAuthcFilter extends AccessControlFilter {
      * */
     private void onLoginFail(ServletRequest request ,ServletResponse response) throws IOException {
     	//System.out.println("in StatelessAuthcFilter 的 onLoginFail()");
-     	logger.info("--- onLoginFail()");
+     	//logger.info("--- onLoginFail()");
     	HttpServletRequest  httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;    
         
