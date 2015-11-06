@@ -359,12 +359,15 @@ public class StatelessAuthcFilter extends AccessControlFilter {
      * */
     private void onLoginFail(ServletRequest request ,ServletResponse response) throws IOException {
     	//System.out.println("in StatelessAuthcFilter 的 onLoginFail()");
+     	logger.info("--- onLoginFail()");
     	HttpServletRequest  httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;    	
-    	String httpurl= httpRequest.getRequestURI(); //获取形如  /CarsiLogCenter_new/idpstat.jsp 的链接
-    	
-    	String urlstring = "task";
-   		String urlstring2 = "webadmin";    	
+        HttpServletResponse httpResponse = (HttpServletResponse) response;    
+        
+    	String httpurl= httpRequest.getRequestURI(); //获取形如  /CarsiLogCenter_new/idpstat.jsp 的链接    	 
+    	String ctx= httpRequest.getContextPath();
+    	//System.out.println("ctx:"+ctx+"---httpurl:"+httpurl); //ctx:/lr---httpurl:/lr/
+    	String urlstring = "/lr/task/";
+   		String urlstring2 = "/webadmin/";    	
     	boolean ishave = httpurl.contains(urlstring);
     	boolean ishave2 = httpurl.contains(urlstring2);
     	int flag = 0 ;
@@ -373,11 +376,11 @@ public class StatelessAuthcFilter extends AccessControlFilter {
     	
     	//ishave = true;
     	if(flag==1){
-    		httpResponse.sendRedirect("login/enadminlogin") ;
-    		return; 
+    		httpResponse.sendRedirect(ctx+"/login/enadminlogin") ;
+    		//return; 
     	}else if(flag==2){
-    		httpResponse.sendRedirect("webadmin/webadminlogin") ;
-    		return; 
+    		httpResponse.sendRedirect(ctx+"/webadmin/webadminlogin") ;
+    		//return; 
     	}else{
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     		GeneralResponse gp = new GeneralResponse();
