@@ -29,11 +29,13 @@ import com.google.common.collect.Maps;
 import com.job.lr.entity.Category;
 import com.job.lr.entity.Enterprise;
 import com.job.lr.entity.Task;
+import com.job.lr.entity.TaskApplyRecord;
 import com.job.lr.entity.TaskComment;
 import com.job.lr.entity.User;
 import com.job.lr.service.account.AccountService;
 import com.job.lr.service.account.ShiroDbRealm.ShiroUser;
 import com.job.lr.service.admin.CategoryService;
+import com.job.lr.service.task.TaskApplyService;
 import com.job.lr.service.task.TaskCommentService;
 import com.job.lr.service.task.TaskService;
 
@@ -72,6 +74,9 @@ public class TaskController {
 	
 	@Autowired
 	private AccountService accountService;
+	
+	@Autowired
+	private TaskApplyService applyService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String list(@RequestParam(value = "page", defaultValue = "1") int pageNumber,
@@ -223,6 +228,22 @@ public class TaskController {
 		return "task/updateForm";
 	}
 	
+	@RequestMapping(value = "applyList", method = RequestMethod.GET)
+	public String applyList(@RequestParam(value = "taskId") Long taskId,
+			@RequestParam(value = "page", defaultValue = "1") int pageNum,
+			@RequestParam(value = "page.size", defaultValue = PAGE_SIZE) int pageSize,
+			@RequestParam(value = "sortType", defaultValue = "auto") String sortType, Model model,
+			ServletRequest request) {
+		
+		Page<TaskApplyRecord> applyList = this.applyService.findPageByTaskId(taskId, pageNum);
+		
+		model.addAttribute("applyList", applyList);
+		model.addAttribute("task", taskService.getTask(taskId));
+//		model.addAttribute("action", "update");
+		
+		return "task/applyList";
+	}
+	
 	
 	@RequestMapping(value = "update", method = RequestMethod.POST)
 	public String update(@Valid @ModelAttribute("task") Task task, RedirectAttributes redirectAttributes) {
@@ -307,6 +328,46 @@ public class TaskController {
 		taskService.openTask(id);
 
 		return "redirect:/task/";
+	}
+	
+	@RequestMapping(value = "confirmApply/{applyId}")
+	public String confirmApply(@PathVariable("applyId") Long applyId, RedirectAttributes redirectAttributes) {
+		
+		applyService.confirmApply(applyId);
+		
+		TaskApplyRecord apply = this.applyService.getApply(applyId);
+
+		return "redirect:/task/applyList?taskId="+apply.getTaskId();
+	}
+	
+	@RequestMapping(value = "refuseApply/{applyId}")
+	public String refuseApply(@PathVariable("applyId") Long applyId, RedirectAttributes redirectAttributes) {
+		
+		applyService.refuseApply(applyId);
+		
+		TaskApplyRecord apply = this.applyService.getApply(applyId);
+
+		return "redirect:/task/applyList?taskId="+apply.getTaskId();
+	}
+	
+	@RequestMapping(value = "inPosition/{applyId}")
+	public String inPosition(@PathVariable("applyId") Long applyId, RedirectAttributes redirectAttributes) {
+		
+		applyService.comeToPosition(applyId);
+		
+		TaskApplyRecord apply = this.applyService.getApply(applyId);
+
+		return "redirect:/task/applyList?taskId="+apply.getTaskId();
+	}
+	
+	@RequestMapping(value = "confirmPayment/{applyId}")
+	public String confirmPayment(@PathVariable("applyId") Long applyId, RedirectAttributes redirectAttributes) {
+		
+		applyService.confirmPayment(applyId);
+		
+		TaskApplyRecord apply = this.applyService.getApply(applyId);
+
+		return "redirect:/task/applyList?taskId="+apply.getTaskId();
 	}
 	
 	@RequestMapping(value = "enterpriseForm" ,method = RequestMethod.GET )

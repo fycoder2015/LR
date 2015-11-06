@@ -34,7 +34,7 @@
             <div class="ddDivfoot">
                 <!-- 发布兼职开始  -->
                 <table id="contentTable" width="100%">
-					<thead align="left"><tr><th>Id</th><th>标题</th><th>发布时间</th><th>招聘人数</th><th>审核状态</th><th>开放状态</th><th></th><th>详情</th></tr></thead>
+					<thead align="left"><tr><th>Id</th><th>标题</th><th>发布时间</th><th>招聘人数</th><th>审核状态</th><th>开放状态</th><th></th><th></th><th></th></tr></thead>
 					<tbody>
 						<c:forEach items="${tasks.content}" var="task">
 							<tr>
@@ -72,6 +72,12 @@
 											开放
 										</a>
 									</c:if>
+								</td>
+								
+								<td>
+									<a href="${ctx}/task/applyList?taskId=${task.id}">
+											查看申请
+									</a>
 								</td>
 
 							</tr>
