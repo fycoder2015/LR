@@ -103,7 +103,7 @@ public class RestCommentController {
 			 */
 			String ctype= imageFile1.getContentType();
 			
-			if (imageFile1!=null && (ctype.contains("image")||ctype.contains("octet-stream"))) {
+			if (imageFile1!=null &&(!imageFile1.getOriginalFilename().equals("")) && (ctype.contains("image")||ctype.contains("octet-stream"))) {
 
 				String newFileName = this.saveImageFile(imageFile1, currentUserId, apply.getId());
 				if (newFileName.startsWith("OK:")) {
@@ -116,7 +116,7 @@ public class RestCommentController {
 				}
 			}
 			String ctype2 =imageFile2.getContentType() ;
-			if (imageFile2!=null && (ctype2.contains("image")||ctype2.contains("octet-stream"))) {
+			if (imageFile2!=null &&(!imageFile2.getOriginalFilename().equals("")) && (ctype2.contains("image")||ctype2.contains("octet-stream"))) {
 
 				String newFileName = this.saveImageFile(imageFile2, currentUserId, apply.getId());
 				if (newFileName.startsWith("OK:")) {
@@ -130,7 +130,7 @@ public class RestCommentController {
 			}
 			
 			String ctype3 =imageFile3.getContentType() ;
-			if (imageFile3!=null && (ctype3.contains("image")||ctype3.contains("octet-stream") )) {
+			if (imageFile3!=null &&(!imageFile3.getOriginalFilename().equals("")) && (ctype3.contains("image")||ctype3.contains("octet-stream") )) {
 
 				String newFileName = this.saveImageFile(imageFile3, currentUserId, apply.getId());
 				if (newFileName.startsWith("OK:")) {

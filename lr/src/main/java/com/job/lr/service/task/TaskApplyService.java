@@ -46,7 +46,7 @@ public class TaskApplyService extends BaseService {
 		
 		PageRequest pageRequest = buildPageRequest(1, 40, "auto");
 		
-		Page<TaskApplyRecord> taskPage = taskApplyDao.findByTaskAndUser(entity.getTaskId(), entity.getUser().getId(), pageRequest);
+		Page<TaskApplyRecord> taskPage = taskApplyDao.findByTaskAndUserSp(entity.getTaskId(), entity.getUser().getId(), pageRequest);
 		
 		if (taskPage.getNumberOfElements()>0) {
 			resp.setRetCode(-1);
