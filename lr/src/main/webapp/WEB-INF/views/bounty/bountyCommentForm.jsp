@@ -9,14 +9,16 @@
 <body>
 	<form id="inputForm" action="${ctx}/rest/comment/${action}" method="post" class="form-horizontal" enctype="multipart/form-data">
 	
-		<input type="hidden" name="apply.id" value="${applyId}"/>
+		<!--  <input type="hidden" name="apply.id" value="${applyId}"/>-->
+		<input type="hidden" name="apply_id" value="${applyId}"/>
 		<fieldset>
 			<legend><small>发表评论</small></legend>
 			
 			<div class="control-group">
 				<label for="comment" class="control-label">评价内容:</label>
 				<div class="controls">
-					<textarea id="comment.comment" name="comment" class="input-large"></textarea>
+					<!-- <textarea id="comment.comment" name="comment" class="input-large"></textarea> -->
+					<textarea id="comment.comment" name="comments" class="input-large"></textarea>
 				</div>
 			</div>
 			<div class="control-group">
@@ -48,7 +50,7 @@
 			</div>		
 			
 			<div class="form-actions">
-				<input id="submit_btn" class="btn btn-primary" type="submit" value="提交"/>&nbsp;	
+				<input id="submit_btn" class="btn btn-primary" type="submit" value="提交" /> 提交    &nbsp;	
 				<input id="cancel_btn" class="btn" type="button" value="返回" onclick="history.back()"/>
 			</div>
 		</fieldset>

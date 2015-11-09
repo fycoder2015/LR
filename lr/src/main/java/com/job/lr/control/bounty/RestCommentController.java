@@ -3,6 +3,7 @@ package com.job.lr.control.bounty;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.Validator;
 
@@ -45,6 +46,7 @@ public class RestCommentController {
 	
 	/**
 	 * 创建评论
+	 * /lr/rest/comment/create
 	 * @param comment
 	 * @param redirectAttributes
 	 * @param imageFile1
@@ -53,7 +55,12 @@ public class RestCommentController {
 	 * @return
 	 */
 	@RequestMapping(value = "create", method = RequestMethod.POST, produces = MediaTypes.JSON_UTF_8)
-	public GeneralResponse create(@Valid BountyComment comment,RedirectAttributes redirectAttributes,
+	//							  @Valid BountyComment comment
+	public GeneralResponse create( 
+			HttpServletRequest request,RedirectAttributes redirectAttributes,
+			@RequestParam("apply_id") Long applyId , 
+			@RequestParam(value = "starLevel",  required = false) Integer starLevel ,
+			@RequestParam("comments") String comments ,
 			@RequestParam(value = "imageFile1", required = false) MultipartFile imageFile1,
 			@RequestParam(value = "imageFile2", required = false) MultipartFile imageFile2,
 			@RequestParam(value = "imageFile3", required = false) MultipartFile imageFile3
@@ -64,8 +71,30 @@ public class RestCommentController {
 		/*
 		 * 根据提交的请求内容查询订单的具体内容，针对订单的状态、申请人和任务提交人进行校验；
 		 */
-		BountyApply apply = this.applyService.getOne(comment.getApply().getId());
+		//此处做了些调整，直接post不能自动装配 apply.id的内容，通过apply_id来传参。
+//		Long applyId = null;
+//		if(comment!=null){
+//			if(comment.getApply()!= null){
+//				applyId=comment.getApply().getId();
+//			}
+//		}
+//		if(applyId==null||applyId==0){
+//			String applyIds=request.getParameter("apply_id");
+//			if("".equals(applyIds)||applyIds==null){
+//				
+//			}else{
+//				applyId=Long.parseLong(applyIds);
+//			}
+//		}
+		BountyComment comment =new BountyComment();
+		comment.setComment(comments);
+		if (starLevel==null){}else{
+			comment.setStarLevel(starLevel);
+		}
+		//comment.getApply().setId(applyId); //会报空
 		
+		BountyApply apply = this.applyService.getOne(applyId);
+		comment.setApply(apply);
 		Long applyUserId = apply.getApplyUser().getId();
 		
 		Long currentUserId = commentService.getCurrentUserId();
@@ -101,7 +130,12 @@ public class RestCommentController {
 			/*
 			 * 检测是否有图片上传，如果有则保存图片
 			 */
-			String ctype= imageFile1.getContentType();
+			String ctype="" ; //= imageFile1.getContentType();
+			if(imageFile1 == null){				
+			}else{
+				ctype= imageFile1.getContentType();
+			}
+			
 			
 			if (imageFile1!=null &&(!imageFile1.getOriginalFilename().equals("")) && (ctype.contains("image")||ctype.contains("octet-stream"))) {
 
@@ -115,7 +149,12 @@ public class RestCommentController {
 					return resp;
 				}
 			}
-			String ctype2 =imageFile2.getContentType() ;
+			
+			String ctype2="" ; //String ctype2 =imageFile2.getContentType() ;
+			if(imageFile2 == null){				
+			}else{
+				ctype2= imageFile2.getContentType();
+			}
 			if (imageFile2!=null &&(!imageFile2.getOriginalFilename().equals("")) && (ctype2.contains("image")||ctype2.contains("octet-stream"))) {
 
 				String newFileName = this.saveImageFile(imageFile2, currentUserId, apply.getId());
@@ -129,7 +168,13 @@ public class RestCommentController {
 				}
 			}
 			
-			String ctype3 =imageFile3.getContentType() ;
+		
+			String ctype3="" ; //	String ctype3 =imageFile3.getContentType() ;
+			if(imageFile3 == null){				
+			}else{
+				ctype3= imageFile3.getContentType();
+			}
+			
 			if (imageFile3!=null &&(!imageFile3.getOriginalFilename().equals("")) && (ctype3.contains("image")||ctype3.contains("octet-stream") )) {
 
 				String newFileName = this.saveImageFile(imageFile3, currentUserId, apply.getId());
