@@ -9,12 +9,15 @@
 <body>
 	<form id="inputForm" action="${ctx}/api/v1/taskComment/${action}" method="post" class="form-horizontal">
 		<input type="hidden" name="id" value="${taskComment.id}"/>
+		<input type="hidden" name="username" value="75401737a9ea48c7a9ea9e3e345ae8fb"/>
+		<input type="hidden" name="digest" value="e60e633cd564e24bcc4bcf91b1c3d7ccb9966d9a"/>
+		 
 		<fieldset>
 			<legend><small>评价信息</small></legend>
 			<div class="control-group">
 				<label for="task_title" class="control-label">任务ID:</label>
 				<div class="controls">
-					<input type="text" id="task.id" name="task.id"  value="${taskComment.task.id}" class="input-large required" />
+					<input type="text" id="apply.id" name="apply.id"  value="${taskComment.apply.id}" class="input-large required" />
 				</div>
 			</div>	
 			<div class="control-group">
