@@ -182,7 +182,6 @@ public class RestCommentController {
 			@PathVariable("userId") Long userId) {
 		return commentService.pageByCommentUserId(userId, pageNum);
 	}
-	
 
 	/**
 	 * 按照被评论用户的用户Id分页查询评论
