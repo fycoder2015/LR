@@ -3,6 +3,7 @@ package com.job.lr.control.bounty;
 import java.io.File;
 import java.text.SimpleDateFormat;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.Validator;
 
@@ -45,6 +46,7 @@ public class RestCommentController {
 	
 	/**
 	 * 创建评论
+	 * /lr/rest/comment/create
 	 * @param comment
 	 * @param redirectAttributes
 	 * @param imageFile1
@@ -53,7 +55,7 @@ public class RestCommentController {
 	 * @return
 	 */
 	@RequestMapping(value = "create", method = RequestMethod.POST, produces = MediaTypes.JSON_UTF_8)
-	public GeneralResponse create(@Valid BountyComment comment,RedirectAttributes redirectAttributes,
+	public GeneralResponse create(@Valid BountyComment comment,HttpServletRequest request,RedirectAttributes redirectAttributes,
 			@RequestParam(value = "imageFile1", required = false) MultipartFile imageFile1,
 			@RequestParam(value = "imageFile2", required = false) MultipartFile imageFile2,
 			@RequestParam(value = "imageFile3", required = false) MultipartFile imageFile3
@@ -64,7 +66,25 @@ public class RestCommentController {
 		/*
 		 * 根据提交的请求内容查询订单的具体内容，针对订单的状态、申请人和任务提交人进行校验；
 		 */
-		BountyApply apply = this.applyService.getOne(comment.getApply().getId());
+		//此处做了些调整，直接post不能自动装配 apply.id的内容，通过apply_id来传参。
+		Long applyId = null;
+		if(comment!=null){
+			if(comment.getApply()!= null){
+				applyId=comment.getApply().getId();
+			}
+		}
+
+		if(applyId==null||applyId==0){
+			String applyIds=request.getParameter("apply_id");
+			if("".equals(applyIds)||applyIds==null){
+				
+			}else{
+				applyId=Long.parseLong(applyIds);
+			}
+		}
+		
+		
+		BountyApply apply = this.applyService.getOne(applyId);
 		
 		Long applyUserId = apply.getApplyUser().getId();
 		
