@@ -251,7 +251,19 @@ public class RestCommentController {
 			@PathVariable("applyId") Long applyId) {
 		return commentService.pageByApplyId(applyId, pageNum);
 	}
-	
+
+	/**
+	 * 按照赏金任务ID分页查询评论
+	 * @param pageNum
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/pageByBounty/{id}_{pageNum}",method = RequestMethod.GET,produces = MediaTypes.JSON_UTF_8)
+	public Page<BountyComment> pageByBounty(@PathVariable("pageNum") int pageNum,
+			@PathVariable("id") Long id) {
+		return commentService.pageByBountyId(id, pageNum);
+	}
+		
 	/**
 	 * 保存上传的图片文件
 	 * @param imageFile
