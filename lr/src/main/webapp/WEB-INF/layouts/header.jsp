@@ -42,9 +42,9 @@
                 <div class="nav">
                     <ul id="nav">
                         <li class="one on"><a title="返回首页" style="color:#FFF;background:#ff8829;" href="http://www.zhidianjingying.com" >网站首页</a></li>
-                        <li class="one"><a href="http://zhidianjingying.com/index.php?case=archive&act=list&catid=5" title="联系我们" target="">联系我们</a></li><!--${ctx}/jsp/gcconnect.jsp  -->
+                        <li class="one"><a href="http://www.zhidianjingying.com/index.php?m=&c=Page&a=contact" title="联系我们" target="">联系我们</a></li><!--${ctx}/jsp/gcconnect.jsp  -->
                         <li class="one"><a href="${ctx}/login/enadminlogin" title="发布兼职" target="">发布兼职</a></li><!--${ctx}/login/enadminlogin  -->
-                        <li class="one"><a href="http://zhidianjingying.com/list_1.htm" title="加入我们" target="">加入我们</a></li><!--${ctx}/jsp/gcjoinus.jsp -->
+                        <li class="one"><a href="http://www.zhidianjingying.com/index.php?m=&c=Page&a=join" title="加入我们" target="">加入我们</a></li><!--${ctx}/jsp/gcjoinus.jsp -->
                     </ul>
                 </div>
                 <!-- 导航结束 -->
