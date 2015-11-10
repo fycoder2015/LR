@@ -121,10 +121,11 @@ public class RestCommentController {
 			if (currentUserId.equals(applyUserId)) {
 				comment.setByCommentUserId(bountyUserId);
 				apply.setHunterCommentSts("D");
+				apply.setSts("F");
 			}
 			else if (currentUserId.equals(bountyUserId)) {
 				comment.setByCommentUserId(applyUserId);
-				apply.setHunterCommentSts("D");
+				apply.setBountyUserCommentSts("D");
 			}
 			
 			/*
@@ -195,8 +196,8 @@ public class RestCommentController {
 			}
 			
 			//目前业务需求尚未明确，暂定评论完成后，订单即为‘完成’状态
-/*			apply.setSts("F");
-			resp = applyService.saveApply(apply);*/
+/*			apply.setSts("F");*/
+			resp = applyService.saveApply(apply);
 		}
 		else {
 			resp.setRetCode(-1);
